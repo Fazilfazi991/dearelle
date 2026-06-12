@@ -78,6 +78,83 @@ function productUrl(product) {
   return `product.html?id=${encodeURIComponent(product.id)}`;
 }
 
+function getCart() {
+  try {
+    return JSON.parse(localStorage.getItem("dearelleCart")) || [];
+  } catch {
+    return [];
+  }
+}
+
+function saveCart(cart) {
+  localStorage.setItem("dearelleCart", JSON.stringify(cart));
+  updateCartCount();
+}
+
+function cartItemKey(productId, options) {
+  return `${productId}|${options.metal || ""}|${options.length || ""}`;
+}
+
+function getProductById(id) {
+  return (window.products || []).find((product) => product.id === id);
+}
+
+function getCartLines() {
+  return getCart().map((item) => {
+    const product = getProductById(item.productId);
+    return product ? { ...item, product, lineTotal: product.price * item.quantity } : null;
+  }).filter(Boolean);
+}
+
+function cartTotals() {
+  const lines = getCartLines();
+  const subtotal = lines.reduce((sum, line) => sum + line.lineTotal, 0);
+  const shipping = subtotal === 0 || subtotal >= 5999 ? 0 : 149;
+  const discount = subtotal >= 5999 ? Math.round(subtotal * 0.2) : 0;
+  const total = Math.max(0, subtotal + shipping - discount);
+  return { lines, subtotal, shipping, discount, total };
+}
+
+function updateCartCount() {
+  const count = getCart().reduce((sum, item) => sum + item.quantity, 0);
+  document.querySelectorAll("[data-cart-count], .cart span").forEach((badge) => {
+    badge.textContent = count;
+  });
+}
+
+function addToCart(productId, quantity = 1, options = {}) {
+  const product = getProductById(productId);
+  if (!product) return;
+
+  const normalizedOptions = {
+    metal: options.metal || product.options?.metal?.[0] || "",
+    length: options.length || product.options?.length?.[0] || ""
+  };
+  const key = cartItemKey(productId, normalizedOptions);
+  const cart = getCart();
+  const existing = cart.find((item) => item.key === key);
+
+  if (existing) {
+    existing.quantity += quantity;
+  } else {
+    cart.push({ key, productId, quantity, options: normalizedOptions });
+  }
+
+  saveCart(cart);
+}
+
+function updateCartItem(key, quantity) {
+  const nextQuantity = Math.max(0, quantity);
+  const nextCart = getCart().map((item) => item.key === key ? { ...item, quantity: nextQuantity } : item).filter((item) => item.quantity > 0);
+  saveCart(nextCart);
+  renderCartPage();
+  renderCheckoutPage();
+}
+
+function orderNumber() {
+  return `DL${Date.now().toString().slice(-7)}`;
+}
+
 function renderProductCards(container, productList, limit = productList.length) {
   if (!container) return;
 
@@ -91,16 +168,18 @@ function renderProductCards(container, productList, limit = productList.length) 
         <p>${formatPrice(product.price)}</p>
         ${ratingMarkup(product)}
       </a>
+      <button class="product-card__add" type="button" data-card-add="${product.id}">Add to Cart</button>
     </article>
   `).join("");
 }
 
 function optionGroup(label, values) {
+  const key = label.toLowerCase();
   return `
-    <fieldset class="product-options">
+    <fieldset class="product-options" data-option-group="${key}">
       <legend>${label}</legend>
       <div>
-        ${values.map((value, index) => `<button class="${index === 0 ? "is-selected" : ""}" type="button">${value}</button>`).join("")}
+        ${values.map((value, index) => `<button class="${index === 0 ? "is-selected" : ""}" type="button" data-option-value="${value}">${value}</button>`).join("")}
       </div>
     </fieldset>
   `;
@@ -148,7 +227,7 @@ function renderProductPage() {
         <span data-qty>1</span>
         <button type="button" data-qty-plus aria-label="Increase quantity">+</button>
       </div>
-      <button class="button product-add" type="button" data-add-cart>Add to Cart <i data-lucide="shopping-bag"></i></button>
+      <button class="button product-add" type="button" data-add-cart="${product.id}">Add to Cart <i data-lucide="shopping-bag"></i></button>
       <button class="product-wishlist" type="button"><i data-lucide="heart"></i> Add to Wishlist</button>
       <div class="product-perks" aria-label="Shopping benefits">
         <span><i data-lucide="truck"></i><strong>Free Shipping</strong><small>On orders ₹5,999+</small></span>
@@ -178,6 +257,145 @@ function renderProductPage() {
   renderProductCards(document.querySelector("[data-suggested-products]"), [...sameCategory, ...suggested], 4);
 }
 
+function summaryMarkup(totals, checkoutHref = "checkout.html") {
+  return `
+    <aside class="order-summary">
+      <h2>Order Summary</h2>
+      <div><span>Subtotal</span><strong>${formatPrice(totals.subtotal)}</strong></div>
+      <div><span>Shipping</span><strong>${totals.shipping ? formatPrice(totals.shipping) : "Free"}</strong></div>
+      <div><span>Blush Days Discount</span><strong>${totals.discount ? `-${formatPrice(totals.discount)}` : "Add ₹5,999+ to unlock"}</strong></div>
+      <div class="order-summary__total"><span>Total</span><strong>${formatPrice(totals.total)}</strong></div>
+      ${checkoutHref ? `<a class="button" href="${checkoutHref}">Continue to Checkout</a>` : ""}
+      <p>Secure checkout. Cash on delivery and card payment options are shown for demo order placement.</p>
+    </aside>
+  `;
+}
+
+function renderCartPage() {
+  const container = document.querySelector("[data-cart-page]");
+  if (!container) return;
+
+  const totals = cartTotals();
+  if (!totals.lines.length) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <i data-lucide="shopping-bag"></i>
+        <h2>Your cart is waiting for something beautiful.</h2>
+        <p>Explore our bestsellers and add your favorite pieces.</p>
+        <a class="button" href="index.html#bestsellers">Shop Bestsellers</a>
+      </div>
+    `;
+    createLocalIcons();
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="cart-items">
+      ${totals.lines.map((line) => `
+        <article class="cart-item">
+          <a href="${productUrl(line.product)}"><img src="${line.product.images[0]}" alt="${line.product.name}"></a>
+          <div>
+            <a class="cart-item__title" href="${productUrl(line.product)}">${line.product.name}</a>
+            <p>${line.options.metal}${line.options.length ? ` / ${line.options.length}` : ""}</p>
+            <strong>${formatPrice(line.product.price)}</strong>
+            <div class="quantity-control cart-quantity" aria-label="Quantity for ${line.product.name}">
+              <button type="button" data-cart-minus="${line.key}" aria-label="Decrease quantity">-</button>
+              <span>${line.quantity}</span>
+              <button type="button" data-cart-plus="${line.key}" aria-label="Increase quantity">+</button>
+            </div>
+          </div>
+          <button class="cart-remove" type="button" data-cart-remove="${line.key}">Remove</button>
+        </article>
+      `).join("")}
+    </div>
+    ${summaryMarkup(totals)}
+  `;
+}
+
+function renderCheckoutPage() {
+  const container = document.querySelector("[data-checkout-page]");
+  if (!container) return;
+
+  const latestOrder = localStorage.getItem("dearelleLatestOrder");
+  const totals = cartTotals();
+  if (!totals.lines.length && !latestOrder) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <i data-lucide="shopping-bag"></i>
+        <h2>Your cart is empty.</h2>
+        <p>Add a piece before starting checkout.</p>
+        <a class="button" href="index.html#bestsellers">Shop Now</a>
+      </div>
+    `;
+    createLocalIcons();
+    return;
+  }
+
+  if (!totals.lines.length && latestOrder) {
+    const order = JSON.parse(latestOrder);
+    container.innerHTML = `
+      <div class="order-confirmation">
+        <i data-lucide="circle-dot"></i>
+        <p class="script">Order Placed</p>
+        <h2>Thank you, ${order.customer.firstName}.</h2>
+        <p>Your order <strong>${order.id}</strong> has been placed. A confirmation has been prepared for ${order.customer.email}.</p>
+        <div class="order-confirmation__meta">
+          <span>Total Paid</span><strong>${formatPrice(order.total)}</strong>
+          <span>Delivery</span><strong>${order.customer.city}, ${order.customer.state}</strong>
+          <span>Payment</span><strong>${order.payment}</strong>
+        </div>
+        <a class="button" href="index.html#bestsellers">Continue Shopping</a>
+      </div>
+    `;
+    createLocalIcons();
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="checkout-layout">
+      <form class="checkout-form" data-checkout-form>
+        <section>
+          <h2>Contact</h2>
+          <label>Email<input name="email" type="email" autocomplete="email" required placeholder="you@example.com"></label>
+          <label>Phone<input name="phone" type="tel" autocomplete="tel" required placeholder="+91 98765 43210"></label>
+        </section>
+        <section>
+          <h2>Shipping Address</h2>
+          <div class="form-grid">
+            <label>First name<input name="firstName" required autocomplete="given-name"></label>
+            <label>Last name<input name="lastName" required autocomplete="family-name"></label>
+          </div>
+          <label>Address<input name="address" required autocomplete="street-address"></label>
+          <div class="form-grid">
+            <label>City<input name="city" required autocomplete="address-level2"></label>
+            <label>State<input name="state" required autocomplete="address-level1"></label>
+            <label>PIN code<input name="pin" required pattern="[0-9]{6}" maxlength="6" autocomplete="postal-code" placeholder="682001"></label>
+          </div>
+        </section>
+        <section>
+          <h2>Payment</h2>
+          <label class="radio-row"><input type="radio" name="payment" value="Cash on Delivery" checked> Cash on Delivery</label>
+          <label class="radio-row"><input type="radio" name="payment" value="Card on Delivery"> Card on Delivery</label>
+          <label class="radio-row"><input type="radio" name="payment" value="UPI on Delivery"> UPI on Delivery</label>
+        </section>
+        <button class="button checkout-submit" type="submit">Place Order</button>
+      </form>
+      <div>
+        <div class="checkout-items">
+          ${totals.lines.map((line) => `
+            <article>
+              <img src="${line.product.images[0]}" alt="${line.product.name}">
+              <div><strong>${line.product.name}</strong><span>Qty ${line.quantity}</span></div>
+              <p>${formatPrice(line.lineTotal)}</p>
+            </article>
+          `).join("")}
+        </div>
+        ${summaryMarkup(totals, "")}
+      </div>
+    </div>
+  `;
+}
+
 function bindProductInteractions() {
   document.addEventListener("click", (event) => {
     const thumb = event.target.closest("[data-gallery-image]");
@@ -200,6 +418,15 @@ function bindProductInteractions() {
       wishlist.classList.toggle("is-active");
     }
 
+    const cardAdd = event.target.closest("[data-card-add]");
+    if (cardAdd) {
+      addToCart(cardAdd.dataset.cardAdd, 1);
+      cardAdd.textContent = "Added";
+      setTimeout(() => {
+        cardAdd.textContent = "Add to Cart";
+      }, 1100);
+    }
+
     const quantity = document.querySelector("[data-qty]");
     if (event.target.closest("[data-qty-minus]") && quantity) {
       quantity.textContent = Math.max(1, Number(quantity.textContent) - 1);
@@ -210,20 +437,79 @@ function bindProductInteractions() {
 
     const addCart = event.target.closest("[data-add-cart]");
     if (addCart) {
-      const cartCount = document.querySelector("[data-cart-count], .cart span");
+      const productId = addCart.dataset.addCart;
       const amount = Number(document.querySelector("[data-qty]")?.textContent || 1);
-      if (cartCount) cartCount.textContent = Number(cartCount.textContent || 0) + amount;
+      const selectedOptions = {};
+      document.querySelectorAll("[data-option-group]").forEach((group) => {
+        selectedOptions[group.dataset.optionGroup] = group.querySelector(".is-selected")?.dataset.optionValue || "";
+      });
+      addToCart(productId, amount, selectedOptions);
       addCart.textContent = "Added to Cart";
       setTimeout(() => {
         addCart.innerHTML = 'Add to Cart <i data-lucide="shopping-bag"></i>';
         createLocalIcons();
       }, 1300);
     }
+
+    const cartMinus = event.target.closest("[data-cart-minus]");
+    if (cartMinus) {
+      const item = getCart().find((line) => line.key === cartMinus.dataset.cartMinus);
+      if (item) updateCartItem(item.key, item.quantity - 1);
+    }
+
+    const cartPlus = event.target.closest("[data-cart-plus]");
+    if (cartPlus) {
+      const item = getCart().find((line) => line.key === cartPlus.dataset.cartPlus);
+      if (item) updateCartItem(item.key, item.quantity + 1);
+    }
+
+    const cartRemove = event.target.closest("[data-cart-remove]");
+    if (cartRemove) {
+      updateCartItem(cartRemove.dataset.cartRemove, 0);
+    }
+  });
+
+  document.addEventListener("submit", (event) => {
+    const checkoutForm = event.target.closest("[data-checkout-form]");
+    if (!checkoutForm) return;
+
+    event.preventDefault();
+    const totals = cartTotals();
+    if (!totals.lines.length) return;
+
+    const data = Object.fromEntries(new FormData(checkoutForm).entries());
+    const order = {
+      id: orderNumber(),
+      createdAt: new Date().toISOString(),
+      customer: data,
+      payment: data.payment,
+      items: totals.lines.map((line) => ({
+        productId: line.product.id,
+        name: line.product.name,
+        quantity: line.quantity,
+        options: line.options,
+        price: line.product.price
+      })),
+      subtotal: totals.subtotal,
+      shipping: totals.shipping,
+      discount: totals.discount,
+      total: totals.total
+    };
+
+    const orders = JSON.parse(localStorage.getItem("dearelleOrders") || "[]");
+    orders.push(order);
+    localStorage.setItem("dearelleOrders", JSON.stringify(orders));
+    localStorage.setItem("dearelleLatestOrder", JSON.stringify(order));
+    saveCart([]);
+    renderCheckoutPage();
   });
 }
 
 renderProductCards(document.querySelector("[data-products-grid]"), window.products || []);
 renderProductPage();
+renderCartPage();
+renderCheckoutPage();
+updateCartCount();
 
 if (window.lucide) {
   window.lucide.createIcons();

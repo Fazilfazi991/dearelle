@@ -3,6 +3,8 @@
   "builds": [
     { "src": "index.html", "use": "@vercel/static" },
     { "src": "product.html", "use": "@vercel/static" },
+    { "src": "cart.html", "use": "@vercel/static" },
+    { "src": "checkout.html", "use": "@vercel/static" },
     { "src": "styles.css", "use": "@vercel/static" },
     { "src": "script.js", "use": "@vercel/static" },
     { "src": "products.js", "use": "@vercel/static" },
@@ -11,6 +13,8 @@
   "routes": [
     { "src": "/assets/(.*)", "dest": "/assets/$1" },
     { "src": "/product.html", "dest": "/product.html" },
+    { "src": "/cart.html", "dest": "/cart.html" },
+    { "src": "/checkout.html", "dest": "/checkout.html" },
     { "src": "/styles.css", "dest": "/styles.css" },
     { "src": "/script.js", "dest": "/script.js" },
     { "src": "/products.js", "dest": "/products.js" },

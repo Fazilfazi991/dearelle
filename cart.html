@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Cart | Dearelle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Parisienne&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="announcement" id="announcement">
+    <div class="announcement__inner">
+      <span class="spark">*</span>
+      <span>Blush Days Sale - Get 20% Off on Selected Pieces | Free Shipping on Orders ₹5,999+</span>
+      <a href="index.html#bestsellers">Shop the Sale</a>
+    </div>
+    <button class="icon-button announcement__close" aria-label="Close announcement" data-close-announcement>
+      <i data-lucide="x"></i>
+    </button>
+  </div>
+
+  <header class="site-header">
+    <nav class="nav shell" aria-label="Primary navigation">
+      <button class="icon-button nav__menu" aria-label="Open menu" data-menu-toggle><i data-lucide="menu"></i></button>
+      <div class="nav__links nav__links--left" data-mobile-menu>
+        <a href="index.html#bestsellers">New In</a>
+        <a href="index.html#collections">Shop <i data-lucide="chevron-down"></i></a>
+        <a href="index.html#bestsellers">Rings</a>
+        <a href="index.html#bestsellers">Necklaces</a>
+      </div>
+      <a class="brand" href="index.html" aria-label="Dearelle home">
+        <img src="assets/dearelle-logo.png" alt="Dearelle - Your everyday little luxury">
+      </a>
+      <div class="nav__right">
+        <div class="nav__links nav__links--right">
+          <a href="index.html#bestsellers">Earrings</a>
+          <a href="index.html#bestsellers">Bracelets</a>
+          <a href="index.html#collections">Gifts <i data-lucide="chevron-down"></i></a>
+        </div>
+        <div class="nav__icons">
+          <button class="icon-button" aria-label="Search"><i data-lucide="search"></i></button>
+          <button class="icon-button hide-sm" aria-label="Account"><i data-lucide="user-round"></i></button>
+          <a class="icon-button cart" href="cart.html" aria-label="Cart"><i data-lucide="shopping-bag"></i><span data-cart-count>0</span></a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="cart-page">
+    <section class="section shell">
+      <div class="section-title">
+        <p class="script">Almost Yours</p>
+        <h1>Your Cart</h1>
+      </div>
+      <div class="cart-layout" data-cart-page></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__bottom shell">
+      <p>© 2024 Dearelle. All Rights Reserved.</p>
+      <div><a href="#">Privacy Policy</a><a href="#">Terms &amp; Conditions</a><a href="#">Accessibility</a></div>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="products.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
