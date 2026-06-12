@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aurelia Fine Jewelry</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Parisienne&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="announcement" id="announcement">
+    <div class="announcement__inner">
+      <span class="spark">✦</span>
+      <span>Blush Days Sale - Get 20% Off on Selected Pieces | Free Shipping on Orders $75+</span>
+      <a href="#bestsellers">Shop the Sale</a>
+    </div>
+    <button class="icon-button announcement__close" aria-label="Close announcement" data-close-announcement>
+      <i data-lucide="x"></i>
+    </button>
+  </div>
+
+  <header class="site-header">
+    <nav class="nav shell" aria-label="Primary navigation">
+      <button class="icon-button nav__menu" aria-label="Open menu" data-menu-toggle>
+        <i data-lucide="menu"></i>
+      </button>
+
+      <div class="nav__links nav__links--left" data-mobile-menu>
+        <a href="#">New In</a>
+        <a href="#">Shop <i data-lucide="chevron-down"></i></a>
+        <a href="#">Rings</a>
+        <a href="#">Necklaces</a>
+      </div>
+
+      <a class="brand" href="#" aria-label="Aurelia Fine Jewelry home">
+        <span class="brand__crown">♕</span>
+        <span class="brand__name">AURELIA</span>
+        <span class="brand__sub">FINE JEWELRY</span>
+      </a>
+
+      <div class="nav__right">
+        <div class="nav__links nav__links--right">
+          <a href="#">Earrings</a>
+          <a href="#">Bracelets</a>
+          <a href="#">Gifts <i data-lucide="chevron-down"></i></a>
+        </div>
+        <div class="nav__icons">
+          <button class="icon-button" aria-label="Search"><i data-lucide="search"></i></button>
+          <button class="icon-button hide-sm" aria-label="Account"><i data-lucide="user-round"></i></button>
+          <button class="icon-button cart" aria-label="Cart">
+            <i data-lucide="shopping-bag"></i>
+            <span>2</span>
+          </button>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero__image hero__image--model">
+        <img src="assets/products/product%203/01_kerala_portrait_saree.png" alt="Woman wearing layered gold jewelry">
+      </div>
+      <div class="hero__content">
+        <p class="script">Celebrate Your</p>
+        <h1>Most Precious Moments</h1>
+        <p>Fine jewelry designed to shine with you, always.</p>
+        <a class="button" href="#bestsellers">Shop New Arrivals</a>
+        <a class="text-link" href="#collections">Browse Collections <i data-lucide="arrow-right"></i></a>
+        <div class="slider-dots" aria-hidden="true">
+          <span class="active"></span><span></span><span></span><span></span>
+        </div>
+      </div>
+      <div class="hero__image hero__image--product">
+        <img src="assets/products/product%201/08_product_on_satin.png" alt="Gold jewelry arranged on satin">
+      </div>
+    </section>
+
+    <section class="trust shell" aria-label="Shopping benefits">
+      <article>
+        <i data-lucide="truck"></i>
+        <div><h3>Complimentary Shipping</h3><p>On orders $75+</p></div>
+      </article>
+      <article>
+        <i data-lucide="gift"></i>
+        <div><h3>Gift-Ready Packaging</h3><p>Beautifully wrapped</p></div>
+      </article>
+      <article>
+        <i data-lucide="shield-check"></i>
+        <div><h3>Lifetime Warranty</h3><p>Quality you can trust</p></div>
+      </article>
+      <article>
+        <i data-lucide="heart"></i>
+        <div><h3>Easy Returns</h3><p>30-day hassle free</p></div>
+      </article>
+    </section>
+
+    <section class="section collections shell" id="collections">
+      <div class="section-title">
+        <p class="script">Handpicked For You</p>
+        <h2>Explore Our Collections</h2>
+      </div>
+      <div class="collection-grid">
+        <a class="collection-card" href="#">
+          <img src="assets/products/product%202/04_closeup_necklace.png" alt="Necklace closeup">
+          <div><h3>Everyday Delights</h3><p>Effortless pieces for all-day sparkle</p><span>Shop Now <i data-lucide="arrow-right"></i></span></div>
+        </a>
+        <a class="collection-card" href="#">
+          <img src="assets/products/product%201/07_product_on_marble.png" alt="Jewelry on marble">
+          <div><h3>Love &amp; Forever</h3><p>Symbols of love, made to last</p><span>Shop Now <i data-lucide="arrow-right"></i></span></div>
+        </a>
+        <a class="collection-card" href="#">
+          <img src="assets/products/product%204/05_modern_zoomed_necklace.png" alt="Modern gold necklace">
+          <div><h3>New Season Picks</h3><p>Fresh designs for every mood</p><span>Shop Now <i data-lucide="arrow-right"></i></span></div>
+        </a>
+        <a class="collection-card" href="#">
+          <img src="assets/products/product%201/06_zoom_macro.png" alt="Gift-worthy jewelry detail">
+          <div><h3>Gifts to Cherish</h3><p>Meaningful gifts, beautifully chosen</p><span>Shop Now <i data-lucide="arrow-right"></i></span></div>
+        </a>
+      </div>
+    </section>
+
+    <section class="section categories shell">
+      <h2>Shop by Category</h2>
+      <div class="category-row">
+        <a href="#"><span><i data-lucide="gem"></i></span>Necklaces</a>
+        <a href="#"><span><i data-lucide="circle-dot"></i></span>Rings</a>
+        <a href="#"><span><i data-lucide="ear"></i></span>Earrings</a>
+        <a href="#"><span><i data-lucide="circle"></i></span>Bracelets</a>
+        <a href="#"><span><i data-lucide="footprints"></i></span>Anklets</a>
+        <a href="#"><span><i data-lucide="sparkles"></i></span>Charms</a>
+        <a href="#"><span><i data-lucide="gift"></i></span>Gift Sets</a>
+        <a href="#"><span><i data-lucide="star"></i></span>Best Sellers</a>
+      </div>
+    </section>
+
+    <section class="section products shell" id="bestsellers">
+      <div class="section-head">
+        <h2>Bestsellers</h2>
+        <a class="text-link" href="#">View All <i data-lucide="arrow-right"></i></a>
+      </div>
+      <div class="product-grid">
+        <article class="product-card">
+          <span class="badge">Bestseller</span>
+          <button class="wishlist" aria-label="Add Liora Halo Necklace to wishlist"><i data-lucide="heart"></i></button>
+          <img src="assets/products/product%202/05_zoomed_pendant.png" alt="Liora Halo Necklace">
+          <h3>Liora Halo Necklace</h3><p>$89.00</p><div class="rating">★★★★★ <span>(128)</span></div>
+        </article>
+        <article class="product-card">
+          <button class="wishlist" aria-label="Add Petite Heart Necklace to wishlist"><i data-lucide="heart"></i></button>
+          <img src="assets/products/product%204/04_modern_closeup_necklace.png" alt="Petite Heart Necklace">
+          <h3>Petite Heart Necklace</h3><p>$59.00</p><div class="rating">★★★★★ <span>(96)</span></div>
+        </article>
+        <article class="product-card">
+          <span class="badge">New</span>
+          <button class="wishlist" aria-label="Add Blush Bloom Ring to wishlist"><i data-lucide="heart"></i></button>
+          <img src="assets/products/product%201/04_zoom_closeup_front.png" alt="Blush Bloom Ring">
+          <h3>Blush Bloom Ring</h3><p>$99.00</p><div class="rating">★★★★★ <span>(74)</span></div>
+        </article>
+        <article class="product-card">
+          <button class="wishlist" aria-label="Add Classic Solitaire Studs to wishlist"><i data-lucide="heart"></i></button>
+          <img src="assets/products/product%201/05_zoom_closeup_side.png" alt="Classic Solitaire Studs">
+          <h3>Classic Solitaire Studs</h3><p>$69.00</p><div class="rating">★★★★★ <span>(204)</span></div>
+        </article>
+        <article class="product-card">
+          <button class="wishlist" aria-label="Add Dainty Chain Bracelet to wishlist"><i data-lucide="heart"></i></button>
+          <img src="assets/products/product%203/05_kerala_zoomed_pendant.png" alt="Dainty Chain Bracelet">
+          <h3>Dainty Chain Bracelet</h3><p>$79.00</p><div class="rating">★★★★★ <span>(87)</span></div>
+        </article>
+        <article class="product-card">
+          <span class="badge">Bestseller</span>
+          <button class="wishlist" aria-label="Add Eternal Promise Ring to wishlist"><i data-lucide="heart"></i></button>
+          <img src="assets/products/product%201/07_product_on_marble.png" alt="Eternal Promise Ring">
+          <h3>Eternal Promise Ring</h3><p>$99.00</p><div class="rating">★★★★★ <span>(112)</span></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="promo shell">
+      <div class="promo__flowers" aria-hidden="true"></div>
+      <div class="promo__text">
+        <h2>Timeless Beauty,<br><span class="script">Every Day</span></h2>
+      </div>
+      <div class="promo__offer">
+        <h3>Enjoy 20% Off</h3>
+        <p>on select favorites</p>
+        <a class="button" href="#bestsellers">Shop the Offer</a>
+      </div>
+      <img src="assets/products/product%201/08_product_on_satin.png" alt="Necklace in a blush jewelry setting">
+    </section>
+
+    <section class="section testimonials shell">
+      <div class="section-title">
+        <h2>What Our Customers Say</h2>
+      </div>
+      <button class="round-arrow round-arrow--left" aria-label="Previous testimonial"><i data-lucide="arrow-left"></i></button>
+      <div class="testimonial-grid">
+        <article><div class="rating">★★★★★</div><p>"Absolutely stunning pieces and even better in person. My new go-to jewelry store!"</p><div><img src="assets/products/product%202/01_soft_portrait.png" alt="Amelia S."><span>Amelia S.</span></div></article>
+        <article><div class="rating">★★★★★</div><p>"The craftsmanship is exceptional and the packaging made it feel so special. Highly recommend!"</p><div><img src="assets/products/product%204/01_modern_portrait_beige.png" alt="Sophia L."><span>Sophia L.</span></div></article>
+        <article><div class="rating">★★★★★</div><p>"Beautiful, elegant, and high quality. I get compliments every time!"</p><div><img src="assets/products/product%203/02_kerala_window_portrait.png" alt="Olivia M."><span>Olivia M.</span></div></article>
+      </div>
+      <button class="round-arrow round-arrow--right" aria-label="Next testimonial"><i data-lucide="arrow-right"></i></button>
+    </section>
+
+    <section class="section instagram shell">
+      <div class="insta-title">
+        <h2>Join Our World</h2>
+        <p>@aurelia.jewelry</p>
+      </div>
+      <div class="insta-grid">
+        <img src="assets/products/product%202/04_closeup_necklace.png" alt="Necklace on skin">
+        <img src="assets/products/product%201/02_model_three_quarter.png" alt="Earring detail">
+        <img src="assets/products/product%201/07_product_on_marble.png" alt="Ring close-up">
+        <img src="assets/products/product%203/04_kerala_closeup_necklace.png" alt="Bracelet on wrist">
+        <img src="assets/products/product%201/08_product_on_satin.png" alt="Jewelry box">
+        <img src="assets/products/product%204/05_modern_zoomed_necklace.png" alt="Jewelry flat lay">
+        <a class="insta-cta" href="#">
+          <i data-lucide="instagram"></i>
+          <span>Tag us to be featured</span>
+          <strong>Follow Us</strong>
+        </a>
+      </div>
+    </section>
+
+    <section class="newsletter">
+      <div class="newsletter__inner shell">
+        <div class="newsletter__copy">
+          <span><i data-lucide="mail"></i></span>
+          <div><h2>Stay In the Sparkle</h2><p>Be the first to know about new arrivals, exclusive offers &amp; style tips.</p></div>
+        </div>
+        <form class="newsletter__form">
+          <label class="sr-only" for="email">Email address</label>
+          <input id="email" type="email" placeholder="Enter your email">
+          <button class="button" type="submit">Subscribe</button>
+          <small>No spam, just pretty things.</small>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__inner shell">
+      <div class="footer__brand">
+        <a class="brand" href="#">
+          <span class="brand__crown">♕</span>
+          <span class="brand__name">AURELIA</span>
+          <span class="brand__sub">FINE JEWELRY</span>
+        </a>
+        <p>Modern heirloom jewelry made with love, designed to be cherished forever.</p>
+        <div class="socials">
+          <a href="#" aria-label="Instagram"><i data-lucide="instagram"></i></a>
+          <a href="#" aria-label="Pinterest"><i data-lucide="badge"></i></a>
+          <a href="#" aria-label="Facebook"><i data-lucide="facebook"></i></a>
+          <a href="#" aria-label="TikTok"><i data-lucide="music-2"></i></a>
+          <a href="#" aria-label="Email"><i data-lucide="mail"></i></a>
+        </div>
+      </div>
+      <div><h3>Shop</h3><a>New In</a><a>Necklaces</a><a>Rings</a><a>Earrings</a><a>Bracelets</a><a>Gifts</a><a>Sale</a></div>
+      <div><h3>Information</h3><a>About Us</a><a>Our Craft</a><a>Sustainability</a><a>Care Guide</a><a>FAQs</a><a>Contact Us</a></div>
+      <div><h3>Customer Care</h3><a>Shipping &amp; Delivery</a><a>Returns &amp; Exchanges</a><a>Size Guide</a><a>Track Your Order</a><a>Gift Cards</a></div>
+      <div><h3>Need Help?</h3><p>hello@aureliajewelry.com<br>(212) 555-0198<br>Mon - Fri 9AM - 6PM EST</p><div class="payments"><span>VISA</span><span>MC</span><span>AMEX</span><span>Pay</span></div></div>
+    </div>
+    <div class="footer__bottom shell">
+      <p>© 2024 Aurelia Fine Jewelry. All Rights Reserved.</p>
+      <div><a href="#">Privacy Policy</a><a href="#">Terms &amp; Conditions</a><a href="#">Accessibility</a></div>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
