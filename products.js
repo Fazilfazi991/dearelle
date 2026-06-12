@@ -1,17 +1,17 @@
-const products = [
+window.products = [
   {
     id: "interlock-pendant-necklace",
     name: "Interlock Pendant Necklace",
     category: "Necklaces",
     collection: "Signature Collection",
-    price: 89,
+    price: 2499,
     badge: "Bestseller",
     rating: 5,
     reviews: 128,
     shortDescription: "A polished interlock pendant on a delicate chain, made for quiet everyday shine.",
     details: "Interlocking pendant on a fine cable chain with a secure lobster clasp closure.",
     care: "14k gold plated, hypoallergenic and nickel-free. Store in a dry place and clean gently.",
-    shipping: "Free shipping on orders $75+. 30-day hassle-free returns.",
+    shipping: "Free shipping on orders ₹5,999+. 30-day hassle-free returns.",
     gift: "Every piece arrives in our signature Dearelle gift box.",
     options: {
       metal: ["14k Gold", "Rose Gold", "Silver"],
@@ -30,7 +30,7 @@ const products = [
     name: "Sculpted Link Necklace",
     category: "Necklaces",
     collection: "Modern Muse",
-    price: 79,
+    price: 2199,
     rating: 5,
     reviews: 96,
     shortDescription: "A modern two-tone pendant with sculptural links and a refined chain.",
@@ -55,14 +55,14 @@ const products = [
     name: "Lotus Pendant Necklace",
     category: "Necklaces",
     collection: "Kerala Edit",
-    price: 99,
+    price: 2799,
     badge: "New",
     rating: 5,
     reviews: 74,
     shortDescription: "A graceful lotus pendant inspired by traditional motifs and warm golden light.",
     details: "Openwork lotus pendant on a fine chain with a polished gold finish.",
     care: "Remove before swimming or applying lotion. Wipe with a soft jewelry cloth.",
-    shipping: "Free shipping on orders $75+. 30-day hassle-free returns.",
+    shipping: "Free shipping on orders ₹5,999+. 30-day hassle-free returns.",
     gift: "Arrives in a keepsake box with ribbon.",
     options: {
       metal: ["14k Gold", "Rose Gold", "Silver"],
@@ -81,7 +81,7 @@ const products = [
     name: "Sunburst Charm Necklace",
     category: "Necklaces",
     collection: "Golden Hour",
-    price: 109,
+    price: 2999,
     rating: 5,
     reviews: 204,
     shortDescription: "Radiant sun charms set along a luminous chain for a statement that still feels soft.",
@@ -106,13 +106,13 @@ const products = [
     name: "Kerala Lotus Necklace",
     category: "Necklaces",
     collection: "Kerala Edit",
-    price: 95,
+    price: 2699,
     rating: 5,
     reviews: 87,
     shortDescription: "A warm lotus necklace styled for celebrations, gifting and everyday elegance.",
     details: "Lotus pendant with warm gold plating and an adjustable fine chain.",
     care: "Store flat and avoid tugging the chain.",
-    shipping: "Free shipping on orders $75+. 30-day hassle-free returns.",
+    shipping: "Free shipping on orders ₹5,999+. 30-day hassle-free returns.",
     gift: "Gift-ready packaging included with every order.",
     options: {
       metal: ["14k Gold", "Rose Gold", "Silver"],
@@ -131,14 +131,14 @@ const products = [
     name: "Minimal Link Pendant",
     category: "Necklaces",
     collection: "Signature Collection",
-    price: 72,
+    price: 1999,
     badge: "Bestseller",
     rating: 5,
     reviews: 112,
     shortDescription: "A minimal pendant with a soft rose-gold glow and easy layering appeal.",
     details: "Small link pendant with a smooth finish and adjustable chain.",
     care: "Clean gently with a dry cloth. Avoid ultrasonic cleaners.",
-    shipping: "Free shipping on orders $75+. 30-day hassle-free returns.",
+    shipping: "Free shipping on orders ₹5,999+. 30-day hassle-free returns.",
     gift: "Presented in a signature box with ribbon.",
     options: {
       metal: ["14k Gold", "Rose Gold", "Silver"],
@@ -156,7 +156,7 @@ const products = [
     name: "Golden Ray Necklace",
     category: "Necklaces",
     collection: "Golden Hour",
-    price: 118,
+    price: 3299,
     rating: 5,
     reviews: 96,
     shortDescription: "A bright charm necklace designed to catch the light with every movement.",
@@ -180,13 +180,13 @@ const products = [
     name: "Modern Loop Necklace",
     category: "Necklaces",
     collection: "Modern Muse",
-    price: 84,
+    price: 2399,
     rating: 5,
     reviews: 74,
     shortDescription: "A clean loop pendant with architectural lines and a soft feminine finish.",
     details: "Open loop pendant on a fine chain with polished mixed-metal accents.",
     care: "Store separately to prevent scratches. Wipe after wear.",
-    shipping: "Free shipping on orders $75+. 30-day hassle-free returns.",
+    shipping: "Free shipping on orders ₹5,999+. 30-day hassle-free returns.",
     gift: "Includes a keepsake gift box.",
     options: {
       metal: ["14k Gold", "Rose Gold", "Silver"],
@@ -200,7 +200,3 @@ const products = [
     ]
   }
 ];
-
-if (typeof window !== "undefined") {
-  window.products = products;
-}

@@ -1506,7 +1506,18 @@ h2 {
   .shell { width: min(100% - 28px, 540px); }
   .hide-sm { display: none; }
   .announcement { display: none; }
-  .nav { gap: 8px; }
+  .nav {
+    grid-template-columns: 36px minmax(0, 1fr) auto;
+    gap: 6px;
+  }
+  .nav__icons .icon-button {
+    width: 34px;
+    height: 34px;
+  }
+  .nav__icons .icon-button svg {
+    width: 19px;
+    height: 19px;
+  }
   .brand { width: min(48vw, 184px); }
   .hero-slider { height: min(660px, calc(100vw * 1.68)); }
   .hero-slide picture {

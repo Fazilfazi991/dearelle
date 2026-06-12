@@ -62,7 +62,11 @@ function createLocalIcons() {
 }
 
 function formatPrice(value) {
-  return `$${value.toFixed(2)}`;
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 0
+  }).format(value);
 }
 
 function ratingMarkup(product) {
@@ -147,7 +151,7 @@ function renderProductPage() {
       <button class="button product-add" type="button" data-add-cart>Add to Cart <i data-lucide="shopping-bag"></i></button>
       <button class="product-wishlist" type="button"><i data-lucide="heart"></i> Add to Wishlist</button>
       <div class="product-perks" aria-label="Shopping benefits">
-        <span><i data-lucide="truck"></i><strong>Free Shipping</strong><small>On orders $75+</small></span>
+        <span><i data-lucide="truck"></i><strong>Free Shipping</strong><small>On orders ₹5,999+</small></span>
         <span><i data-lucide="gift"></i><strong>Gift-Ready</strong><small>Beautifully wrapped</small></span>
         <span><i data-lucide="shield-check"></i><strong>Warranty</strong><small>Quality you can trust</small></span>
       </div>
