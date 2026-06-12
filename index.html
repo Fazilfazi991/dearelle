@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aurelia Fine Jewelry</title>
+  <title>Dearelle | Your Everyday Little Luxury</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Parisienne&display=swap" rel="stylesheet">
@@ -34,10 +34,8 @@
         <a href="#">Necklaces</a>
       </div>
 
-      <a class="brand" href="#" aria-label="Aurelia Fine Jewelry home">
-        <span class="brand__crown">♕</span>
-        <span class="brand__name">AURELIA</span>
-        <span class="brand__sub">FINE JEWELRY</span>
+      <a class="brand" href="#" aria-label="Dearelle home">
+        <img src="assets/dearelle-logo.png" alt="Dearelle - Your everyday little luxury">
       </a>
 
       <div class="nav__right">
@@ -59,22 +57,44 @@
   </header>
 
   <main>
-    <section class="hero">
-      <div class="hero__image hero__image--model">
-        <img src="assets/products/product-3/01_kerala_portrait_saree.png" alt="Woman wearing layered gold jewelry">
+    <section class="hero-slider" aria-label="Featured jewelry highlights">
+      <div class="hero-slider__track" data-hero-track>
+        <article class="hero-slide is-active" aria-hidden="false">
+          <picture>
+            <source media="(min-width: 900px)" srcset="assets/sliders/laptop-slide-2.webp">
+            <img src="assets/sliders/slide-2.webp" alt="Gold pendant and ring with blush flowers" fetchpriority="high">
+          </picture>
+        </article>
+        <article class="hero-slide" aria-hidden="true">
+          <picture>
+            <source media="(min-width: 900px)" srcset="assets/sliders/laptop-slide-3.webp">
+            <img src="assets/sliders/slide-3.webp" alt="Heart necklace in blush Dearelle jewelry box">
+          </picture>
+        </article>
+        <article class="hero-slide" aria-hidden="true">
+          <picture>
+            <source media="(min-width: 900px)" srcset="assets/sliders/laptop-slide-1.webp">
+            <img src="assets/sliders/slide-1.webp" alt="Model wearing delicate Dearelle jewelry">
+          </picture>
+        </article>
       </div>
-      <div class="hero__content">
-        <p class="script">Celebrate Your</p>
-        <h1>Most Precious Moments</h1>
-        <p>Fine jewelry designed to shine with you, always.</p>
-        <a class="button" href="#bestsellers">Shop New Arrivals</a>
+
+      <div class="hero-slider__actions">
+        <a class="button" href="#bestsellers">Explore Bestsellers</a>
         <a class="text-link" href="#collections">Browse Collections <i data-lucide="arrow-right"></i></a>
-        <div class="slider-dots" aria-hidden="true">
-          <span class="active"></span><span></span><span></span><span></span>
-        </div>
       </div>
-      <div class="hero__image hero__image--product">
-        <img src="assets/products/product-1/08_product_on_satin.png" alt="Gold jewelry arranged on satin">
+
+      <button class="hero-slider__arrow hero-slider__arrow--prev" type="button" aria-label="Previous slide" data-hero-prev>
+        <i data-lucide="chevron-left"></i>
+      </button>
+      <button class="hero-slider__arrow hero-slider__arrow--next" type="button" aria-label="Next slide" data-hero-next>
+        <i data-lucide="chevron-right"></i>
+      </button>
+
+      <div class="slider-dots" role="tablist" aria-label="Choose hero slide">
+        <button class="active" type="button" aria-label="Show slide 1" data-hero-dot="0"></button>
+        <button type="button" aria-label="Show slide 2" data-hero-dot="1"></button>
+        <button type="button" aria-label="Show slide 3" data-hero-dot="2"></button>
       </div>
     </section>
 
@@ -104,19 +124,19 @@
       </div>
       <div class="collection-grid">
         <a class="collection-card" href="#">
-          <img src="assets/products/product-2/04_closeup_necklace.png" alt="Necklace closeup">
+          <img src="assets/products/product-2/04_closeup_necklace.webp" alt="Necklace closeup" loading="lazy">
           <div><h3>Everyday Delights</h3><p>Effortless pieces for all-day sparkle</p><span>Shop Now <i data-lucide="arrow-right"></i></span></div>
         </a>
         <a class="collection-card" href="#">
-          <img src="assets/products/product-1/07_product_on_marble.png" alt="Jewelry on marble">
+          <img src="assets/products/product-1/07_product_on_marble.webp" alt="Jewelry on marble" loading="lazy">
           <div><h3>Love &amp; Forever</h3><p>Symbols of love, made to last</p><span>Shop Now <i data-lucide="arrow-right"></i></span></div>
         </a>
         <a class="collection-card" href="#">
-          <img src="assets/products/product-4/05_modern_zoomed_necklace.png" alt="Modern gold necklace">
+          <img src="assets/products/product-4/05_modern_zoomed_necklace.webp" alt="Modern gold necklace" loading="lazy">
           <div><h3>New Season Picks</h3><p>Fresh designs for every mood</p><span>Shop Now <i data-lucide="arrow-right"></i></span></div>
         </a>
         <a class="collection-card" href="#">
-          <img src="assets/products/product-1/06_zoom_macro.png" alt="Gift-worthy jewelry detail">
+          <img src="assets/products/product-1/06_zoom_macro.webp" alt="Gift-worthy jewelry detail" loading="lazy">
           <div><h3>Gifts to Cherish</h3><p>Meaningful gifts, beautifully chosen</p><span>Shop Now <i data-lucide="arrow-right"></i></span></div>
         </a>
       </div>
@@ -141,41 +161,7 @@
         <h2>Bestsellers</h2>
         <a class="text-link" href="#">View All <i data-lucide="arrow-right"></i></a>
       </div>
-      <div class="product-grid">
-        <article class="product-card">
-          <span class="badge">Bestseller</span>
-          <button class="wishlist" aria-label="Add Liora Halo Necklace to wishlist"><i data-lucide="heart"></i></button>
-          <img src="assets/products/product-2/05_zoomed_pendant.png" alt="Liora Halo Necklace">
-          <h3>Liora Halo Necklace</h3><p>$89.00</p><div class="rating">★★★★★ <span>(128)</span></div>
-        </article>
-        <article class="product-card">
-          <button class="wishlist" aria-label="Add Petite Heart Necklace to wishlist"><i data-lucide="heart"></i></button>
-          <img src="assets/products/product-4/04_modern_closeup_necklace.png" alt="Petite Heart Necklace">
-          <h3>Petite Heart Necklace</h3><p>$59.00</p><div class="rating">★★★★★ <span>(96)</span></div>
-        </article>
-        <article class="product-card">
-          <span class="badge">New</span>
-          <button class="wishlist" aria-label="Add Blush Bloom Ring to wishlist"><i data-lucide="heart"></i></button>
-          <img src="assets/products/product-1/04_zoom_closeup_front.png" alt="Blush Bloom Ring">
-          <h3>Blush Bloom Ring</h3><p>$99.00</p><div class="rating">★★★★★ <span>(74)</span></div>
-        </article>
-        <article class="product-card">
-          <button class="wishlist" aria-label="Add Classic Solitaire Studs to wishlist"><i data-lucide="heart"></i></button>
-          <img src="assets/products/product-1/05_zoom_closeup_side.png" alt="Classic Solitaire Studs">
-          <h3>Classic Solitaire Studs</h3><p>$69.00</p><div class="rating">★★★★★ <span>(204)</span></div>
-        </article>
-        <article class="product-card">
-          <button class="wishlist" aria-label="Add Dainty Chain Bracelet to wishlist"><i data-lucide="heart"></i></button>
-          <img src="assets/products/product-3/05_kerala_zoomed_pendant.png" alt="Dainty Chain Bracelet">
-          <h3>Dainty Chain Bracelet</h3><p>$79.00</p><div class="rating">★★★★★ <span>(87)</span></div>
-        </article>
-        <article class="product-card">
-          <span class="badge">Bestseller</span>
-          <button class="wishlist" aria-label="Add Eternal Promise Ring to wishlist"><i data-lucide="heart"></i></button>
-          <img src="assets/products/product-1/07_product_on_marble.png" alt="Eternal Promise Ring">
-          <h3>Eternal Promise Ring</h3><p>$99.00</p><div class="rating">★★★★★ <span>(112)</span></div>
-        </article>
-      </div>
+      <div class="product-grid" data-products-grid></div>
     </section>
 
     <section class="promo shell">
@@ -188,7 +174,7 @@
         <p>on select favorites</p>
         <a class="button" href="#bestsellers">Shop the Offer</a>
       </div>
-      <img src="assets/products/product-1/08_product_on_satin.png" alt="Necklace in a blush jewelry setting">
+      <img src="assets/products/product-1/08_product_on_satin.webp" alt="Necklace in a blush jewelry setting" loading="lazy">
     </section>
 
     <section class="section testimonials shell">
@@ -197,9 +183,9 @@
       </div>
       <button class="round-arrow round-arrow--left" aria-label="Previous testimonial"><i data-lucide="arrow-left"></i></button>
       <div class="testimonial-grid">
-        <article><div class="rating">★★★★★</div><p>"Absolutely stunning pieces and even better in person. My new go-to jewelry store!"</p><div><img src="assets/products/product-2/01_soft_portrait.png" alt="Amelia S."><span>Amelia S.</span></div></article>
-        <article><div class="rating">★★★★★</div><p>"The craftsmanship is exceptional and the packaging made it feel so special. Highly recommend!"</p><div><img src="assets/products/product-4/01_modern_portrait_beige.png" alt="Sophia L."><span>Sophia L.</span></div></article>
-        <article><div class="rating">★★★★★</div><p>"Beautiful, elegant, and high quality. I get compliments every time!"</p><div><img src="assets/products/product-3/02_kerala_window_portrait.png" alt="Olivia M."><span>Olivia M.</span></div></article>
+        <article><div class="rating">★★★★★</div><p>"Absolutely stunning pieces and even better in person. My new go-to jewelry store!"</p><div><img src="assets/products/product-2/01_soft_portrait.webp" alt="Amelia S." loading="lazy"><span>Amelia S.</span></div></article>
+        <article><div class="rating">★★★★★</div><p>"The craftsmanship is exceptional and the packaging made it feel so special. Highly recommend!"</p><div><img src="assets/products/product-4/01_modern_portrait_beige.webp" alt="Sophia L." loading="lazy"><span>Sophia L.</span></div></article>
+        <article><div class="rating">★★★★★</div><p>"Beautiful, elegant, and high quality. I get compliments every time!"</p><div><img src="assets/products/product-3/02_kerala_window_portrait.webp" alt="Olivia M." loading="lazy"><span>Olivia M.</span></div></article>
       </div>
       <button class="round-arrow round-arrow--right" aria-label="Next testimonial"><i data-lucide="arrow-right"></i></button>
     </section>
@@ -207,15 +193,15 @@
     <section class="section instagram shell">
       <div class="insta-title">
         <h2>Join Our World</h2>
-        <p>@aurelia.jewelry</p>
+        <p>@dearelle.jewelry</p>
       </div>
       <div class="insta-grid">
-        <img src="assets/products/product-2/04_closeup_necklace.png" alt="Necklace on skin">
-        <img src="assets/products/product-1/02_model_three_quarter.png" alt="Earring detail">
-        <img src="assets/products/product-1/07_product_on_marble.png" alt="Ring close-up">
-        <img src="assets/products/product-3/04_kerala_closeup_necklace.png" alt="Bracelet on wrist">
-        <img src="assets/products/product-1/08_product_on_satin.png" alt="Jewelry box">
-        <img src="assets/products/product-4/05_modern_zoomed_necklace.png" alt="Jewelry flat lay">
+        <img src="assets/products/product-2/04_closeup_necklace.webp" alt="Necklace on skin" loading="lazy">
+        <img src="assets/products/product-1/02_model_three_quarter.webp" alt="Earring detail" loading="lazy">
+        <img src="assets/products/product-1/07_product_on_marble.webp" alt="Ring close-up" loading="lazy">
+        <img src="assets/products/product-3/04_kerala_closeup_necklace.webp" alt="Bracelet on wrist" loading="lazy">
+        <img src="assets/products/product-1/08_product_on_satin.webp" alt="Jewelry box" loading="lazy">
+        <img src="assets/products/product-4/05_modern_zoomed_necklace.webp" alt="Jewelry flat lay" loading="lazy">
         <a class="insta-cta" href="#">
           <i data-lucide="instagram"></i>
           <span>Tag us to be featured</span>
@@ -243,12 +229,10 @@
   <footer class="footer">
     <div class="footer__inner shell">
       <div class="footer__brand">
-        <a class="brand" href="#">
-          <span class="brand__crown">♕</span>
-          <span class="brand__name">AURELIA</span>
-          <span class="brand__sub">FINE JEWELRY</span>
+        <a class="brand" href="#" aria-label="Dearelle home">
+          <img src="assets/dearelle-logo.png" alt="Dearelle - Your everyday little luxury">
         </a>
-        <p>Modern heirloom jewelry made with love, designed to be cherished forever.</p>
+        <p>Your everyday little luxury, made to be cherished in every moment.</p>
         <div class="socials">
           <a href="#" aria-label="Instagram"><i data-lucide="instagram"></i></a>
           <a href="#" aria-label="Pinterest"><i data-lucide="badge"></i></a>
@@ -260,15 +244,16 @@
       <div><h3>Shop</h3><a>New In</a><a>Necklaces</a><a>Rings</a><a>Earrings</a><a>Bracelets</a><a>Gifts</a><a>Sale</a></div>
       <div><h3>Information</h3><a>About Us</a><a>Our Craft</a><a>Sustainability</a><a>Care Guide</a><a>FAQs</a><a>Contact Us</a></div>
       <div><h3>Customer Care</h3><a>Shipping &amp; Delivery</a><a>Returns &amp; Exchanges</a><a>Size Guide</a><a>Track Your Order</a><a>Gift Cards</a></div>
-      <div><h3>Need Help?</h3><p>hello@aureliajewelry.com<br>(212) 555-0198<br>Mon - Fri 9AM - 6PM EST</p><div class="payments"><span>VISA</span><span>MC</span><span>AMEX</span><span>Pay</span></div></div>
+      <div><h3>Need Help?</h3><p>hello@dearelle.com<br>(212) 555-0198<br>Mon - Fri 9AM - 6PM EST</p><div class="payments"><span>VISA</span><span>MC</span><span>AMEX</span><span>Pay</span></div></div>
     </div>
     <div class="footer__bottom shell">
-      <p>© 2024 Aurelia Fine Jewelry. All Rights Reserved.</p>
+      <p>© 2024 Dearelle. All Rights Reserved.</p>
       <div><a href="#">Privacy Policy</a><a href="#">Terms &amp; Conditions</a><a href="#">Accessibility</a></div>
     </div>
   </footer>
 
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="products.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

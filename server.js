@@ -38,5 +38,5 @@ http.createServer((request, response) => {
     response.end(data);
   });
 }).listen(port, "127.0.0.1", () => {
-  console.log(`Aurelia homepage running at http://127.0.0.1:${port}`);
+  console.log(`Dearelle website running at http://127.0.0.1:${port}`);
 });

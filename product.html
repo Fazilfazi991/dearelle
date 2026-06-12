@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product | Dearelle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Parisienne&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="announcement" id="announcement">
+    <div class="announcement__inner">
+      <span class="spark">*</span>
+      <span>Blush Days Sale - Get 20% Off on Selected Pieces | Free Shipping on Orders $75+</span>
+      <a href="index.html#bestsellers">Shop the Sale</a>
+    </div>
+    <button class="icon-button announcement__close" aria-label="Close announcement" data-close-announcement>
+      <i data-lucide="x"></i>
+    </button>
+  </div>
+
+  <header class="site-header">
+    <nav class="nav shell" aria-label="Primary navigation">
+      <button class="icon-button nav__menu" aria-label="Open menu" data-menu-toggle>
+        <i data-lucide="menu"></i>
+      </button>
+
+      <div class="nav__links nav__links--left" data-mobile-menu>
+        <a href="index.html#bestsellers">New In</a>
+        <a href="index.html#collections">Shop <i data-lucide="chevron-down"></i></a>
+        <a href="index.html#bestsellers">Rings</a>
+        <a href="index.html#bestsellers">Necklaces</a>
+      </div>
+
+      <a class="brand" href="index.html" aria-label="Dearelle home">
+        <img src="assets/dearelle-logo.png" alt="Dearelle - Your everyday little luxury">
+      </a>
+
+      <div class="nav__right">
+        <div class="nav__links nav__links--right">
+          <a href="index.html#bestsellers">Earrings</a>
+          <a href="index.html#bestsellers">Bracelets</a>
+          <a href="index.html#collections">Gifts <i data-lucide="chevron-down"></i></a>
+        </div>
+        <div class="nav__icons">
+          <button class="icon-button" aria-label="Search"><i data-lucide="search"></i></button>
+          <button class="icon-button hide-sm" aria-label="Account"><i data-lucide="user-round"></i></button>
+          <button class="icon-button cart" aria-label="Cart">
+            <i data-lucide="shopping-bag"></i>
+            <span data-cart-count>2</span>
+          </button>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="product-page" data-product-page>
+    <section class="product-detail shell" data-product-detail></section>
+
+    <section class="product-info-strip shell" aria-label="Product service details">
+      <article>
+        <i data-lucide="gem"></i>
+        <div>
+          <h3>Product Details</h3>
+          <p data-product-details>Fine jewelry designed for daily shine.</p>
+        </div>
+        <i data-lucide="chevron-down"></i>
+      </article>
+      <article>
+        <i data-lucide="sparkles"></i>
+        <div>
+          <h3>Materials & Care</h3>
+          <p data-product-care>Hypoallergenic finish. Store dry and clean gently.</p>
+        </div>
+        <i data-lucide="chevron-down"></i>
+      </article>
+      <article>
+        <i data-lucide="truck"></i>
+        <div>
+          <h3>Shipping & Returns</h3>
+          <p data-product-shipping>Free shipping on orders $75+. Easy returns.</p>
+        </div>
+        <i data-lucide="chevron-down"></i>
+      </article>
+      <article>
+        <i data-lucide="gift"></i>
+        <div>
+          <h3>Gift Packaging</h3>
+          <p data-product-gift>Every piece arrives beautifully wrapped.</p>
+        </div>
+        <i data-lucide="chevron-down"></i>
+      </article>
+    </section>
+
+    <section class="section complete-look shell">
+      <div class="section-title">
+        <p class="script">Styled With Love</p>
+        <h2>Complete the Look</h2>
+      </div>
+      <div class="product-grid product-grid--related" data-related-products></div>
+    </section>
+
+    <section class="product-story shell">
+      <img src="assets/products/product-1/01_model_front_portrait.webp" alt="Woman wearing fine jewelry" loading="lazy">
+      <div>
+        <p class="script">Timeless Elegance</p>
+        <h2>Made to Be Cherished</h2>
+        <p>Celebrate love, milestones, and the little moments that mean everything.</p>
+        <a class="button" href="index.html#collections">Explore Collections</a>
+      </div>
+      <img src="assets/products/product-1/08_product_on_satin.webp" alt="Dearelle jewelry gift packaging" loading="lazy">
+    </section>
+
+    <section class="section products shell">
+      <div class="section-title">
+        <h2>You May Also Love</h2>
+      </div>
+      <div class="product-grid product-grid--suggested" data-suggested-products></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__inner shell">
+      <div class="footer__brand">
+        <a class="brand" href="index.html" aria-label="Dearelle home">
+          <img src="assets/dearelle-logo.png" alt="Dearelle - Your everyday little luxury">
+        </a>
+        <p>Your everyday little luxury, made to be cherished in every moment.</p>
+        <div class="socials">
+          <a href="#" aria-label="Instagram"><i data-lucide="instagram"></i></a>
+          <a href="#" aria-label="Pinterest"><i data-lucide="badge"></i></a>
+          <a href="#" aria-label="Facebook"><i data-lucide="facebook"></i></a>
+          <a href="#" aria-label="TikTok"><i data-lucide="music-2"></i></a>
+          <a href="#" aria-label="Email"><i data-lucide="mail"></i></a>
+        </div>
+      </div>
+      <div><h3>Shop</h3><a>New In</a><a>Necklaces</a><a>Rings</a><a>Earrings</a><a>Bracelets</a><a>Gifts</a><a>Sale</a></div>
+      <div><h3>Information</h3><a>About Us</a><a>Our Craft</a><a>Sustainability</a><a>Care Guide</a><a>FAQs</a><a>Contact Us</a></div>
+      <div><h3>Customer Care</h3><a>Shipping &amp; Delivery</a><a>Returns &amp; Exchanges</a><a>Size Guide</a><a>Track Your Order</a><a>Gift Cards</a></div>
+      <div><h3>Need Help?</h3><p>hello@dearelle.com<br>(212) 555-0198<br>Mon - Fri 9AM - 6PM EST</p><div class="payments"><span>VISA</span><span>MC</span><span>AMEX</span><span>Pay</span></div></div>
+    </div>
+    <div class="footer__bottom shell">
+      <p>© 2024 Dearelle. All Rights Reserved.</p>
+      <div><a href="#">Privacy Policy</a><a href="#">Terms &amp; Conditions</a><a href="#">Accessibility</a></div>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="products.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
