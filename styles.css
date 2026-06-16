@@ -1542,6 +1542,14 @@ h2 {
   gap: 14px;
 }
 
+.checkout-error {
+  min-height: 18px;
+  margin: 0;
+  color: #A14F58;
+  font-size: 13px;
+  font-weight: 600;
+}
+
 .checkout-form label {
   display: grid;
   gap: 7px;

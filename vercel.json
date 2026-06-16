@@ -8,9 +8,11 @@
     { "src": "styles.css", "use": "@vercel/static" },
     { "src": "script.js", "use": "@vercel/static" },
     { "src": "products.js", "use": "@vercel/static" },
+    { "src": "api/**/*.js", "use": "@vercel/node" },
     { "src": "assets/**", "use": "@vercel/static" }
   ],
   "routes": [
+    { "src": "/api/(.*)", "dest": "/api/$1.js" },
     { "src": "/assets/(.*)", "dest": "/assets/$1" },
     { "src": "/product.html", "dest": "/product.html" },
     { "src": "/cart.html", "dest": "/cart.html" },

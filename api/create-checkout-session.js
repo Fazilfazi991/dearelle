@@ -1,47 +1,19 @@
-const http = require("http");
-const https = require("https");
 const fs = require("fs");
+const https = require("https");
 const path = require("path");
 const vm = require("vm");
 
-const root = __dirname;
-const port = Number(process.env.PORT || 4173);
 const stripeApiVersion = "2025-05-28.basil";
-const types = {
-  ".html": "text/html; charset=utf-8",
-  ".css": "text/css; charset=utf-8",
-  ".js": "application/javascript; charset=utf-8",
-  ".png": "image/png",
-  ".jpg": "image/jpeg",
-  ".jpeg": "image/jpeg",
-  ".webp": "image/webp",
-  ".svg": "image/svg+xml"
-};
 
 function json(response, statusCode, payload) {
-  response.writeHead(statusCode, { "Content-Type": "application/json; charset=utf-8" });
+  response.statusCode = statusCode;
+  response.setHeader("Content-Type", "application/json; charset=utf-8");
   response.end(JSON.stringify(payload));
-}
-
-function readBody(request) {
-  return new Promise((resolve, reject) => {
-    let body = "";
-
-    request.on("data", (chunk) => {
-      body += chunk;
-      if (body.length > 1024 * 1024) {
-        reject(new Error("Request body too large"));
-        request.destroy();
-      }
-    });
-    request.on("end", () => resolve(body));
-    request.on("error", reject);
-  });
 }
 
 function loadProducts() {
   const sandbox = { window: {} };
-  const source = fs.readFileSync(path.join(root, "products.js"), "utf8");
+  const source = fs.readFileSync(path.join(process.cwd(), "products.js"), "utf8");
   vm.runInNewContext(source, sandbox, { filename: "products.js" });
   return sandbox.window.products || [];
 }
@@ -129,9 +101,14 @@ function stripeRequest(data) {
   });
 }
 
-async function createCheckoutSession(request, response) {
+module.exports = async function handler(request, response) {
+  if (request.method !== "POST") {
+    json(response, 405, { error: "Method not allowed" });
+    return;
+  }
+
   try {
-    const payload = JSON.parse(await readBody(request) || "{}");
+    const payload = typeof request.body === "string" ? JSON.parse(request.body || "{}") : request.body || {};
     const totals = orderTotals(payload.cart);
 
     if (!totals.lines.length || totals.total <= 0) {
@@ -139,7 +116,9 @@ async function createCheckoutSession(request, response) {
       return;
     }
 
-    const origin = `http://${request.headers.host}`;
+    const host = request.headers["x-forwarded-host"] || request.headers.host;
+    const protocol = request.headers["x-forwarded-proto"] || "https";
+    const origin = `${protocol}://${host}`;
     const orderId = `DL${Date.now().toString().slice(-7)}`;
     const customer = payload.customer || {};
     const description = totals.lines.map((line) => {
@@ -199,41 +178,4 @@ async function createCheckoutSession(request, response) {
   } catch (error) {
     json(response, 500, { error: error.message || "Unable to start Stripe checkout" });
   }
-}
-
-http.createServer((request, response) => {
-  const route = decodeURIComponent(request.url.split("?")[0]);
-
-  if (request.method === "POST" && route === "/api/create-checkout-session") {
-    createCheckoutSession(request, response);
-    return;
-  }
-
-  if (request.method !== "GET" && request.method !== "HEAD") {
-    json(response, 405, { error: "Method not allowed" });
-    return;
-  }
-
-  const filePath = path.join(root, route === "/" ? "index.html" : route);
-
-  if (!filePath.startsWith(root)) {
-    response.writeHead(403);
-    response.end("Forbidden");
-    return;
-  }
-
-  fs.readFile(filePath, (error, data) => {
-    if (error) {
-      response.writeHead(404);
-      response.end("Not found");
-      return;
-    }
-
-    response.writeHead(200, {
-      "Content-Type": types[path.extname(filePath).toLowerCase()] || "application/octet-stream"
-    });
-    response.end(request.method === "HEAD" ? undefined : data);
-  });
-}).listen(port, "127.0.0.1", () => {
-  console.log(`Dearelle website running at http://127.0.0.1:${port}`);
-});
+};

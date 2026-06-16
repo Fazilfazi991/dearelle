@@ -155,6 +155,52 @@ function orderNumber() {
   return `DL${Date.now().toString().slice(-7)}`;
 }
 
+function orderConfirmationMarkup(order) {
+  return `
+      <div class="order-confirmation">
+        <i data-lucide="circle-dot"></i>
+        <p class="script">Order Placed</p>
+        <h2>Thank you, ${order.customer.firstName || "there"}.</h2>
+        <p>Your order <strong>${order.id}</strong> has been placed. A confirmation has been prepared for ${order.customer.email || "your email"}.</p>
+        <div class="order-confirmation__meta">
+          <span>Total Paid</span><strong>${formatPrice(order.total)}</strong>
+          <span>Delivery</span><strong>${[order.customer.city, order.customer.state].filter(Boolean).join(", ") || "Address shared at checkout"}</strong>
+          <span>Payment</span><strong>${order.payment}</strong>
+        </div>
+        <a class="button" href="index.html#bestsellers">Continue Shopping</a>
+      </div>
+  `;
+}
+
+async function startStripeCheckout(customer, submitButton) {
+  const totals = cartTotals();
+  if (!totals.lines.length) return;
+
+  submitButton.disabled = true;
+  submitButton.textContent = "Opening Secure Checkout...";
+
+  try {
+    const response = await fetch("/api/create-checkout-session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ customer, cart: getCart() })
+    });
+    const payload = await response.json();
+
+    if (!response.ok || !payload.url) {
+      throw new Error(payload.error || "Unable to start Stripe checkout");
+    }
+
+    localStorage.setItem("dearellePendingStripeOrder", JSON.stringify(payload.order));
+    window.location.href = payload.url;
+  } catch (error) {
+    const errorBox = document.querySelector("[data-checkout-error]");
+    if (errorBox) errorBox.textContent = error.message || "Unable to start Stripe checkout.";
+    submitButton.disabled = false;
+    submitButton.textContent = "Pay Securely with Stripe";
+  }
+}
+
 function renderProductCards(container, productList, limit = productList.length) {
   if (!container) return;
 
@@ -266,7 +312,7 @@ function summaryMarkup(totals, checkoutHref = "checkout.html") {
       <div><span>Blush Days Discount</span><strong>${totals.discount ? `-${formatPrice(totals.discount)}` : "Add ₹5,999+ to unlock"}</strong></div>
       <div class="order-summary__total"><span>Total</span><strong>${formatPrice(totals.total)}</strong></div>
       ${checkoutHref ? `<a class="button" href="${checkoutHref}">Continue to Checkout</a>` : ""}
-      <p>Secure checkout. Cash on delivery and card payment options are shown for demo order placement.</p>
+      <p>Secure Stripe checkout. Cards and supported payment methods are handled by Stripe.</p>
     </aside>
   `;
 }
@@ -317,7 +363,25 @@ function renderCheckoutPage() {
   if (!container) return;
 
   const latestOrder = localStorage.getItem("dearelleLatestOrder");
+  const params = new URLSearchParams(window.location.search);
+  const stripeStatus = params.get("stripe");
   const totals = cartTotals();
+
+  if (stripeStatus === "success") {
+    const pendingOrder = JSON.parse(localStorage.getItem("dearellePendingStripeOrder") || "null");
+    if (pendingOrder) {
+      const orders = JSON.parse(localStorage.getItem("dearelleOrders") || "[]");
+      orders.push(pendingOrder);
+      localStorage.setItem("dearelleOrders", JSON.stringify(orders));
+      localStorage.setItem("dearelleLatestOrder", JSON.stringify(pendingOrder));
+      localStorage.removeItem("dearellePendingStripeOrder");
+      saveCart([]);
+      container.innerHTML = orderConfirmationMarkup(pendingOrder);
+      createLocalIcons();
+      return;
+    }
+  }
+
   if (!totals.lines.length && !latestOrder) {
     container.innerHTML = `
       <div class="empty-state">
@@ -333,20 +397,7 @@ function renderCheckoutPage() {
 
   if (!totals.lines.length && latestOrder) {
     const order = JSON.parse(latestOrder);
-    container.innerHTML = `
-      <div class="order-confirmation">
-        <i data-lucide="circle-dot"></i>
-        <p class="script">Order Placed</p>
-        <h2>Thank you, ${order.customer.firstName}.</h2>
-        <p>Your order <strong>${order.id}</strong> has been placed. A confirmation has been prepared for ${order.customer.email}.</p>
-        <div class="order-confirmation__meta">
-          <span>Total Paid</span><strong>${formatPrice(order.total)}</strong>
-          <span>Delivery</span><strong>${order.customer.city}, ${order.customer.state}</strong>
-          <span>Payment</span><strong>${order.payment}</strong>
-        </div>
-        <a class="button" href="index.html#bestsellers">Continue Shopping</a>
-      </div>
-    `;
+    container.innerHTML = orderConfirmationMarkup(order);
     createLocalIcons();
     return;
   }
@@ -374,11 +425,11 @@ function renderCheckoutPage() {
         </section>
         <section>
           <h2>Payment</h2>
-          <label class="radio-row"><input type="radio" name="payment" value="Cash on Delivery" checked> Cash on Delivery</label>
-          <label class="radio-row"><input type="radio" name="payment" value="Card on Delivery"> Card on Delivery</label>
-          <label class="radio-row"><input type="radio" name="payment" value="UPI on Delivery"> UPI on Delivery</label>
+          <label class="radio-row"><input type="radio" name="payment" value="Stripe" checked> Secure card payment with Stripe</label>
         </section>
-        <button class="button checkout-submit" type="submit">Place Order</button>
+        ${stripeStatus === "cancelled" ? `<p class="checkout-error">Stripe checkout was cancelled. You can try again below.</p>` : ""}
+        <p class="checkout-error" data-checkout-error aria-live="polite"></p>
+        <button class="button checkout-submit" type="submit">Pay Securely with Stripe</button>
       </form>
       <div>
         <div class="checkout-items">
@@ -478,30 +529,7 @@ function bindProductInteractions() {
     if (!totals.lines.length) return;
 
     const data = Object.fromEntries(new FormData(checkoutForm).entries());
-    const order = {
-      id: orderNumber(),
-      createdAt: new Date().toISOString(),
-      customer: data,
-      payment: data.payment,
-      items: totals.lines.map((line) => ({
-        productId: line.product.id,
-        name: line.product.name,
-        quantity: line.quantity,
-        options: line.options,
-        price: line.product.price
-      })),
-      subtotal: totals.subtotal,
-      shipping: totals.shipping,
-      discount: totals.discount,
-      total: totals.total
-    };
-
-    const orders = JSON.parse(localStorage.getItem("dearelleOrders") || "[]");
-    orders.push(order);
-    localStorage.setItem("dearelleOrders", JSON.stringify(orders));
-    localStorage.setItem("dearelleLatestOrder", JSON.stringify(order));
-    saveCart([]);
-    renderCheckoutPage();
+    startStripeCheckout(data, checkoutForm.querySelector(".checkout-submit"));
   });
 }
 

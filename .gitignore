@@ -1,1 +1,4 @@
 Product images/*.zip
+.env
+.env.*
+!.env.example
