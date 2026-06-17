@@ -78,6 +78,14 @@ function productUrl(product) {
   return `product.html?id=${encodeURIComponent(product.id)}`;
 }
 
+function slugify(value) {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 function getCart() {
   try {
     return JSON.parse(localStorage.getItem("dearelleCart")) || [];
@@ -219,6 +227,77 @@ function renderProductCards(container, productList, limit = productList.length) 
   `).join("");
 }
 
+function renderCategoryPage() {
+  const container = document.querySelector("[data-category-page]");
+  if (!container) return;
+
+  const heading = document.querySelector("[data-category-heading]");
+  const params = new URLSearchParams(window.location.search);
+  const category = slugify(params.get("category") || "all");
+  const collection = slugify(params.get("collection") || "");
+  const allProducts = window.products || [];
+  const categoryLabels = {
+    all: ["Shop Jewelry", "All Pieces"],
+    "new-in": ["New In", "Fresh Arrivals"],
+    necklaces: ["Necklaces", "Delicate Layers"],
+    rings: ["Rings", "Coming Soon"],
+    earrings: ["Earrings", "Coming Soon"],
+    bracelets: ["Bracelets", "Coming Soon"],
+    anklets: ["Anklets", "Coming Soon"],
+    charms: ["Charms", "Coming Soon"],
+    gifts: ["Gifts", "Gift-Ready"],
+    "gift-sets": ["Gift Sets", "Gift-Ready"],
+    "best-sellers": ["Best Sellers", "Customer Favorites"],
+    sale: ["Sale", "Blush Days"]
+  };
+  const collectionLabels = {
+    "modern-muse": ["Everyday Delights", "Modern Muse"],
+    "signature-collection": ["Love & Forever", "Signature Collection"],
+    "golden-hour": ["New Season Picks", "Golden Hour"],
+    "kerala-edit": ["Kerala Edit", "Handpicked For You"]
+  };
+
+  let title = categoryLabels[category]?.[0] || "Shop Jewelry";
+  let kicker = categoryLabels[category]?.[1] || "Dearelle Edit";
+  let products = allProducts;
+
+  if (collection) {
+    title = collectionLabels[collection]?.[0] || "Collection";
+    kicker = collectionLabels[collection]?.[1] || "Dearelle Edit";
+    products = allProducts.filter((product) => slugify(product.collection) === collection);
+  } else if (category === "new-in") {
+    products = allProducts.filter((product) => slugify(product.badge) === "new");
+  } else if (category === "best-sellers" || category === "sale") {
+    products = allProducts.filter((product) => slugify(product.badge) === "bestseller");
+  } else if (category === "gifts" || category === "gift-sets") {
+    products = allProducts;
+  } else if (category !== "all") {
+    products = allProducts.filter((product) => slugify(product.category) === category);
+  }
+
+  document.title = `${title} | Dearelle`;
+  if (heading) {
+    heading.innerHTML = `<p class="script">${kicker}</p><h1>${title}</h1>`;
+  }
+
+  if (!products.length) {
+    container.innerHTML = `
+      <div class="empty-state category-empty">
+        <i data-lucide="sparkles"></i>
+        <h2>${title} are coming soon.</h2>
+        <p>Explore our current favorites while we finish this edit.</p>
+        <a class="button" href="category.html?category=best-sellers">Shop Best Sellers</a>
+      </div>
+    `;
+    createLocalIcons();
+    return;
+  }
+
+  container.innerHTML = `<div class="product-grid category-product-grid" data-category-products></div>`;
+  renderProductCards(container.querySelector("[data-category-products]"), products);
+  createLocalIcons();
+}
+
 function optionGroup(label, values) {
   const key = label.toLowerCase();
   return `
@@ -257,7 +336,7 @@ function renderProductPage() {
       <nav class="breadcrumbs" aria-label="Breadcrumb">
         <a href="index.html">Home</a>
         <span>/</span>
-        <a href="index.html#bestsellers">${product.category}</a>
+        <a href="category.html?category=${slugify(product.category)}">${product.category}</a>
         <span>/</span>
         <span>${product.name}</span>
       </nav>
@@ -534,6 +613,7 @@ function bindProductInteractions() {
 }
 
 renderProductCards(document.querySelector("[data-products-grid]"), window.products || []);
+renderCategoryPage();
 renderProductPage();
 renderCartPage();
 renderCheckoutPage();

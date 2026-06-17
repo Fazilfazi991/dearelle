@@ -1068,10 +1068,32 @@ h2 {
   background: linear-gradient(90deg, #FFE1DC, #FFF8F3 46%, #FAD4CE);
 }
 
+.promo::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(90deg, rgba(255, 249, 245, .08), rgba(255, 249, 245, .74) 48%, rgba(255, 249, 245, .08) 68%),
+    linear-gradient(180deg, rgba(255, 255, 255, .04), rgba(255, 236, 232, .22));
+  pointer-events: none;
+}
+
+.promo__backdrop {
+  position: absolute;
+  inset: 0 auto 0 0;
+  z-index: 0;
+  width: 68%;
+  height: 100%;
+  object-fit: cover;
+  object-position: left center;
+}
+
 .promo__flowers {
   position: absolute;
   left: -24px;
   top: -40px;
+  z-index: 1;
   width: 220px;
   height: 260px;
   background:
@@ -1084,8 +1106,9 @@ h2 {
 
 .promo__text {
   position: relative;
-  z-index: 1;
-  padding-left: 160px;
+  z-index: 2;
+  padding-left: 104px;
+  text-shadow: 0 1px 22px rgba(255, 255, 255, .82);
 }
 
 .promo h2 {
@@ -1100,9 +1123,11 @@ h2 {
 
 .promo__offer {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   text-align: center;
   border-left: 1px solid var(--border);
+  background: rgba(255, 249, 245, .58);
+  backdrop-filter: blur(5px);
   padding: 10px 26px;
 }
 
@@ -1116,7 +1141,9 @@ h2 {
 
 .promo__offer .button { min-height: 44px; font-size: 16px; }
 
-.promo > img {
+.promo__product {
+  position: relative;
+  z-index: 2;
   height: 100%;
   width: 100%;
   object-fit: cover;
@@ -1405,7 +1432,8 @@ h2 {
 }
 
 .cart-page,
-.checkout-page {
+.checkout-page,
+.category-page {
   min-height: 62vh;
 }
 
@@ -1771,9 +1799,17 @@ h2 {
     grid-template-columns: 1fr;
     text-align: center;
   }
-  .promo__text { padding: 34px 24px 0; }
   .promo__offer { border-left: 0; padding: 16px 24px 26px; }
-  .promo > img { max-height: 230px; }
+  .promo__backdrop {
+    width: 100%;
+    height: 55%;
+    opacity: .82;
+  }
+  .promo__text {
+    padding: 34px 24px 0;
+    text-align: center;
+  }
+  .promo__product { max-height: 230px; }
   .product-page { padding-top: 18px; }
   .product-gallery__main { aspect-ratio: 1 / 1; }
   .product-perks { grid-template-columns: 1fr; }
