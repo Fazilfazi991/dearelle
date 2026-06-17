@@ -3,6 +3,8 @@ const https = require("https");
 const fs = require("fs");
 const path = require("path");
 const vm = require("vm");
+const { handleAdminRequest, loadStore, saveStore } = require("./lib/admin-core");
+const { handleCustomerRequest } = require("./lib/customer-core");
 
 const root = __dirname;
 const port = Number(process.env.PORT || 4173);
@@ -39,15 +41,25 @@ function readBody(request) {
   });
 }
 
-function loadProducts() {
+function loadStaticProducts() {
   const sandbox = { window: {} };
   const source = fs.readFileSync(path.join(root, "products.js"), "utf8");
   vm.runInNewContext(source, sandbox, { filename: "products.js" });
   return sandbox.window.products || [];
 }
 
-function orderTotals(cart) {
-  const products = loadProducts();
+async function loadProducts() {
+  try {
+    const store = await loadStore();
+    if (Array.isArray(store.products) && store.products.length) return store.products;
+  } catch {
+    // Keep local checkout running with the static catalog if admin storage is not ready.
+  }
+  return loadStaticProducts();
+}
+
+async function orderTotals(cart) {
+  const products = await loadProducts();
   const lines = (Array.isArray(cart) ? cart : []).map((item) => {
     const product = products.find((entry) => entry.id === item.productId);
     const quantity = Math.max(1, Math.min(10, Number(item.quantity) || 1));
@@ -132,7 +144,7 @@ function stripeRequest(data) {
 async function createCheckoutSession(request, response) {
   try {
     const payload = JSON.parse(await readBody(request) || "{}");
-    const totals = orderTotals(payload.cart);
+    const totals = await orderTotals(payload.cart);
 
     if (!totals.lines.length || totals.total <= 0) {
       json(response, 400, { error: "Cart is empty" });
@@ -175,27 +187,35 @@ async function createCheckoutSession(request, response) {
       }
     });
 
-    json(response, 200, {
-      id: session.id,
-      url: session.url,
-      order: {
-        id: orderId,
-        createdAt: new Date().toISOString(),
-        customer,
-        payment: "Stripe",
-        items: totals.lines.map((line) => ({
-          productId: line.product.id,
-          name: line.product.name,
-          quantity: line.quantity,
-          options: line.options,
-          price: line.product.price
-        })),
-        subtotal: totals.subtotal,
-        shipping: totals.shipping,
-        discount: totals.discount,
-        total: totals.total
-      }
-    });
+    const order = {
+      id: orderId,
+      stripeSessionId: session.id,
+      createdAt: new Date().toISOString(),
+      customer,
+      payment: "Stripe",
+      paymentStatus: "Pending",
+      items: totals.lines.map((line) => ({
+        productId: line.product.id,
+        name: line.product.name,
+        quantity: line.quantity,
+        options: line.options,
+        price: line.product.price
+      })),
+      subtotal: totals.subtotal,
+      shipping: totals.shipping,
+      discount: totals.discount,
+      total: totals.total
+    };
+
+    try {
+      const store = await loadStore();
+      store.orders = [order, ...(store.orders || []).filter((entry) => entry.id !== order.id)];
+      await saveStore(store);
+    } catch {
+      // Checkout should continue even if order storage is temporarily unavailable.
+    }
+
+    json(response, 200, { id: session.id, url: session.url, order });
   } catch (error) {
     json(response, 500, { error: error.message || "Unable to start Stripe checkout" });
   }
@@ -203,6 +223,20 @@ async function createCheckoutSession(request, response) {
 
 http.createServer((request, response) => {
   const route = decodeURIComponent(request.url.split("?")[0]);
+
+  if (route === "/api/admin") {
+    handleAdminRequest(request, response).catch((error) => {
+      json(response, 500, { error: error.message || "Admin request failed" });
+    });
+    return;
+  }
+
+  if (route === "/api/customer") {
+    handleCustomerRequest(request, response).catch((error) => {
+      json(response, error.message?.includes("login") ? 401 : 500, { error: error.message || "Customer request failed" });
+    });
+    return;
+  }
 
   if (request.method === "POST" && route === "/api/create-checkout-session") {
     createCheckoutSession(request, response);

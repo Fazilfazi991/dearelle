@@ -2,12 +2,17 @@
   "version": 2,
   "builds": [
     { "src": "index.html", "use": "@vercel/static" },
+    { "src": "admin.html", "use": "@vercel/static" },
+    { "src": "account.html", "use": "@vercel/static" },
     { "src": "product.html", "use": "@vercel/static" },
     { "src": "category.html", "use": "@vercel/static" },
     { "src": "cart.html", "use": "@vercel/static" },
     { "src": "checkout.html", "use": "@vercel/static" },
     { "src": "styles.css", "use": "@vercel/static" },
     { "src": "script.js", "use": "@vercel/static" },
+    { "src": "admin.js", "use": "@vercel/static" },
+    { "src": "account.js", "use": "@vercel/static" },
+    { "src": "auth.js", "use": "@vercel/static" },
     { "src": "products.js", "use": "@vercel/static" },
     { "src": "api/**/*.js", "use": "@vercel/node" },
     { "src": "assets/**", "use": "@vercel/static" }
@@ -15,12 +20,17 @@
   "routes": [
     { "src": "/api/(.*)", "dest": "/api/$1.js" },
     { "src": "/assets/(.*)", "dest": "/assets/$1" },
+    { "src": "/admin.html", "dest": "/admin.html" },
+    { "src": "/account.html", "dest": "/account.html" },
     { "src": "/product.html", "dest": "/product.html" },
     { "src": "/category.html", "dest": "/category.html" },
     { "src": "/cart.html", "dest": "/cart.html" },
     { "src": "/checkout.html", "dest": "/checkout.html" },
     { "src": "/styles.css", "dest": "/styles.css" },
     { "src": "/script.js", "dest": "/script.js" },
+    { "src": "/admin.js", "dest": "/admin.js" },
+    { "src": "/account.js", "dest": "/account.js" },
+    { "src": "/auth.js", "dest": "/auth.js" },
     { "src": "/products.js", "dest": "/products.js" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | Dearelle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Parisienne&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="admin-body">
+  <aside class="admin-sidebar">
+    <a class="brand" href="index.html" aria-label="Dearelle home">
+      <img src="assets/dearelle-logo.png" alt="Dearelle - Your everyday little luxury">
+    </a>
+    <nav aria-label="Admin navigation">
+      <a href="#overview">Overview</a>
+      <a href="#products">Products</a>
+      <a href="#images">Images</a>
+      <a href="#orders">Orders</a>
+      <a href="#settings">Settings</a>
+    </nav>
+    <a class="button admin-storefront" href="index.html">View Storefront</a>
+  </aside>
+
+  <main class="admin-main">
+    <header class="admin-topbar">
+      <div>
+        <p class="script">Dearelle</p>
+        <h1>Admin Dashboard</h1>
+      </div>
+      <div class="admin-actions">
+        <button class="button button--secondary" type="button" data-admin-export>Export Catalog</button>
+        <label class="button button--secondary admin-import">Import JSON<input type="file" accept="application/json" data-admin-import></label>
+      </div>
+    </header>
+
+    <section class="admin-stats" id="overview" data-admin-stats></section>
+
+    <section class="admin-panel" id="products">
+      <div class="admin-panel__head">
+        <div>
+          <p class="script">Catalog</p>
+          <h2>Products</h2>
+        </div>
+        <button class="button" type="button" data-new-product>New Product</button>
+      </div>
+
+      <div class="admin-workspace">
+        <form class="admin-form" data-product-form>
+          <input type="hidden" name="id">
+          <div class="form-grid">
+            <label>Product Name<input name="name" required placeholder="Lotus Pendant Necklace"></label>
+            <label>Category<input name="category" required placeholder="Necklaces"></label>
+            <label>Collection<input name="collection" required placeholder="Signature Collection"></label>
+            <label>Price (INR)<input name="price" type="number" min="1" step="1" required placeholder="2499"></label>
+            <label>Stock<input name="stock" type="number" min="0" step="1" placeholder="24"></label>
+            <label>Status<select name="status"><option>Active</option><option>Draft</option><option>Archived</option></select></label>
+            <label>Badge<input name="badge" placeholder="Bestseller, New, Sale"></label>
+            <label>Rating<input name="rating" type="number" min="1" max="5" step=".1" placeholder="5"></label>
+            <label>Reviews<input name="reviews" type="number" min="0" step="1" placeholder="128"></label>
+          </div>
+
+          <label>Short Description<textarea name="shortDescription" rows="3" required></textarea></label>
+          <label>Product Details<textarea name="details" rows="3"></textarea></label>
+          <label>Care Instructions<textarea name="care" rows="3"></textarea></label>
+          <label>Shipping Copy<textarea name="shipping" rows="2"></textarea></label>
+          <label>Gift Copy<textarea name="gift" rows="2"></textarea></label>
+          <label>Image URLs / Paths<textarea name="images" rows="5" placeholder="assets/products/product-1/01_model_front_portrait.webp"></textarea></label>
+          <label>Upload Product Images<input type="file" accept="image/*" multiple data-image-upload></label>
+
+          <div class="form-grid">
+            <label>Metal Options<input name="metal" placeholder="14k Gold, Rose Gold, Silver"></label>
+            <label>Length Options<input name="length" placeholder="16&quot;, 18&quot;, 20&quot;"></label>
+          </div>
+
+          <div class="admin-form__actions">
+            <button class="button" type="submit">Save Product</button>
+            <button class="button button--secondary" type="button" data-reset-form>Clear</button>
+          </div>
+        </form>
+
+        <div class="admin-list">
+          <div class="admin-search">
+            <input type="search" placeholder="Search products" data-product-search>
+          </div>
+          <div data-products-table></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="admin-panel" id="images">
+      <div class="admin-panel__head">
+        <div>
+          <p class="script">Media</p>
+          <h2>Product Images</h2>
+        </div>
+      </div>
+      <div class="admin-image-grid" data-image-grid></div>
+    </section>
+
+    <section class="admin-panel" id="orders">
+      <div class="admin-panel__head">
+        <div>
+          <p class="script">Checkout</p>
+          <h2>Orders</h2>
+        </div>
+        <button class="button button--secondary" type="button" data-clear-orders>Clear Demo Orders</button>
+      </div>
+      <div data-orders-table></div>
+    </section>
+
+    <section class="admin-panel" id="settings">
+      <div class="admin-panel__head">
+        <div>
+          <p class="script">Store</p>
+          <h2>Basic Settings</h2>
+        </div>
+      </div>
+      <form class="admin-form admin-settings" data-settings-form>
+        <div class="form-grid">
+          <label>Store Name<input name="storeName" placeholder="Dearelle"></label>
+          <label>Support Email<input name="supportEmail" type="email" placeholder="hello@dearelle.com"></label>
+          <label>Free Shipping Above<input name="freeShipping" type="number" min="0" step="1" placeholder="5999"></label>
+          <label>Discount Percent<input name="discountPercent" type="number" min="0" max="100" step="1" placeholder="20"></label>
+        </div>
+        <button class="button" type="submit">Save Settings</button>
+      </form>
+    </section>
+  </main>
+
+  <script src="products.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

@@ -2,6 +2,7 @@ const fs = require("fs");
 const https = require("https");
 const path = require("path");
 const vm = require("vm");
+const { loadStore, saveStore } = require("../lib/admin-core");
 
 const stripeApiVersion = "2025-05-28.basil";
 
@@ -11,15 +12,25 @@ function json(response, statusCode, payload) {
   response.end(JSON.stringify(payload));
 }
 
-function loadProducts() {
+function loadStaticProducts() {
   const sandbox = { window: {} };
   const source = fs.readFileSync(path.join(process.cwd(), "products.js"), "utf8");
   vm.runInNewContext(source, sandbox, { filename: "products.js" });
   return sandbox.window.products || [];
 }
 
-function orderTotals(cart) {
-  const products = loadProducts();
+async function loadProducts() {
+  try {
+    const store = await loadStore();
+    if (Array.isArray(store.products) && store.products.length) return store.products;
+  } catch {
+    // Keep checkout available with the bundled catalog if admin storage is offline.
+  }
+  return loadStaticProducts();
+}
+
+async function orderTotals(cart) {
+  const products = await loadProducts();
   const lines = (Array.isArray(cart) ? cart : []).map((item) => {
     const product = products.find((entry) => entry.id === item.productId);
     const quantity = Math.max(1, Math.min(10, Number(item.quantity) || 1));
@@ -109,7 +120,7 @@ module.exports = async function handler(request, response) {
 
   try {
     const payload = typeof request.body === "string" ? JSON.parse(request.body || "{}") : request.body || {};
-    const totals = orderTotals(payload.cart);
+    const totals = await orderTotals(payload.cart);
 
     if (!totals.lines.length || totals.total <= 0) {
       json(response, 400, { error: "Cart is empty" });
@@ -154,27 +165,35 @@ module.exports = async function handler(request, response) {
       }
     });
 
-    json(response, 200, {
-      id: session.id,
-      url: session.url,
-      order: {
-        id: orderId,
-        createdAt: new Date().toISOString(),
-        customer,
-        payment: "Stripe",
-        items: totals.lines.map((line) => ({
-          productId: line.product.id,
-          name: line.product.name,
-          quantity: line.quantity,
-          options: line.options,
-          price: line.product.price
-        })),
-        subtotal: totals.subtotal,
-        shipping: totals.shipping,
-        discount: totals.discount,
-        total: totals.total
-      }
-    });
+    const order = {
+      id: orderId,
+      stripeSessionId: session.id,
+      createdAt: new Date().toISOString(),
+      customer,
+      payment: "Stripe",
+      paymentStatus: "Pending",
+      items: totals.lines.map((line) => ({
+        productId: line.product.id,
+        name: line.product.name,
+        quantity: line.quantity,
+        options: line.options,
+        price: line.product.price
+      })),
+      subtotal: totals.subtotal,
+      shipping: totals.shipping,
+      discount: totals.discount,
+      total: totals.total
+    };
+
+    try {
+      const store = await loadStore();
+      store.orders = [order, ...(store.orders || []).filter((entry) => entry.id !== order.id)];
+      await saveStore(store);
+    } catch {
+      // Checkout should continue even if order storage is temporarily unavailable.
+    }
+
+    json(response, 200, { id: session.id, url: session.url, order });
   } catch (error) {
     json(response, 500, { error: error.message || "Unable to start Stripe checkout" });
   }

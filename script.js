@@ -9,6 +9,30 @@ const heroNext = document.querySelector("[data-hero-next]");
 let heroIndex = 0;
 let heroTimer;
 
+async function loadManagedProducts() {
+  try {
+    const response = await fetch("/api/admin?action=storefront", { credentials: "same-origin" });
+    if (response.ok) {
+      const payload = await response.json();
+      if (Array.isArray(payload.products) && payload.products.length) {
+        window.products = payload.products;
+        return;
+      }
+    }
+  } catch {
+    // Static hosting without the admin API keeps using the bundled catalog.
+  }
+
+  try {
+    const savedProducts = JSON.parse(localStorage.getItem("dearelleManagedProducts") || "null");
+    if (Array.isArray(savedProducts) && savedProducts.length) {
+      window.products = savedProducts;
+    }
+  } catch {
+    localStorage.removeItem("dearelleManagedProducts");
+  }
+}
+
 const iconPaths = {
   "arrow-left": ["M19 12H5", "M12 19l-7-7 7-7"],
   "arrow-right": ["M5 12h14", "M12 5l7 7-7 7"],
@@ -100,7 +124,7 @@ function saveCart(cart) {
 }
 
 function cartItemKey(productId, options) {
-  return `${productId}|${options.metal || ""}|${options.length || ""}`;
+  return `${productId}|${Object.keys(options).sort().map((key) => `${key}:${options[key]}`).join("|")}`;
 }
 
 function getProductById(id) {
@@ -134,10 +158,10 @@ function addToCart(productId, quantity = 1, options = {}) {
   const product = getProductById(productId);
   if (!product) return;
 
-  const normalizedOptions = {
-    metal: options.metal || product.options?.metal?.[0] || "",
-    length: options.length || product.options?.length?.[0] || ""
-  };
+  const normalizedOptions = Object.fromEntries(Object.entries(product.options || {}).map(([key, values]) => [
+    key,
+    options[key] || values?.[0] || ""
+  ]));
   const key = cartItemKey(productId, normalizedOptions);
   const cart = getCart();
   const existing = cart.find((item) => item.key === key);
@@ -183,6 +207,14 @@ function orderConfirmationMarkup(order) {
 async function startStripeCheckout(customer, submitButton) {
   const totals = cartTotals();
   if (!totals.lines.length) return;
+  const session = window.DearelleAuth?.getSession?.();
+  if (session?.user) {
+    customer.userId = session.user.id;
+    customer.email = customer.email || session.user.email || "";
+    customer.firstName = customer.firstName || session.user.user_metadata?.firstName || "";
+    customer.lastName = customer.lastName || session.user.user_metadata?.lastName || "";
+    customer.phone = customer.phone || session.user.user_metadata?.phone || "";
+  }
 
   submitButton.disabled = true;
   submitButton.textContent = "Opening Secure Checkout...";
@@ -242,7 +274,7 @@ function renderCategoryPage() {
     necklaces: ["Necklaces", "Delicate Layers"],
     rings: ["Rings", "Coming Soon"],
     earrings: ["Earrings", "Coming Soon"],
-    bracelets: ["Bracelets", "Coming Soon"],
+    bracelets: ["Bracelets", "Wrist Essentials"],
     anklets: ["Anklets", "Coming Soon"],
     charms: ["Charms", "Coming Soon"],
     gifts: ["Gifts", "Gift-Ready"],
@@ -524,6 +556,19 @@ function renderCheckoutPage() {
       </div>
     </div>
   `;
+
+  const session = window.DearelleAuth?.getSession?.();
+  if (session?.user) {
+    const user = session.user;
+    const meta = user.user_metadata || {};
+    const form = container.querySelector("[data-checkout-form]");
+    if (form) {
+      form.elements.email.value = user.email || "";
+      form.elements.phone.value = meta.phone || "";
+      form.elements.firstName.value = meta.firstName || "";
+      form.elements.lastName.value = meta.lastName || "";
+    }
+  }
 }
 
 function bindProductInteractions() {
@@ -612,35 +657,6 @@ function bindProductInteractions() {
   });
 }
 
-renderProductCards(document.querySelector("[data-products-grid]"), window.products || []);
-renderCategoryPage();
-renderProductPage();
-renderCartPage();
-renderCheckoutPage();
-updateCartCount();
-
-if (window.lucide) {
-  window.lucide.createIcons();
-}
-
-createLocalIcons();
-
-closeAnnouncement?.addEventListener("click", () => {
-  announcement?.remove();
-});
-
-menuToggle?.addEventListener("click", () => {
-  document.body.classList.toggle("menu-open");
-  const isOpen = document.body.classList.contains("menu-open");
-  menuToggle.setAttribute("aria-label", isOpen ? "Close menu" : "Open menu");
-});
-
-wishlistButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    button.classList.toggle("is-active");
-  });
-});
-
 function showHeroSlide(index) {
   if (!heroSlides.length) return;
 
@@ -679,13 +695,47 @@ heroDots.forEach((dot) => {
   });
 });
 
-if (heroSlides.length) {
-  showHeroSlide(0);
-  restartHeroTimer();
+async function initStorefront() {
+  await loadManagedProducts();
+  renderProductCards(document.querySelector("[data-products-grid]"), window.products || []);
+  renderCategoryPage();
+  renderProductPage();
+  renderCartPage();
+  renderCheckoutPage();
+  updateCartCount();
+
+  if (window.lucide) {
+    window.lucide.createIcons();
+  }
+
+  createLocalIcons();
+
+  closeAnnouncement?.addEventListener("click", () => {
+    announcement?.remove();
+  });
+
+  menuToggle?.addEventListener("click", () => {
+    document.body.classList.toggle("menu-open");
+    const isOpen = document.body.classList.contains("menu-open");
+    menuToggle.setAttribute("aria-label", isOpen ? "Close menu" : "Open menu");
+  });
+
+  wishlistButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      button.classList.toggle("is-active");
+    });
+  });
+
+  if (heroSlides.length) {
+    showHeroSlide(0);
+    restartHeroTimer();
+  }
+
+  document.querySelector(".newsletter__form")?.addEventListener("submit", (event) => {
+    event.preventDefault();
+  });
+
+  bindProductInteractions();
 }
 
-document.querySelector(".newsletter__form")?.addEventListener("submit", (event) => {
-  event.preventDefault();
-});
-
-bindProductInteractions();
+initStorefront();

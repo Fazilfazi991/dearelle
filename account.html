@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Account | Dearelle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Parisienne&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav shell" aria-label="Primary navigation">
+      <button class="icon-button nav__menu" aria-label="Open menu" data-menu-toggle><i data-lucide="menu"></i></button>
+      <div class="nav__links nav__links--left" data-mobile-menu>
+        <a href="category.html?category=new-in">New In</a>
+        <a href="category.html">Shop <i data-lucide="chevron-down"></i></a>
+        <a href="category.html?category=rings">Rings</a>
+        <a href="category.html?category=necklaces">Necklaces</a>
+      </div>
+      <a class="brand" href="index.html" aria-label="Dearelle home">
+        <img src="assets/dearelle-logo.png" alt="Dearelle - Your everyday little luxury">
+      </a>
+      <div class="nav__right">
+        <div class="nav__links nav__links--right">
+          <a href="category.html?category=earrings">Earrings</a>
+          <a href="category.html?category=bracelets">Bracelets</a>
+          <a href="category.html?category=gifts">Gifts <i data-lucide="chevron-down"></i></a>
+        </div>
+        <div class="nav__icons">
+          <button class="icon-button" aria-label="Search"><i data-lucide="search"></i></button>
+          <a class="icon-button hide-sm" href="account.html" aria-label="Account"><i data-lucide="user-round"></i></a>
+          <a class="icon-button cart" href="cart.html" aria-label="Cart"><i data-lucide="shopping-bag"></i><span data-cart-count>0</span></a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="account-page">
+    <section class="section shell">
+      <div class="section-title">
+        <p class="script">Dearelle</p>
+        <h1>My Account</h1>
+      </div>
+
+      <p class="account-notice" data-account-notice aria-live="polite"></p>
+
+      <div class="account-auth" data-account-auth>
+        <form class="account-card" data-login-form>
+          <h2>Login</h2>
+          <label>Email<input name="email" type="email" autocomplete="email" required></label>
+          <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
+          <button class="button" type="submit">Login</button>
+        </form>
+
+        <form class="account-card" data-register-form>
+          <h2>Create Account</h2>
+          <div class="form-grid">
+            <label>First Name<input name="firstName" autocomplete="given-name" required></label>
+            <label>Last Name<input name="lastName" autocomplete="family-name" required></label>
+          </div>
+          <label>Email<input name="email" type="email" autocomplete="email" required></label>
+          <label>Phone<input name="phone" type="tel" autocomplete="tel"></label>
+          <label>Password<input name="password" type="password" autocomplete="new-password" minlength="6" required></label>
+          <button class="button" type="submit">Register</button>
+        </form>
+      </div>
+
+      <div class="account-dashboard" data-account-dashboard hidden>
+        <aside class="account-card account-summary">
+          <h2 data-account-name>Welcome</h2>
+          <p data-account-email></p>
+          <a class="button" href="category.html">Continue Shopping</a>
+          <button class="button button--secondary" type="button" data-logout>Logout</button>
+        </aside>
+
+        <section class="account-card">
+          <h2>Profile</h2>
+          <form class="account-form" data-profile-form>
+            <div class="form-grid">
+              <label>First Name<input name="firstName" required></label>
+              <label>Last Name<input name="lastName" required></label>
+            </div>
+            <label>Email<input name="email" type="email" readonly></label>
+            <label>Phone<input name="phone" type="tel"></label>
+            <button class="button" type="submit">Save Profile</button>
+          </form>
+        </section>
+
+        <section class="account-card">
+          <h2>Saved Address</h2>
+          <form class="account-form" data-address-form>
+            <input type="hidden" name="id">
+            <label>Full Name<input name="fullName" autocomplete="name" required></label>
+            <label>Address<input name="address" autocomplete="street-address" required></label>
+            <div class="form-grid">
+              <label>City<input name="city" autocomplete="address-level2" required></label>
+              <label>State<input name="state" autocomplete="address-level1" required></label>
+              <label>PIN Code<input name="pin" autocomplete="postal-code" required></label>
+            </div>
+            <label>Phone<input name="phone" autocomplete="tel"></label>
+            <button class="button" type="submit">Save Address</button>
+          </form>
+          <div class="account-list" data-address-list></div>
+        </section>
+
+        <section class="account-card account-orders">
+          <h2>Order History</h2>
+          <div class="account-list" data-order-list></div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__bottom shell">
+      <p>© 2024 Dearelle. All Rights Reserved.</p>
+      <div><a href="#">Privacy Policy</a><a href="#">Terms &amp; Conditions</a><a href="#">Accessibility</a></div>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="products.js"></script>
+  <script src="auth.js"></script>
+  <script src="script.js"></script>
+  <script src="account.js"></script>
+</body>
+</html>
