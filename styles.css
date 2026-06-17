@@ -1824,6 +1824,11 @@ h2 {
   align-items: start;
 }
 
+.account-auth[hidden],
+.account-dashboard[hidden] {
+  display: none !important;
+}
+
 .account-dashboard {
   grid-template-columns: 320px minmax(0, 1fr);
 }
