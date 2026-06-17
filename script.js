@@ -99,7 +99,7 @@ function ratingMarkup(product) {
 }
 
 function productUrl(product) {
-  return `product.html?id=${encodeURIComponent(product.id)}`;
+  return `product?id=${encodeURIComponent(product.id)}`;
 }
 
 function slugify(value) {
@@ -199,7 +199,7 @@ function orderConfirmationMarkup(order) {
           <span>Delivery</span><strong>${[order.customer.city, order.customer.state].filter(Boolean).join(", ") || "Address shared at checkout"}</strong>
           <span>Payment</span><strong>${order.payment}</strong>
         </div>
-        <a class="button" href="index.html#bestsellers">Continue Shopping</a>
+        <a class="button" href="/#bestsellers">Continue Shopping</a>
       </div>
   `;
 }
@@ -318,7 +318,7 @@ function renderCategoryPage() {
         <i data-lucide="sparkles"></i>
         <h2>${title} are coming soon.</h2>
         <p>Explore our current favorites while we finish this edit.</p>
-        <a class="button" href="category.html?category=best-sellers">Shop Best Sellers</a>
+        <a class="button" href="category?category=best-sellers">Shop Best Sellers</a>
       </div>
     `;
     createLocalIcons();
@@ -366,9 +366,9 @@ function renderProductPage() {
 
     <div class="product-summary">
       <nav class="breadcrumbs" aria-label="Breadcrumb">
-        <a href="index.html">Home</a>
+        <a href="/">Home</a>
         <span>/</span>
-        <a href="category.html?category=${slugify(product.category)}">${product.category}</a>
+        <a href="category?category=${slugify(product.category)}">${product.category}</a>
         <span>/</span>
         <span>${product.name}</span>
       </nav>
@@ -414,7 +414,7 @@ function renderProductPage() {
   renderProductCards(document.querySelector("[data-suggested-products]"), [...sameCategory, ...suggested], 4);
 }
 
-function summaryMarkup(totals, checkoutHref = "checkout.html") {
+function summaryMarkup(totals, checkoutHref = "checkout") {
   return `
     <aside class="order-summary">
       <h2>Order Summary</h2>
@@ -439,7 +439,7 @@ function renderCartPage() {
         <i data-lucide="shopping-bag"></i>
         <h2>Your cart is waiting for something beautiful.</h2>
         <p>Explore our bestsellers and add your favorite pieces.</p>
-        <a class="button" href="index.html#bestsellers">Shop Bestsellers</a>
+        <a class="button" href="/#bestsellers">Shop Bestsellers</a>
       </div>
     `;
     createLocalIcons();
@@ -499,7 +499,7 @@ function renderCheckoutPage() {
         <i data-lucide="shopping-bag"></i>
         <h2>Your cart is empty.</h2>
         <p>Add a piece before starting checkout.</p>
-        <a class="button" href="index.html#bestsellers">Shop Now</a>
+        <a class="button" href="/#bestsellers">Shop Now</a>
       </div>
     `;
     createLocalIcons();

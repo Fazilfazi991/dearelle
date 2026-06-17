@@ -140,8 +140,8 @@ module.exports = async function handler(request, response) {
     const session = await stripeRequest({
       mode: "payment",
       payment_method_types: ["card"],
-      success_url: `${origin}/checkout.html?stripe=success&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/checkout.html?stripe=cancelled`,
+      success_url: `${origin}/checkout?stripe=success&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/checkout?stripe=cancelled`,
       customer_email: customer.email || undefined,
       phone_number_collection: { enabled: true },
       billing_address_collection: "auto",

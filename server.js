@@ -19,6 +19,24 @@ const types = {
   ".webp": "image/webp",
   ".svg": "image/svg+xml"
 };
+const cleanPageRoutes = {
+  "/": "index.html",
+  "/admin": "admin.html",
+  "/account": "account.html",
+  "/product": "product.html",
+  "/category": "category.html",
+  "/cart": "cart.html",
+  "/checkout": "checkout.html"
+};
+const legacyPageRedirects = {
+  "/index.html": "/",
+  "/admin.html": "/admin",
+  "/account.html": "/account",
+  "/product.html": "/product",
+  "/category.html": "/category",
+  "/cart.html": "/cart",
+  "/checkout.html": "/checkout"
+};
 
 function json(response, statusCode, payload) {
   response.writeHead(statusCode, { "Content-Type": "application/json; charset=utf-8" });
@@ -162,8 +180,8 @@ async function createCheckoutSession(request, response) {
     const session = await stripeRequest({
       mode: "payment",
       payment_method_types: ["card"],
-      success_url: `${origin}/checkout.html?stripe=success&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/checkout.html?stripe=cancelled`,
+      success_url: `${origin}/checkout?stripe=success&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/checkout?stripe=cancelled`,
       customer_email: customer.email || undefined,
       phone_number_collection: { enabled: true },
       billing_address_collection: "auto",
@@ -222,7 +240,14 @@ async function createCheckoutSession(request, response) {
 }
 
 http.createServer((request, response) => {
-  const route = decodeURIComponent(request.url.split("?")[0]);
+  const requestUrl = new URL(request.url, `http://${request.headers.host || "localhost"}`);
+  const route = decodeURIComponent(requestUrl.pathname);
+
+  if ((request.method === "GET" || request.method === "HEAD") && legacyPageRedirects[route]) {
+    response.writeHead(308, { Location: `${legacyPageRedirects[route]}${requestUrl.search}` });
+    response.end();
+    return;
+  }
 
   if (route === "/api/admin") {
     handleAdminRequest(request, response).catch((error) => {
@@ -248,7 +273,8 @@ http.createServer((request, response) => {
     return;
   }
 
-  const filePath = path.join(root, route === "/" ? "index.html" : route);
+  const requestedFile = cleanPageRoutes[route] || route.replace(/^\/+/, "");
+  const filePath = path.join(root, requestedFile);
 
   if (!filePath.startsWith(root)) {
     response.writeHead(403);
