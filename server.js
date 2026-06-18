@@ -26,7 +26,21 @@ const cleanPageRoutes = {
   "/product": "product.html",
   "/category": "category.html",
   "/cart": "cart.html",
-  "/checkout": "checkout.html"
+  "/checkout": "checkout.html",
+  "/about-us": "page.html",
+  "/our-craft": "page.html",
+  "/sustainability": "page.html",
+  "/care-guide": "page.html",
+  "/faqs": "page.html",
+  "/contact-us": "page.html",
+  "/shipping-delivery": "page.html",
+  "/returns-exchanges": "page.html",
+  "/size-guide": "page.html",
+  "/track-your-order": "page.html",
+  "/gift-cards": "page.html",
+  "/privacy-policy": "page.html",
+  "/terms-and-conditions": "page.html",
+  "/accessibility": "page.html"
 };
 const legacyPageRedirects = {
   "/index.html": "/",

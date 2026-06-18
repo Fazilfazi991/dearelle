@@ -12,6 +12,8 @@
     { "src": "script.js", "use": "@vercel/static" },
     { "src": "admin.js", "use": "@vercel/static" },
     { "src": "account.js", "use": "@vercel/static" },
+    { "src": "page.html", "use": "@vercel/static" },
+    { "src": "pages.js", "use": "@vercel/static" },
     { "src": "auth.js", "use": "@vercel/static" },
     { "src": "products.js", "use": "@vercel/static" },
     { "src": "api/**/*.js", "use": "@vercel/node" },
@@ -37,8 +39,10 @@
     { "src": "/script.js", "dest": "/script.js" },
     { "src": "/admin.js", "dest": "/admin.js" },
     { "src": "/account.js", "dest": "/account.js" },
+    { "src": "/pages.js", "dest": "/pages.js" },
     { "src": "/auth.js", "dest": "/auth.js" },
     { "src": "/products.js", "dest": "/products.js" },
+    { "src": "/(about-us|our-craft|sustainability|care-guide|faqs|contact-us|shipping-delivery|returns-exchanges|size-guide|track-your-order|gift-cards|privacy-policy|terms-and-conditions|accessibility)", "dest": "/page.html" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]
 }

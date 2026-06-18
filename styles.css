@@ -606,6 +606,24 @@ h2 {
   font-weight: 700;
 }
 
+.product-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+}
+
+.product-price-row s {
+  color: #9d7770;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration-thickness: 2px;
+}
+
+.sale-price {
+  color: var(--chocolate);
+  font-weight: 800;
+}
+
 .product-card__add {
   width: 100%;
   min-height: 38px;
@@ -1341,6 +1359,94 @@ h2 {
   font-size: 11px;
 }
 
+.newsletter__form small[data-newsletter-message] {
+  color: #57755a;
+  font-weight: 700;
+}
+
+.search-modal[hidden] {
+  display: none !important;
+}
+
+.search-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: start center;
+  padding: 110px 22px 22px;
+  background: rgba(59, 36, 32, .32);
+  backdrop-filter: blur(8px);
+}
+
+.search-modal__panel {
+  position: relative;
+  width: min(760px, 100%);
+  padding: 28px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 22px 70px rgba(59, 36, 32, .18);
+}
+
+.search-modal__panel h2 {
+  margin-bottom: 16px;
+}
+
+.search-modal__close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
+
+.search-modal form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+}
+
+.search-modal input {
+  min-width: 0;
+  height: 52px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0 14px;
+}
+
+.search-modal__results {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.search-modal__results a {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 12px;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--cream);
+}
+
+.search-modal__results img {
+  width: 72px;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.search-modal__results strong,
+.search-modal__results small {
+  display: block;
+}
+
+.search-modal__results small,
+.search-empty {
+  color: #76534E;
+}
+
 .footer {
   background: var(--cream);
   padding: 34px 0 18px;
@@ -1401,6 +1507,43 @@ h2 {
   color: #3F5F95;
   font-size: 11px;
   font-weight: 700;
+}
+
+.payments .pay-logo {
+  min-width: 54px;
+  display: inline-grid;
+  place-items: center;
+  letter-spacing: 0;
+}
+
+.pay-logo--visa { color: #1a1f71 !important; }
+.pay-logo--mc { color: #eb001b !important; }
+.pay-logo--amex { color: #2e77bc !important; }
+.pay-logo--upi { color: #157347 !important; }
+.pay-logo--stripe { color: #635bff !important; }
+
+.info-page {
+  min-height: 62vh;
+  background: linear-gradient(180deg, #fff, var(--cream));
+}
+
+.info-card {
+  max-width: 820px;
+  margin-inline: auto;
+  padding: 34px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(255,255,255,.94);
+  box-shadow: 0 12px 30px rgba(128, 67, 49, .07);
+  text-align: center;
+}
+
+.info-card p {
+  margin: 0 auto 16px;
+  color: #67453f;
+  font-family: var(--serif);
+  font-size: 21px;
+  line-height: 1.45;
 }
 
 .footer__bottom {

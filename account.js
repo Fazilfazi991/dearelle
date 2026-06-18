@@ -14,6 +14,13 @@ function accountMessage(message, type = "info") {
   notice.dataset.type = type;
 }
 
+function friendlyAuthError(message) {
+  if (/invalid login credentials/i.test(message || "")) {
+    return "Invalid login credentials. Please check your password, create an account first, or confirm your email if you just registered.";
+  }
+  return message || "Something went wrong. Please try again.";
+}
+
 function metadata(user) {
   return user?.user_metadata || {};
 }
@@ -140,7 +147,7 @@ document.querySelector("[data-login-form]")?.addEventListener("submit", async (e
     accountMessage("Logged in successfully.", "success");
     await bootAccount();
   } catch (error) {
-    accountMessage(error.message, "error");
+    accountMessage(friendlyAuthError(error.message), "error");
   }
 });
 
@@ -150,7 +157,7 @@ document.querySelector("[data-register-form]")?.addEventListener("submit", async
   try {
     const payload = await DearelleAuth.signUp(data);
     if (!payload.access_token) {
-      accountMessage("Account created. Please confirm your email, then login.", "success");
+      accountMessage("Account created. Please confirm your email if Supabase asks for it, then login.", "success");
       return;
     }
     await saveProfile({
@@ -163,7 +170,7 @@ document.querySelector("[data-register-form]")?.addEventListener("submit", async
     accountMessage("Account created.", "success");
     await bootAccount();
   } catch (error) {
-    accountMessage(error.message, "error");
+    accountMessage(friendlyAuthError(error.message), "error");
   }
 });
 

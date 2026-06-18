@@ -102,6 +102,20 @@ function productUrl(product) {
   return `product?id=${encodeURIComponent(product.id)}`;
 }
 
+function compareAtPrice(product) {
+  if (product.compareAtPrice || product.originalPrice) return Number(product.compareAtPrice || product.originalPrice);
+  if (slugify(product.badge) === "bestseller") return Math.ceil((Number(product.price) || 0) / 0.8 / 50) * 50 - 1;
+  return 0;
+}
+
+function priceMarkup(product, showCompare = false) {
+  const original = compareAtPrice(product);
+  if (showCompare && original > product.price) {
+    return `<p class="product-price-row"><span class="sale-price">${formatPrice(product.price)}</span><s>${formatPrice(original)}</s></p>`;
+  }
+  return `<p>${formatPrice(product.price)}</p>`;
+}
+
 function slugify(value) {
   return String(value || "")
     .toLowerCase()
@@ -243,6 +257,7 @@ async function startStripeCheckout(customer, submitButton) {
 
 function renderProductCards(container, productList, limit = productList.length) {
   if (!container) return;
+  const showCompare = container.dataset.sale === "true";
 
   container.innerHTML = productList.slice(0, limit).map((product) => `
     <article class="product-card">
@@ -251,7 +266,7 @@ function renderProductCards(container, productList, limit = productList.length) 
       <a class="product-card__link" href="${productUrl(product)}" aria-label="View ${product.name}">
         <img src="${product.images[0]}" alt="${product.name}" loading="lazy">
         <h3>${product.name}</h3>
-        <p>${formatPrice(product.price)}</p>
+        ${priceMarkup(product, showCompare)}
         ${ratingMarkup(product)}
       </a>
       <button class="product-card__add" type="button" data-card-add="${product.id}">Add to Cart</button>
@@ -325,7 +340,7 @@ function renderCategoryPage() {
     return;
   }
 
-  container.innerHTML = `<div class="product-grid category-product-grid" data-category-products></div>`;
+  container.innerHTML = `<div class="product-grid category-product-grid" data-category-products ${category === "sale" ? 'data-sale="true"' : ""}></div>`;
   renderProductCards(container.querySelector("[data-category-products]"), products);
   createLocalIcons();
 }
@@ -657,6 +672,74 @@ function bindProductInteractions() {
   });
 }
 
+function buildSearchModal() {
+  if (document.querySelector("[data-search-modal]")) return;
+  document.body.insertAdjacentHTML("beforeend", `
+    <section class="search-modal" data-search-modal hidden>
+      <div class="search-modal__panel" role="dialog" aria-modal="true" aria-label="Search products">
+        <button class="icon-button search-modal__close" type="button" data-search-close aria-label="Close search"><i data-lucide="x"></i></button>
+        <h2>Search Dearelle</h2>
+        <form data-search-form>
+          <input name="query" type="search" placeholder="Search necklaces, bracelets, gifts..." autocomplete="off" required>
+          <button class="button" type="submit">Search</button>
+        </form>
+        <div class="search-modal__results" data-search-results></div>
+      </div>
+    </section>
+  `);
+  createLocalIcons();
+}
+
+function renderSearchResults(query) {
+  const results = (window.products || []).filter((product) => {
+    const haystack = [product.name, product.category, product.collection, product.shortDescription].join(" ").toLowerCase();
+    return haystack.includes(query.toLowerCase());
+  }).slice(0, 6);
+  const container = document.querySelector("[data-search-results]");
+  if (!container) return;
+  if (!results.length) {
+    container.innerHTML = `<p class="search-empty">No products found. Try necklace, bracelet, gift, or charm.</p>`;
+    return;
+  }
+  container.innerHTML = results.map((product) => `
+    <a href="${productUrl(product)}">
+      <img src="${product.images[0]}" alt="">
+      <span><strong>${product.name}</strong><small>${product.category} · ${formatPrice(product.price)}</small></span>
+    </a>
+  `).join("");
+}
+
+function openSearch() {
+  buildSearchModal();
+  const modal = document.querySelector("[data-search-modal]");
+  modal.hidden = false;
+  modal.querySelector("input")?.focus();
+}
+
+function closeSearch() {
+  const modal = document.querySelector("[data-search-modal]");
+  if (modal) modal.hidden = true;
+}
+
+function bindSearch() {
+  document.addEventListener("click", (event) => {
+    if (event.target.closest('[aria-label="Search"]')) openSearch();
+    if (event.target.closest("[data-search-close]")) closeSearch();
+    if (event.target.matches("[data-search-modal]")) closeSearch();
+  });
+  document.addEventListener("input", (event) => {
+    const input = event.target.closest('[data-search-form] input[name="query"]');
+    if (input) renderSearchResults(input.value.trim());
+  });
+  document.addEventListener("submit", (event) => {
+    const form = event.target.closest("[data-search-form]");
+    if (!form) return;
+    event.preventDefault();
+    const query = new FormData(form).get("query")?.trim() || "";
+    renderSearchResults(query);
+  });
+}
+
 function showHeroSlide(index) {
   if (!heroSlides.length) return;
 
@@ -733,8 +816,15 @@ async function initStorefront() {
 
   document.querySelector(".newsletter__form")?.addEventListener("submit", (event) => {
     event.preventDefault();
+    const form = event.currentTarget;
+    const email = form.querySelector("input")?.value?.trim();
+    const message = form.querySelector("[data-newsletter-message]") || form.querySelector("small") || form.appendChild(document.createElement("small"));
+    message.dataset.newsletterMessage = "";
+    message.textContent = email ? "Thank you for your subscription. You are now in the sparkle list." : "Please enter your email to subscribe.";
+    if (email) form.reset();
   });
 
+  bindSearch();
   bindProductInteractions();
 }
 
