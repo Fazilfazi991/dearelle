@@ -110,7 +110,7 @@ function compareAtPrice(product) {
 
 function priceMarkup(product, showCompare = false) {
   const original = compareAtPrice(product);
-  if (showCompare && original > product.price) {
+  if ((showCompare || original) && original > product.price) {
     return `<p class="product-price-row"><span class="sale-price">${formatPrice(product.price)}</span><s>${formatPrice(original)}</s></p>`;
   }
   return `<p>${formatPrice(product.price)}</p>`;
@@ -314,8 +314,10 @@ function renderCategoryPage() {
     products = allProducts.filter((product) => slugify(product.collection) === collection);
   } else if (category === "new-in") {
     products = allProducts.filter((product) => slugify(product.badge) === "new");
-  } else if (category === "best-sellers" || category === "sale") {
+  } else if (category === "best-sellers") {
     products = allProducts.filter((product) => slugify(product.badge) === "bestseller");
+  } else if (category === "sale") {
+    products = allProducts.filter((product) => compareAtPrice(product) > product.price || ["offer", "bestseller"].includes(slugify(product.badge)));
   } else if (category === "gifts" || category === "gift-sets") {
     products = allProducts;
   } else if (category !== "all") {
