@@ -228,6 +228,82 @@ window.products = [
     ]
   },
   {
+    id: "emerald-pear-ring",
+    name: "Emerald Pear Ring",
+    category: "Rings",
+    collection: "Gift-Ready",
+    price: 1799,
+    badge: "New",
+    rating: 5,
+    reviews: 46,
+    shortDescription: "A rose-gold ring with a pear-cut emerald green stone and delicate crystal accents.",
+    details: "Adjustable open band with a pear-cut green centerpiece and crystal-set shoulders.",
+    care: "Keep dry and wipe with a soft cloth after wear. Store separately to protect the stone setting.",
+    shipping: "Free shipping on orders ₹5,999+. 30-day hassle-free returns.",
+    gift: "Arrives in signature Dearelle gift packaging.",
+    options: {
+      metal: ["Rose Gold"],
+      size: ["Adjustable", "6", "7", "8"]
+    },
+    images: [
+      "assets/products/ring-green-pear/01_product_hero.png",
+      "assets/products/ring-green-pear/02_product_angle.png",
+      "assets/products/ring-green-pear/03_hand_wearing.png",
+      "assets/products/ring-green-pear/04_model_wearing.png"
+    ]
+  },
+  {
+    id: "blush-pear-ring",
+    name: "Blush Pear Ring",
+    category: "Rings",
+    collection: "Love & Forever",
+    price: 1699,
+    badge: "Bestseller",
+    rating: 5,
+    reviews: 63,
+    shortDescription: "A soft pink pear-cut ring made for sweet gifting and everyday sparkle.",
+    details: "Rose-gold adjustable ring with a blush pear-cut stone and bright crystal side stones.",
+    care: "Avoid perfume, water and harsh cleaners. Polish gently with a dry jewelry cloth.",
+    shipping: "Ships in 1-2 business days with tracking included.",
+    gift: "Packed in a blush pouch and ready to gift.",
+    options: {
+      metal: ["Rose Gold"],
+      size: ["Adjustable", "6", "7", "8"]
+    },
+    images: [
+      "assets/products/ring-pink-pear/01_product_hero.png",
+      "assets/products/ring-pink-pear/02_product_angle.png",
+      "assets/products/ring-pink-pear/03_product_front_closeup.png",
+      "assets/products/ring-pink-pear/04_hand_wearing.png",
+      "assets/products/ring-pink-pear/05_model_wearing.png"
+    ]
+  },
+  {
+    id: "ruby-square-ring",
+    name: "Ruby Square Ring",
+    category: "Rings",
+    collection: "New Season Picks",
+    price: 1899,
+    badge: "New",
+    rating: 5,
+    reviews: 39,
+    shortDescription: "A statement ring with a ruby-red square stone and refined rose-gold shine.",
+    details: "Adjustable rose-gold ring with a square red centerpiece and crystal shoulder detailing.",
+    care: "Remove before sleeping or bathing. Store in the included pouch to prevent scratches.",
+    shipping: "Free shipping on orders ₹5,999+. 30-day hassle-free returns.",
+    gift: "Beautifully wrapped for gifting.",
+    options: {
+      metal: ["Rose Gold"],
+      size: ["Adjustable", "6", "7", "8"]
+    },
+    images: [
+      "assets/products/ring-red-square/01_product_hero.png",
+      "assets/products/ring-red-square/02_product_angle.png",
+      "assets/products/ring-red-square/03_hand_wearing.png",
+      "assets/products/ring-red-square/04_model_wearing.png"
+    ]
+  },
+  {
     id: "rose-black-charm-bracelet",
     name: "Rose Black Charm Bracelet",
     category: "Bracelets",

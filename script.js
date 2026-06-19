@@ -287,7 +287,7 @@ function renderCategoryPage() {
     all: ["Shop Jewelry", "All Pieces"],
     "new-in": ["New In", "Fresh Arrivals"],
     necklaces: ["Necklaces", "Delicate Layers"],
-    rings: ["Rings", "Coming Soon"],
+    rings: ["Rings", "Everyday Sparkle"],
     earrings: ["Earrings", "Coming Soon"],
     bracelets: ["Bracelets", "Wrist Essentials"],
     anklets: ["Anklets", "Coming Soon"],
