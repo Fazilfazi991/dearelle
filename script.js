@@ -791,7 +791,7 @@ heroDots.forEach((dot) => {
 
 async function initStorefront() {
   await loadManagedProducts();
-  renderProductCards(document.querySelector("[data-products-grid]"), window.products || []);
+  renderProductCards(document.querySelector("[data-products-grid]"), window.products || [], 8);
   renderCategoryPage();
   renderProductPage();
   renderCartPage();
