@@ -9,13 +9,32 @@ const heroNext = document.querySelector("[data-hero-next]");
 let heroIndex = 0;
 let heroTimer;
 
+function primaryImageFolder(product) {
+  return String(product?.images?.[0] || "").split("/").slice(0, -1).join("/");
+}
+
+function dedupeProducts(productList) {
+  const seen = new Set();
+
+  return (productList || []).filter((product) => {
+    const keys = [
+      `name:${slugify(product.name)}`,
+      primaryImageFolder(product) ? `image:${primaryImageFolder(product)}` : ""
+    ].filter(Boolean);
+    const duplicate = keys.some((key) => seen.has(key));
+
+    keys.forEach((key) => seen.add(key));
+    return !duplicate;
+  });
+}
+
 async function loadManagedProducts() {
   try {
     const response = await fetch("/api/admin?action=storefront", { credentials: "same-origin" });
     if (response.ok) {
       const payload = await response.json();
       if (Array.isArray(payload.products) && payload.products.length) {
-        window.products = payload.products;
+        window.products = dedupeProducts(payload.products);
         return;
       }
     }
@@ -26,7 +45,7 @@ async function loadManagedProducts() {
   try {
     const savedProducts = JSON.parse(localStorage.getItem("dearelleManagedProducts") || "null");
     if (Array.isArray(savedProducts) && savedProducts.length) {
-      window.products = savedProducts;
+      window.products = dedupeProducts(savedProducts);
     }
   } catch {
     localStorage.removeItem("dearelleManagedProducts");
