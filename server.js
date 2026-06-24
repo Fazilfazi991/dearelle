@@ -25,6 +25,7 @@ const cleanPageRoutes = {
   "/account": "account.html",
   "/product": "product.html",
   "/category": "category.html",
+  "/earrings": "category.html",
   "/cart": "cart.html",
   "/checkout": "checkout.html",
   "/about-us": "page.html",

@@ -304,6 +304,212 @@ window.products = [
     ]
   },
   {
+    id: "heart-glow-earrings",
+    name: "Heart Glow Earrings",
+    category: "Earrings",
+    collection: "Love & Forever",
+    price: 1599,
+    badge: "New",
+    rating: 5,
+    reviews: 52,
+    shortDescription: "Soft heart earrings with a romantic shine for gifting and everyday sparkle.",
+    details: "Heart-shaped earrings with polished rose-gold warmth and a comfortable lightweight finish.",
+    care: "Avoid perfume, water and harsh cleaners. Wipe gently after wear.",
+    shipping: "Free shipping on orders ₹5,999+. 30-day hassle-free returns.",
+    gift: "Packed in a blush Dearelle pouch and ready to gift.",
+    options: {
+      metal: ["Rose Gold", "14k Gold"],
+      backing: ["Push Back"]
+    },
+    images: [
+      "assets/products/earrings-heart/03_macro_satin_product_shot.png",
+      "assets/products/earrings-heart/01_dark_editorial_portrait.png",
+      "assets/products/earrings-heart/02_bright_lifestyle_portrait.png",
+      "assets/products/earrings-heart/04_flatlay_marble_product_shot.png",
+      "assets/products/earrings-heart/05_brand_display.png"
+    ]
+  },
+  {
+    id: "oval-luxe-earrings",
+    name: "Oval Luxe Earrings",
+    category: "Earrings",
+    collection: "Signature Collection",
+    price: 1899,
+    badge: "Bestseller",
+    rating: 5,
+    reviews: 84,
+    shortDescription: "Elegant oval earrings with a refined glow made for polished daily dressing.",
+    details: "Oval drop-inspired earrings with a smooth finish and secure push-back closure.",
+    care: "Store separately to prevent scratches. Clean with a soft dry cloth.",
+    shipping: "Ships in 1-2 business days with tracking included.",
+    gift: "Arrives in signature Dearelle gift packaging.",
+    options: {
+      metal: ["14k Gold", "Rose Gold"],
+      backing: ["Push Back"]
+    },
+    images: [
+      "assets/products/earrings-oval/03_macro_satin_product_shot.png",
+      "assets/products/earrings-oval/01_dark_editorial_portrait.png",
+      "assets/products/earrings-oval/02_bright_lifestyle_portrait.png",
+      "assets/products/earrings-oval/04_flatlay_marble_product_shot.png",
+      "assets/products/earrings-oval/05_brand_display.png"
+    ]
+  },
+  {
+    id: "square-shine-earrings",
+    name: "Square Shine Earrings",
+    category: "Earrings",
+    collection: "Modern Muse",
+    price: 1799,
+    rating: 5,
+    reviews: 61,
+    shortDescription: "Modern square earrings with clean sparkle and an easy evening-ready feel.",
+    details: "Square statement earrings with polished edges and a secure lightweight backing.",
+    care: "Keep dry and store in the included pouch after wear.",
+    shipping: "Free shipping on orders ₹5,999+. 30-day hassle-free returns.",
+    gift: "Includes a keepsake gift box.",
+    options: {
+      metal: ["14k Gold", "Rose Gold"],
+      backing: ["Push Back"]
+    },
+    images: [
+      "assets/products/earrings-square/03_macro_satin_product_shot.png",
+      "assets/products/earrings-square/01_dark_editorial_portrait.png",
+      "assets/products/earrings-square/02_bright_lifestyle_portrait.png",
+      "assets/products/earrings-square/04_flatlay_marble_product_shot.png",
+      "assets/products/earrings-square/05_brand_display.png"
+    ]
+  },
+  {
+    id: "teardrop-blush-earrings",
+    name: "Teardrop Blush Earrings",
+    category: "Earrings",
+    collection: "Gift-Ready",
+    price: 1999,
+    badge: "New",
+    rating: 5,
+    reviews: 47,
+    shortDescription: "Graceful teardrop earrings with a soft feminine finish and gift-ready sparkle.",
+    details: "Teardrop earrings with polished plating, delicate shine and a secure push-back closure.",
+    care: "Remove before sleeping or bathing. Wipe gently with a dry jewelry cloth.",
+    shipping: "Ships quickly with tracked delivery.",
+    gift: "Beautifully wrapped for gifting.",
+    options: {
+      metal: ["Rose Gold", "14k Gold"],
+      backing: ["Push Back"]
+    },
+    images: [
+      "assets/products/earrings-teardrop/03_macro_satin_product_shot.png",
+      "assets/products/earrings-teardrop/01_dark_editorial_portrait.png",
+      "assets/products/earrings-teardrop/02_bright_lifestyle_portrait.png",
+      "assets/products/earrings-teardrop/04_flatlay_marble_product_shot.png",
+      "assets/products/earrings-teardrop/05_brand_display.png"
+    ]
+  },
+  {
+    id: "diamond-spark-earrings",
+    name: "Diamond Spark Earrings",
+    category: "Earrings",
+    collection: "Golden Hour",
+    compareAtPrice: 2499,
+    price: 1999,
+    badge: "Offer",
+    rating: 5,
+    reviews: 73,
+    shortDescription: "A bright diamond-inspired pair with crisp shine for celebrations and dinners.",
+    details: "Diamond-shaped earrings with crystal-inspired sparkle and a polished gold-tone finish.",
+    care: "Avoid water and lotion. Store flat in the pouch to protect the finish.",
+    shipping: "Free shipping on orders ₹5,999+. 30-day hassle-free returns.",
+    gift: "Gift-ready packaging included with every order.",
+    options: {
+      metal: ["14k Gold", "Rose Gold"],
+      backing: ["Push Back"]
+    },
+    images: [
+      "assets/products/earrings-diamond/03_macro_satin_product_shot.png",
+      "assets/products/earrings-diamond/01_dark_editorial_portrait.png",
+      "assets/products/earrings-diamond/02_bright_lifestyle_portrait.png",
+      "assets/products/earrings-diamond/04_flatlay_marble_product_shot.png",
+      "assets/products/earrings-diamond/05_brand_display.png"
+    ]
+  },
+  {
+    id: "thin-silver-hoop-earrings",
+    name: "Thin Silver Hoop Earrings",
+    category: "Earrings",
+    collection: "Everyday Delights",
+    price: 1299,
+    rating: 5,
+    reviews: 58,
+    shortDescription: "Minimal silver hoops with a clean profile for effortless daily styling.",
+    details: "Thin silver-tone hoop earrings with a lightweight feel and secure hinge closure.",
+    care: "Store separately and avoid tugging the clasp.",
+    shipping: "Ships in 1-2 business days with tracking included.",
+    gift: "Packed in a blush pouch and ready to gift.",
+    options: {
+      metal: ["Silver"],
+      size: ["Small", "Medium"]
+    },
+    images: [
+      "assets/products/earrings-thin-silver-hoop/03_macro_satin_product_shot.png",
+      "assets/products/earrings-thin-silver-hoop/01_dark_editorial_portrait.png",
+      "assets/products/earrings-thin-silver-hoop/02_bright_lifestyle_portrait.png",
+      "assets/products/earrings-thin-silver-hoop/04_flatlay_marble_product_shot.png",
+      "assets/products/earrings-thin-silver-hoop/05_brand_display.png"
+    ]
+  },
+  {
+    id: "silver-star-hoop-earrings",
+    name: "Silver Star Hoop Earrings",
+    category: "Earrings",
+    collection: "New Season Picks",
+    price: 1499,
+    badge: "New",
+    rating: 5,
+    reviews: 42,
+    shortDescription: "Playful silver star hoops with a soft shimmer for casual and festive days.",
+    details: "Silver-tone hoop earrings with star detailing and an easy hinge fastening.",
+    care: "Keep dry and clean gently with a soft cloth.",
+    shipping: "Free shipping on orders ₹5,999+. 30-day hassle-free returns.",
+    gift: "Arrives in signature Dearelle gift packaging.",
+    options: {
+      metal: ["Silver"],
+      size: ["Small", "Medium"]
+    },
+    images: [
+      "assets/products/earrings-star-hoop/03_macro_satin_product_shot.png",
+      "assets/products/earrings-star-hoop/01_dark_editorial_portrait.png",
+      "assets/products/earrings-star-hoop/02_bright_lifestyle_portrait.png",
+      "assets/products/earrings-star-hoop/04_flatlay_marble_product_shot.png",
+      "assets/products/earrings-star-hoop/05_brand_display.png"
+    ]
+  },
+  {
+    id: "silver-round-hoop-earrings",
+    name: "Silver Round Hoop Earrings",
+    category: "Earrings",
+    collection: "Everyday Delights",
+    price: 1399,
+    rating: 5,
+    reviews: 66,
+    shortDescription: "Classic round silver hoops with soft shine and wear-anywhere ease.",
+    details: "Round silver-tone hoop earrings with a smooth polished finish and secure closure.",
+    care: "Wipe after wear and store in the included pouch.",
+    shipping: "Ships quickly with tracked delivery.",
+    gift: "Beautifully wrapped for gifting.",
+    options: {
+      metal: ["Silver"],
+      size: ["Small", "Medium"]
+    },
+    images: [
+      "assets/products/earrings-round-hoop/03_macro_satin_product_shot.png",
+      "assets/products/earrings-round-hoop/01_dark_editorial_portrait.png",
+      "assets/products/earrings-round-hoop/02_bright_lifestyle_portrait.png",
+      "assets/products/earrings-round-hoop/04_flatlay_marble_product_shot.png",
+      "assets/products/earrings-round-hoop/05_brand_display.png"
+    ]
+  },
+  {
     id: "rose-black-charm-bracelet",
     name: "Rose Black Charm Bracelet",
     category: "Bracelets",

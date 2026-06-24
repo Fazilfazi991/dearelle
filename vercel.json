@@ -33,6 +33,7 @@
     { "src": "/account", "dest": "/account.html" },
     { "src": "/product", "dest": "/product.html" },
     { "src": "/category", "dest": "/category.html" },
+    { "src": "/earrings", "dest": "/category.html" },
     { "src": "/cart", "dest": "/cart.html" },
     { "src": "/checkout", "dest": "/checkout.html" },
     { "src": "/styles.css", "dest": "/styles.css" },

@@ -280,7 +280,8 @@ function renderCategoryPage() {
 
   const heading = document.querySelector("[data-category-heading]");
   const params = new URLSearchParams(window.location.search);
-  const category = slugify(params.get("category") || "all");
+  const pathCategory = slugify(window.location.pathname.replace(/^\/+|\/+$/g, ""));
+  const category = slugify(params.get("category") || (pathCategory === "earrings" ? "earrings" : "all"));
   const collection = slugify(params.get("collection") || "");
   const allProducts = window.products || [];
   const categoryLabels = {
@@ -288,7 +289,7 @@ function renderCategoryPage() {
     "new-in": ["New In", "Fresh Arrivals"],
     necklaces: ["Necklaces", "Delicate Layers"],
     rings: ["Rings", "Everyday Sparkle"],
-    earrings: ["Earrings", "Coming Soon"],
+    earrings: ["Earrings", "Fresh Sparkle"],
     bracelets: ["Bracelets", "Wrist Essentials"],
     anklets: ["Anklets", "Coming Soon"],
     charms: ["Charms", "Coming Soon"],
