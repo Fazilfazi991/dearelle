@@ -228,6 +228,163 @@ window.products = [
     ]
   },
   {
+    id: "star-glow-chain",
+    name: "Star Glow Chain",
+    category: "Necklaces",
+    collection: "New Season Picks",
+    price: 2299,
+    badge: "New",
+    rating: 5,
+    reviews: 57,
+    shortDescription: "A delicate star chain with soft shine for everyday layering and thoughtful gifting.",
+    details: "Star pendant chain with a polished gold-tone finish, fine links and an adjustable closure.",
+    care: "Keep dry and wipe gently after wear. Store separately to protect the pendant shine.",
+    shipping: "Free shipping on orders ₹5,999+. 30-day hassle-free returns.",
+    gift: "Arrives in signature Dearelle gift packaging.",
+    options: {
+      metal: ["14k Gold", "Rose Gold"],
+      length: ["16\"", "18\"", "20\""]
+    },
+    images: [
+      "assets/products/chain-star/03_macro_satin_product_shot.png",
+      "assets/products/chain-star/01_dark_editorial_portrait.png",
+      "assets/products/chain-star/02_bright_lifestyle_portrait.png",
+      "assets/products/chain-star/04_flatlay_marble_product_shot.png",
+      "assets/products/chain-star/05_dearelle_brand_display.png"
+    ]
+  },
+  {
+    id: "leaf-luxe-chain",
+    name: "Leaf Luxe Chain",
+    category: "Necklaces",
+    collection: "Everyday Delights",
+    price: 2499,
+    rating: 5,
+    reviews: 68,
+    shortDescription: "A graceful leaf chain with nature-inspired detail and an easy daily glow.",
+    details: "Leaf pendant chain with delicate sculpted detail, polished links and an adjustable clasp.",
+    care: "Avoid perfume, water and harsh cleaners. Clean softly with a dry jewelry cloth.",
+    shipping: "Ships in 1-2 business days with tracking included.",
+    gift: "Packed in a blush pouch and ready to gift.",
+    options: {
+      metal: ["14k Gold", "Rose Gold"],
+      length: ["16\"", "18\"", "20\""]
+    },
+    images: [
+      "assets/products/chain-leaf/03_macro_satin_product_shot.png",
+      "assets/products/chain-leaf/01_dark_editorial_portrait.png",
+      "assets/products/chain-leaf/02_bright_lifestyle_portrait.png",
+      "assets/products/chain-leaf/04_flatlay_marble_product_shot.png",
+      "assets/products/chain-leaf/05_dearelle_brand_display.png"
+    ]
+  },
+  {
+    id: "heart-dream-chain",
+    name: "Heart Dream Chain",
+    category: "Necklaces",
+    collection: "Love & Forever",
+    compareAtPrice: 2799,
+    price: 2199,
+    badge: "Offer",
+    rating: 5,
+    reviews: 79,
+    shortDescription: "A sweet heart chain made for soft gifting, anniversaries and everyday love.",
+    details: "Heart pendant necklace with a polished finish and a lightweight adjustable chain.",
+    care: "Store in the included pouch. Remove before bathing or sleeping.",
+    shipping: "Free shipping on orders ₹5,999+. 30-day hassle-free returns.",
+    gift: "Beautifully wrapped for gifting.",
+    options: {
+      metal: ["14k Gold", "Rose Gold", "Silver"],
+      length: ["16\"", "18\"", "20\""]
+    },
+    images: [
+      "assets/products/chain-heart/03_macro_satin_product_shot.png",
+      "assets/products/chain-heart/01_dark_editorial_portrait.png",
+      "assets/products/chain-heart/02_bright_lifestyle_portrait.png",
+      "assets/products/chain-heart/04_flatlay_marble_product_shot.png",
+      "assets/products/chain-heart/05_brand_display.png"
+    ]
+  },
+  {
+    id: "lotus-aura-chain",
+    name: "Lotus Aura Chain",
+    category: "Necklaces",
+    collection: "Kerala Edit",
+    price: 2699,
+    badge: "New",
+    rating: 5,
+    reviews: 54,
+    shortDescription: "A lotus-inspired chain with warm shine and a graceful festive feel.",
+    details: "Lotus pendant chain with traditional-inspired detail, polished plating and adjustable length.",
+    care: "Keep away from moisture and store flat after wear.",
+    shipping: "Ships quickly with tracked delivery.",
+    gift: "Includes a keepsake gift box.",
+    options: {
+      metal: ["14k Gold", "Rose Gold"],
+      length: ["16\"", "18\"", "20\""]
+    },
+    images: [
+      "assets/products/chain-lotus/03_macro_satin_product_shot.png",
+      "assets/products/chain-lotus/01_dark_editorial_portrait.png",
+      "assets/products/chain-lotus/02_bright_lifestyle_portrait.png",
+      "assets/products/chain-lotus/04_flatlay_marble_product_shot.png",
+      "assets/products/chain-lotus/05_brand_display.png"
+    ]
+  },
+  {
+    id: "heritage-gold-chain",
+    name: "Heritage Gold Chain",
+    category: "Necklaces",
+    collection: "Kerala Edit",
+    price: 3499,
+    badge: "Bestseller",
+    rating: 5,
+    reviews: 92,
+    shortDescription: "A traditional-inspired gold chain made for celebrations, sarees and keepsake gifting.",
+    details: "Statement chain with heritage detailing, warm gold-tone polish and a secure clasp.",
+    care: "Store separately to prevent scratches. Wipe clean after every wear.",
+    shipping: "Free shipping on orders ₹5,999+. 30-day hassle-free returns.",
+    gift: "Gift-ready packaging included with every order.",
+    options: {
+      metal: ["14k Gold"],
+      length: ["18\"", "20\"", "22\""]
+    },
+    images: [
+      "assets/products/chain-traditional/03_macro_satin_product_shot.png",
+      "assets/products/chain-traditional/01_dark_editorial_portrait.png",
+      "assets/products/chain-traditional/02_bright_bridal_portrait.png",
+      "assets/products/chain-traditional/04_flatlay_marble_product_shot.png",
+      "assets/products/chain-traditional/05_brand_display.png"
+    ]
+  },
+  {
+    id: "lakshmi-pendant-set",
+    name: "Lakshmi Pendant Set",
+    category: "Necklaces",
+    collection: "Kerala Edit",
+    compareAtPrice: 4299,
+    price: 3699,
+    badge: "Offer",
+    rating: 5,
+    reviews: 88,
+    shortDescription: "A Lakshmi-inspired pendant set with festive detail and a rich traditional finish.",
+    details: "Pendant set with Lakshmi motif, coordinated chain styling and a polished gold-tone finish.",
+    care: "Avoid water and perfume. Store in the gift box after wear to protect the finish.",
+    shipping: "Free shipping on orders ₹5,999+. 30-day hassle-free returns.",
+    gift: "Arrives in signature Dearelle festive packaging.",
+    options: {
+      metal: ["14k Gold"],
+      length: ["18\"", "20\"", "22\""]
+    },
+    images: [
+      "assets/products/chain-lakshmi-set/03_macro_satin_product_shot.png",
+      "assets/products/chain-lakshmi-set/01_dark_editorial_portrait.png",
+      "assets/products/chain-lakshmi-set/02_bright_bridal_portrait.png",
+      "assets/products/chain-lakshmi-set/04_flatlay_marble_product_shot.png",
+      "assets/products/chain-lakshmi-set/05_brand_display.png"
+    ]
+  },
+  {
     id: "emerald-pear-ring",
     name: "Emerald Pear Ring",
     category: "Rings",
