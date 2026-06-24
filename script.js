@@ -259,19 +259,27 @@ function renderProductCards(container, productList, limit = productList.length) 
   if (!container) return;
   const showCompare = container.dataset.sale === "true";
 
-  container.innerHTML = productList.slice(0, limit).map((product) => `
-    <article class="product-card">
-      ${product.badge ? `<span class="badge">${product.badge}</span>` : ""}
-      <button class="wishlist" type="button" aria-label="Add ${product.name} to wishlist"><i data-lucide="heart"></i></button>
-      <a class="product-card__link" href="${productUrl(product)}" aria-label="View ${product.name}">
-        <img src="${product.images[0]}" alt="${product.name}" loading="lazy">
-        <h3>${product.name}</h3>
-        ${priceMarkup(product, showCompare)}
-        ${ratingMarkup(product)}
-      </a>
-      <button class="product-card__add" type="button" data-card-add="${product.id}">Add to Cart</button>
-    </article>
-  `).join("");
+  container.innerHTML = productList.slice(0, limit).map((product) => {
+    const primaryImage = product.images?.[0] || "";
+    const hoverImage = product.images?.[1] || primaryImage;
+
+    return `
+      <article class="product-card">
+        ${product.badge ? `<span class="badge">${product.badge}</span>` : ""}
+        <button class="wishlist" type="button" aria-label="Add ${product.name} to wishlist"><i data-lucide="heart"></i></button>
+        <a class="product-card__link" href="${productUrl(product)}" aria-label="View ${product.name}">
+          <span class="product-card__media">
+            <img class="product-card__image product-card__image--primary" src="${primaryImage}" alt="${product.name}" loading="lazy">
+            <img class="product-card__image product-card__image--hover" src="${hoverImage}" alt="" loading="lazy" aria-hidden="true">
+          </span>
+          <h3>${product.name}</h3>
+          ${priceMarkup(product, showCompare)}
+          ${ratingMarkup(product)}
+        </a>
+        <button class="product-card__add" type="button" data-card-add="${product.id}">Add to Cart</button>
+      </article>
+    `;
+  }).join("");
 }
 
 function renderCategoryPage() {
