@@ -1957,7 +1957,7 @@ h2 {
 }
 
 .admin-table--orders .admin-table__row {
-  grid-template-columns: 1fr 1.2fr .4fr .6fr .6fr;
+  grid-template-columns: 1fr 1.2fr .35fr .85fr .55fr .65fr;
 }
 
 .admin-empty {
@@ -2275,6 +2275,62 @@ h2 {
   height: 16px;
 }
 
+.shipping-method__options {
+  display: grid;
+  gap: 12px;
+}
+
+.shipping-method__card {
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  min-height: 58px;
+  padding: 14px 16px;
+  border: 1px solid #D9DCE8;
+  border-radius: 10px;
+  background: #fff;
+  color: var(--chocolate);
+  cursor: pointer;
+  transition: border-color .18s ease, background .18s ease, box-shadow .18s ease;
+}
+
+.shipping-method__card input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.shipping-method__radio {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #9AA3B5;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: inset 0 0 0 4px #fff;
+}
+
+.shipping-method__name,
+.shipping-method__card strong {
+  font-weight: 800;
+}
+
+.shipping-method__card strong {
+  justify-self: end;
+  white-space: nowrap;
+}
+
+.shipping-method__card.is-selected {
+  border-color: #111B3F;
+  background: #F3F5FF;
+  box-shadow: 0 0 0 1px #111B3F;
+}
+
+.shipping-method__card.is-selected .shipping-method__radio {
+  border-color: #111B3F;
+  background: #111B3F;
+}
+
 .checkout-submit {
   width: 100%;
 }
@@ -2313,7 +2369,7 @@ h2 {
 
 .order-confirmation__meta {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 12px;
   margin: 24px 0;
 }

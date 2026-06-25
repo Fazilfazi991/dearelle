@@ -8,6 +8,11 @@ const heroPrev = document.querySelector("[data-hero-prev]");
 const heroNext = document.querySelector("[data-hero-next]");
 let heroIndex = 0;
 let heroTimer;
+const shippingMethods = [
+  { id: "indian-post", name: "INDIAN POST", price: 49 },
+  { id: "dtdc-all-india", name: "DTDC ALL INDIA", price: 99 }
+];
+const defaultShippingMethod = shippingMethods[0];
 
 function primaryImageFolder(product) {
   return String(product?.images?.[0] || "").split("/").slice(0, -1).join("/");
@@ -112,6 +117,15 @@ function formatPrice(value) {
   }).format(value);
 }
 
+function formatShippingPrice(value) {
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(value);
+}
+
 function ratingMarkup(product) {
   const stars = "&#9733;".repeat(product.rating || 5);
   return `<div class="rating"><span class="stars" aria-hidden="true">${stars}</span> <span>(${product.reviews})</span></div>`;
@@ -171,13 +185,23 @@ function getCartLines() {
   }).filter(Boolean);
 }
 
-function cartTotals() {
+function selectedShippingMethod() {
+  const savedId = localStorage.getItem("dearelleShippingMethod") || defaultShippingMethod.id;
+  return shippingMethods.find((method) => method.id === savedId) || defaultShippingMethod;
+}
+
+function setSelectedShippingMethod(id) {
+  const method = shippingMethods.find((entry) => entry.id === id) || defaultShippingMethod;
+  localStorage.setItem("dearelleShippingMethod", method.id);
+  return method;
+}
+
+function cartTotals(shippingMethod = selectedShippingMethod()) {
   const lines = getCartLines();
   const subtotal = lines.reduce((sum, line) => sum + line.lineTotal, 0);
-  const shipping = subtotal === 0 || subtotal >= 5999 ? 0 : 149;
-  const discount = subtotal >= 5999 ? Math.round(subtotal * 0.2) : 0;
-  const total = Math.max(0, subtotal + shipping - discount);
-  return { lines, subtotal, shipping, discount, total };
+  const shipping = subtotal > 0 ? shippingMethod.price : 0;
+  const total = Math.max(0, subtotal + shipping);
+  return { lines, subtotal, shipping, shippingMethod: { ...shippingMethod, price: shipping }, discount: 0, total };
 }
 
 function updateCartCount() {
@@ -230,6 +254,7 @@ function orderConfirmationMarkup(order) {
         <div class="order-confirmation__meta">
           <span>Total Paid</span><strong>${formatPrice(order.total)}</strong>
           <span>Delivery</span><strong>${[order.customer.city, order.customer.state].filter(Boolean).join(", ") || "Address shared at checkout"}</strong>
+          <span>Shipping</span><strong>${order.shippingMethod?.name || "Shipping"} (${formatShippingPrice(order.shippingMethod?.price ?? order.shipping ?? 0)})</strong>
           <span>Payment</span><strong>${order.payment}</strong>
         </div>
         <a class="button" href="/#bestsellers">Continue Shopping</a>
@@ -238,8 +263,10 @@ function orderConfirmationMarkup(order) {
 }
 
 async function startStripeCheckout(customer, submitButton) {
-  const totals = cartTotals();
+  const shippingMethod = selectedShippingMethod();
+  const totals = cartTotals(shippingMethod);
   if (!totals.lines.length) return;
+  delete customer.shippingMethod;
   const session = window.DearelleAuth?.getSession?.();
   if (session?.user) {
     customer.userId = session.user.id;
@@ -256,7 +283,7 @@ async function startStripeCheckout(customer, submitButton) {
     const response = await fetch("/api/create-checkout-session", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ customer, cart: getCart() })
+      body: JSON.stringify({ customer, cart: getCart(), shippingMethod })
     });
     const payload = await response.json();
 
@@ -460,16 +487,34 @@ function renderProductPage() {
 }
 
 function summaryMarkup(totals, checkoutHref = "checkout") {
+  const shippingLabel = totals.shippingMethod?.name ? `Shipping - ${totals.shippingMethod.name}` : "Shipping";
   return `
     <aside class="order-summary">
       <h2>Order Summary</h2>
       <div><span>Subtotal</span><strong>${formatPrice(totals.subtotal)}</strong></div>
-      <div><span>Shipping</span><strong>${totals.shipping ? formatPrice(totals.shipping) : "Free"}</strong></div>
-      <div><span>Blush Days Discount</span><strong>${totals.discount ? `-${formatPrice(totals.discount)}` : "Add ₹5,999+ to unlock"}</strong></div>
+      <div><span>${shippingLabel}</span><strong>${formatShippingPrice(totals.shipping)}</strong></div>
       <div class="order-summary__total"><span>Total</span><strong>${formatPrice(totals.total)}</strong></div>
       ${checkoutHref ? `<a class="button" href="${checkoutHref}">Continue to Checkout</a>` : ""}
       <p>Secure Stripe checkout. Cards and supported payment methods are handled by Stripe.</p>
     </aside>
+  `;
+}
+
+function shippingMethodMarkup(selected = selectedShippingMethod()) {
+  return `
+    <section class="shipping-method">
+      <h2>Shipping method</h2>
+      <div class="shipping-method__options" role="radiogroup" aria-label="Shipping method">
+        ${shippingMethods.map((method) => `
+          <label class="shipping-method__card ${method.id === selected.id ? "is-selected" : ""}">
+            <input type="radio" name="shippingMethod" value="${method.id}" ${method.id === selected.id ? "checked" : ""}>
+            <span class="shipping-method__radio" aria-hidden="true"></span>
+            <span class="shipping-method__name">${method.name}</span>
+            <strong>${formatShippingPrice(method.price)}</strong>
+          </label>
+        `).join("")}
+      </div>
+    </section>
   `;
 }
 
@@ -521,7 +566,8 @@ function renderCheckoutPage() {
   const latestOrder = localStorage.getItem("dearelleLatestOrder");
   const params = new URLSearchParams(window.location.search);
   const stripeStatus = params.get("stripe");
-  const totals = cartTotals();
+  const selectedShipping = selectedShippingMethod();
+  const totals = cartTotals(selectedShipping);
 
   if (stripeStatus === "success") {
     const pendingOrder = JSON.parse(localStorage.getItem("dearellePendingStripeOrder") || "null");
@@ -579,6 +625,7 @@ function renderCheckoutPage() {
             <label>PIN code<input name="pin" required pattern="[0-9]{6}" maxlength="6" autocomplete="postal-code" placeholder="682001"></label>
           </div>
         </section>
+        ${shippingMethodMarkup(selectedShipping)}
         <section>
           <h2>Payment</h2>
           <label class="radio-row"><input type="radio" name="payment" value="Stripe" checked> Secure card payment with Stripe</label>
@@ -597,7 +644,7 @@ function renderCheckoutPage() {
             </article>
           `).join("")}
         </div>
-        ${summaryMarkup(totals, "")}
+        <div data-checkout-summary>${summaryMarkup(totals, "")}</div>
       </div>
     </div>
   `;
@@ -699,6 +746,18 @@ function bindProductInteractions() {
 
     const data = Object.fromEntries(new FormData(checkoutForm).entries());
     startStripeCheckout(data, checkoutForm.querySelector(".checkout-submit"));
+  });
+
+  document.addEventListener("change", (event) => {
+    const input = event.target.closest('input[name="shippingMethod"]');
+    if (!input) return;
+
+    const method = setSelectedShippingMethod(input.value);
+    document.querySelectorAll(".shipping-method__card").forEach((card) => {
+      card.classList.toggle("is-selected", card.querySelector("input")?.value === method.id);
+    });
+    const summary = document.querySelector("[data-checkout-summary]");
+    if (summary) summary.innerHTML = summaryMarkup(cartTotals(method), "");
   });
 }
 

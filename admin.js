@@ -28,6 +28,15 @@ function money(value) {
   }).format(Number(value) || 0);
 }
 
+function shippingMoney(value) {
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(Number(value) || 0);
+}
+
 async function adminApi(action, options = {}) {
   const response = await fetch(`/api/admin?action=${encodeURIComponent(action)}`, {
     credentials: "same-origin",
@@ -223,15 +232,16 @@ function renderOrders() {
   }
 
   ordersTable.innerHTML = `
-    <div class="admin-table admin-table--orders">
+      <div class="admin-table admin-table--orders">
       <div class="admin-table__row admin-table__head">
-        <span>Order</span><span>Customer</span><span>Items</span><span>Total</span><span>Payment</span>
+        <span>Order</span><span>Customer</span><span>Items</span><span>Shipping</span><span>Total</span><span>Payment</span>
       </div>
       ${orders.map((order) => `
         <div class="admin-table__row">
           <span><strong>${order.id}</strong><small>${new Date(order.createdAt).toLocaleString()}</small></span>
           <span>${order.customer?.firstName || ""} ${order.customer?.lastName || ""}<small>${order.customer?.email || ""}</small></span>
           <span>${(order.items || []).length}</span>
+          <span>${order.shippingMethod?.name || "Shipping"}<small>${shippingMoney(order.shippingMethod?.price ?? order.shipping ?? 0)}</small></span>
           <span>${money(order.total)}</span>
           <span>${order.payment || "Stripe"}<small>${order.paymentStatus || "Pending"}</small></span>
         </div>

@@ -5,6 +5,11 @@ const vm = require("vm");
 const { loadStore, saveStore } = require("../lib/admin-core");
 
 const stripeApiVersion = "2025-05-28.basil";
+const shippingMethods = [
+  { id: "indian-post", name: "INDIAN POST", price: 49 },
+  { id: "dtdc-all-india", name: "DTDC ALL INDIA", price: 99 }
+];
+const defaultShippingMethod = shippingMethods[0];
 
 function json(response, statusCode, payload) {
   response.statusCode = statusCode;
@@ -29,8 +34,14 @@ async function loadProducts() {
   return loadStaticProducts();
 }
 
-async function orderTotals(cart) {
+function normalizeShippingMethod(method) {
+  const selected = shippingMethods.find((entry) => entry.id === method?.id || entry.id === method);
+  return selected || defaultShippingMethod;
+}
+
+async function orderTotals(cart, shippingMethodInput) {
   const products = await loadProducts();
+  const shippingMethod = normalizeShippingMethod(shippingMethodInput);
   const lines = (Array.isArray(cart) ? cart : []).map((item) => {
     const product = products.find((entry) => entry.id === item.productId);
     const quantity = Math.max(1, Math.min(10, Number(item.quantity) || 1));
@@ -38,11 +49,11 @@ async function orderTotals(cart) {
   }).filter(Boolean);
 
   const subtotal = lines.reduce((sum, line) => sum + line.product.price * line.quantity, 0);
-  const shipping = subtotal === 0 || subtotal >= 5999 ? 0 : 149;
-  const discount = subtotal >= 5999 ? Math.round(subtotal * 0.2) : 0;
-  const total = Math.max(0, subtotal + shipping - discount);
+  const shipping = subtotal > 0 ? shippingMethod.price : 0;
+  const discount = 0;
+  const total = Math.max(0, subtotal + shipping);
 
-  return { lines, subtotal, shipping, discount, total };
+  return { lines, subtotal, shipping, shippingMethod: { ...shippingMethod, price: shipping }, discount, total };
 }
 
 function formEncode(data, prefix, params = new URLSearchParams()) {
@@ -120,7 +131,7 @@ module.exports = async function handler(request, response) {
 
   try {
     const payload = typeof request.body === "string" ? JSON.parse(request.body || "{}") : request.body || {};
-    const totals = await orderTotals(payload.cart);
+    const totals = await orderTotals(payload.cart, payload.shippingMethod);
 
     if (!totals.lines.length || totals.total <= 0) {
       json(response, 400, { error: "Cart is empty" });
@@ -161,6 +172,7 @@ module.exports = async function handler(request, response) {
         order_id: orderId,
         subtotal: totals.subtotal,
         shipping: totals.shipping,
+        shipping_method: totals.shippingMethod.name,
         discount: totals.discount
       }
     });
@@ -181,6 +193,7 @@ module.exports = async function handler(request, response) {
       })),
       subtotal: totals.subtotal,
       shipping: totals.shipping,
+      shippingMethod: totals.shippingMethod,
       discount: totals.discount,
       total: totals.total
     };
