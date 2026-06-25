@@ -196,9 +196,14 @@ function setSelectedShippingMethod(id) {
   return method;
 }
 
-function cartTotals(shippingMethod = selectedShippingMethod()) {
+function cartTotals() {
   const lines = getCartLines();
   const subtotal = lines.reduce((sum, line) => sum + line.lineTotal, 0);
+  return { lines, subtotal, shipping: 0, discount: 0, total: subtotal };
+}
+
+function checkoutTotals(shippingMethod = selectedShippingMethod()) {
+  const { lines, subtotal } = cartTotals();
   const shipping = subtotal > 0 ? shippingMethod.price : 0;
   const total = Math.max(0, subtotal + shipping);
   return { lines, subtotal, shipping, shippingMethod: { ...shippingMethod, price: shipping }, discount: 0, total };
@@ -264,7 +269,7 @@ function orderConfirmationMarkup(order) {
 
 async function startStripeCheckout(customer, submitButton) {
   const shippingMethod = selectedShippingMethod();
-  const totals = cartTotals(shippingMethod);
+  const totals = checkoutTotals(shippingMethod);
   if (!totals.lines.length) return;
   delete customer.shippingMethod;
   const session = window.DearelleAuth?.getSession?.();
@@ -492,7 +497,7 @@ function summaryMarkup(totals, checkoutHref = "checkout") {
     <aside class="order-summary">
       <h2>Order Summary</h2>
       <div><span>Subtotal</span><strong>${formatPrice(totals.subtotal)}</strong></div>
-      <div><span>${shippingLabel}</span><strong>${formatShippingPrice(totals.shipping)}</strong></div>
+      ${totals.shippingMethod ? `<div><span>${shippingLabel}</span><strong>${formatShippingPrice(totals.shipping)}</strong></div>` : ""}
       <div class="order-summary__total"><span>Total</span><strong>${formatPrice(totals.total)}</strong></div>
       ${checkoutHref ? `<a class="button" href="${checkoutHref}">Continue to Checkout</a>` : ""}
       <p>Secure Stripe checkout. Cards and supported payment methods are handled by Stripe.</p>
@@ -567,7 +572,7 @@ function renderCheckoutPage() {
   const params = new URLSearchParams(window.location.search);
   const stripeStatus = params.get("stripe");
   const selectedShipping = selectedShippingMethod();
-  const totals = cartTotals(selectedShipping);
+  const totals = checkoutTotals(selectedShipping);
 
   if (stripeStatus === "success") {
     const pendingOrder = JSON.parse(localStorage.getItem("dearellePendingStripeOrder") || "null");
@@ -757,7 +762,7 @@ function bindProductInteractions() {
       card.classList.toggle("is-selected", card.querySelector("input")?.value === method.id);
     });
     const summary = document.querySelector("[data-checkout-summary]");
-    if (summary) summary.innerHTML = summaryMarkup(cartTotals(method), "");
+    if (summary) summary.innerHTML = summaryMarkup(checkoutTotals(method), "");
   });
 }
 
