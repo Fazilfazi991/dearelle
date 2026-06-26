@@ -1,4 +1,4 @@
-Product images/*.zip
+*.zip
 .env
 .env.*
 !.env.example

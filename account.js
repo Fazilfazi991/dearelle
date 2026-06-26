@@ -21,6 +21,23 @@ function friendlyAuthError(message) {
   return message || "Something went wrong. Please try again.";
 }
 
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function safeText(value) {
+  return escapeHtml(value);
+}
+
+function safeAttr(value) {
+  return escapeHtml(value);
+}
+
 function metadata(user) {
   return user?.user_metadata || {};
 }
@@ -86,10 +103,10 @@ function renderAddresses(addresses) {
 
   addressList.innerHTML = addresses.map((address) => `
     <article>
-      <strong>${address.full_name}</strong>
-      <span>${address.address}, ${address.city}, ${address.state} ${address.pin}</span>
-      <small>${address.phone || ""}</small>
-      <button type="button" data-edit-address="${address.id}">Edit</button>
+      <strong>${safeText(address.full_name)}</strong>
+      <span>${safeText(address.address)}, ${safeText(address.city)}, ${safeText(address.state)} ${safeText(address.pin)}</span>
+      <small>${safeText(address.phone || "")}</small>
+      <button type="button" data-edit-address="${safeAttr(address.id)}">Edit</button>
     </article>
   `).join("");
 }
@@ -102,9 +119,9 @@ function renderOrders(orders) {
 
   orderList.innerHTML = orders.map((order) => `
     <article>
-      <strong>${order.id}</strong>
-      <span>${new Date(order.createdAt).toLocaleString()} Â· ${order.paymentStatus || "Pending"}</span>
-      <small>${(order.items || []).length} item(s) Â· ${new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(order.total || 0)}</small>
+      <strong>${safeText(order.id)}</strong>
+      <span>${new Date(order.createdAt).toLocaleString()} · ${safeText(order.paymentStatus || "Pending")}</span>
+      <small>${(order.items || []).length} item(s) · ${new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(order.total || 0)}</small>
     </article>
   `).join("");
 }

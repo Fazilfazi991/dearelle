@@ -1,9 +1,10 @@
 const http = require("http");
 const https = require("https");
+const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
 const vm = require("vm");
-const { handleAdminRequest, loadStore, saveStore } = require("./lib/admin-core");
+const { handleAdminRequest, loadStore, saveStore, updateStripeOrder } = require("./lib/admin-core");
 const { handleCustomerRequest } = require("./lib/customer-core");
 
 const root = __dirname;
@@ -77,6 +78,27 @@ function readBody(request) {
     request.on("end", () => resolve(body));
     request.on("error", reject);
   });
+}
+
+function verifyStripeWebhook(rawBody, signatureHeader) {
+  const secret = process.env.STRIPE_WEBHOOK_SECRET;
+  if (!secret) throw new Error("STRIPE_WEBHOOK_SECRET is not configured");
+
+  const parts = Object.fromEntries(String(signatureHeader || "")
+    .split(",")
+    .map((part) => part.split("="))
+    .filter(([key, value]) => key && value));
+  const timestamp = parts.t;
+  const expected = parts.v1;
+  if (!timestamp || !expected) throw new Error("Invalid Stripe signature header");
+
+  const signedPayload = `${timestamp}.${rawBody}`;
+  const digest = crypto.createHmac("sha256", secret).update(signedPayload).digest("hex");
+  const digestBuffer = Buffer.from(digest, "hex");
+  const expectedBuffer = Buffer.from(expected, "hex");
+  if (digestBuffer.length !== expectedBuffer.length || !crypto.timingSafeEqual(digestBuffer, expectedBuffer)) {
+    throw new Error("Stripe webhook signature verification failed");
+  }
 }
 
 function loadStaticProducts() {
@@ -185,6 +207,37 @@ function stripeRequest(data) {
   });
 }
 
+function stripeLineItems(totals, origin) {
+  const items = totals.lines.map((line) => {
+    const image = line.product.images?.[0] || "";
+    const absoluteImage = /^https?:\/\//i.test(image) ? image : "";
+    return {
+      quantity: line.quantity,
+      price_data: {
+        currency: "inr",
+        unit_amount: Math.round(Number(line.product.price || 0) * 100),
+        product_data: {
+          name: line.product.name,
+          images: absoluteImage ? [absoluteImage] : undefined
+        }
+      }
+    };
+  });
+
+  if (totals.shipping > 0) {
+    items.push({
+      quantity: 1,
+      price_data: {
+        currency: "inr",
+        unit_amount: Math.round(totals.shipping * 100),
+        product_data: { name: `Shipping - ${totals.shippingMethod.name}` }
+      }
+    });
+  }
+
+  return items;
+}
+
 async function createCheckoutSession(request, response) {
   try {
     const payload = JSON.parse(await readBody(request) || "{}");
@@ -198,10 +251,7 @@ async function createCheckoutSession(request, response) {
     const origin = `http://${request.headers.host}`;
     const orderId = `DL${Date.now().toString().slice(-7)}`;
     const customer = payload.customer || {};
-    const description = totals.lines.map((line) => {
-      const optionText = [line.options.metal, line.options.length].filter(Boolean).join(" / ");
-      return `${line.quantity} x ${line.product.name}${optionText ? ` (${optionText})` : ""}`;
-    }).join("; ");
+    const productNames = totals.lines.map((line) => line.product.name).join(", ").slice(0, 450);
 
     const session = await stripeRequest({
       mode: "payment",
@@ -212,23 +262,16 @@ async function createCheckoutSession(request, response) {
       phone_number_collection: { enabled: true },
       billing_address_collection: "auto",
       shipping_address_collection: { allowed_countries: ["IN"] },
-      line_items: [{
-        quantity: 1,
-        price_data: {
-          currency: "inr",
-          unit_amount: totals.total * 100,
-          product_data: {
-            name: "Dearelle order",
-            description
-          }
-        }
-      }],
+      line_items: stripeLineItems(totals, origin),
       metadata: {
         order_id: orderId,
         subtotal: totals.subtotal,
         shipping: totals.shipping,
+        shipping_method_id: totals.shippingMethod.id,
         shipping_method: totals.shippingMethod.name,
-        discount: totals.discount
+        discount: totals.discount,
+        product_ids: totals.lines.map((line) => line.product.id).join(",").slice(0, 450),
+        product_names: productNames
       }
     });
 
@@ -267,6 +310,22 @@ async function createCheckoutSession(request, response) {
   }
 }
 
+async function handleStripeWebhook(request, response) {
+  try {
+    const rawBody = await readBody(request);
+    verifyStripeWebhook(rawBody, request.headers["stripe-signature"]);
+    const event = JSON.parse(rawBody);
+
+    if (event.type === "checkout.session.completed") {
+      await updateStripeOrder(event.data.object);
+    }
+
+    json(response, 200, { received: true });
+  } catch (error) {
+    json(response, 400, { error: error.message || "Stripe webhook failed" });
+  }
+}
+
 http.createServer((request, response) => {
   const requestUrl = new URL(request.url, `http://${request.headers.host || "localhost"}`);
   const route = decodeURIComponent(requestUrl.pathname);
@@ -293,6 +352,11 @@ http.createServer((request, response) => {
 
   if (request.method === "POST" && route === "/api/create-checkout-session") {
     createCheckoutSession(request, response);
+    return;
+  }
+
+  if (request.method === "POST" && route === "/api/stripe-webhook") {
+    handleStripeWebhook(request, response);
     return;
   }
 

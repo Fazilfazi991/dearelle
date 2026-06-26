@@ -37,6 +37,23 @@ function shippingMoney(value) {
   }).format(Number(value) || 0);
 }
 
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function safeText(value) {
+  return escapeHtml(value);
+}
+
+function safeAttr(value) {
+  return escapeHtml(value);
+}
+
 async function adminApi(action, options = {}) {
   const response = await fetch(`/api/admin?action=${encodeURIComponent(action)}`, {
     credentials: "same-origin",
@@ -193,15 +210,15 @@ function renderProducts() {
       </div>
       ${visibleProducts.map((product) => `
         <div class="admin-table__row">
-          <span class="admin-product-cell"><img src="${product.images?.[0] || "assets/dearelle-logo.png"}" alt=""><strong>${product.name}</strong></span>
-          <span>${product.category}</span>
+          <span class="admin-product-cell"><img src="${safeAttr(product.images?.[0] || "assets/dearelle-logo.png")}" alt="" loading="lazy"><strong>${safeText(product.name)}</strong></span>
+          <span>${safeText(product.category)}</span>
           <span>${money(product.price)}</span>
           <span>${product.stock ?? 0}</span>
-          <span>${product.status || "Active"}</span>
+          <span>${safeText(product.status || "Active")}</span>
           <span class="admin-row-actions">
-            <button type="button" data-edit-product="${product.id}">Edit</button>
-            <button type="button" data-duplicate-product="${product.id}">Copy</button>
-            <button type="button" data-delete-product="${product.id}">Delete</button>
+            <button type="button" data-edit-product="${safeAttr(product.id)}">Edit</button>
+            <button type="button" data-duplicate-product="${safeAttr(product.id)}">Copy</button>
+            <button type="button" data-delete-product="${safeAttr(product.id)}">Delete</button>
           </span>
         </div>
       `).join("")}
@@ -219,8 +236,8 @@ function renderImages() {
 
   imageGrid.innerHTML = images.map(({ image, product }) => `
     <article>
-      <img src="${image}" alt="${product.name}">
-      <div><strong>${product.name}</strong><span>${image}</span></div>
+      <img src="${safeAttr(image)}" alt="${safeAttr(product.name)}" loading="lazy">
+      <div><strong>${safeText(product.name)}</strong><span>${safeText(image)}</span></div>
     </article>
   `).join("");
 }
@@ -238,12 +255,12 @@ function renderOrders() {
       </div>
       ${orders.map((order) => `
         <div class="admin-table__row">
-          <span><strong>${order.id}</strong><small>${new Date(order.createdAt).toLocaleString()}</small></span>
-          <span>${order.customer?.firstName || ""} ${order.customer?.lastName || ""}<small>${order.customer?.email || ""}</small></span>
+          <span><strong>${safeText(order.id)}</strong><small>${new Date(order.createdAt).toLocaleString()}</small></span>
+          <span>${safeText(order.customer?.firstName || "")} ${safeText(order.customer?.lastName || "")}<small>${safeText(order.customer?.email || order.customerEmail || "")}</small></span>
           <span>${(order.items || []).length}</span>
-          <span>${order.shippingMethod?.name || "Shipping"}<small>${shippingMoney(order.shippingMethod?.price ?? order.shipping ?? 0)}</small></span>
+          <span>${safeText(order.shippingMethod?.name || "Shipping")}<small>${shippingMoney(order.shippingMethod?.price ?? order.shipping ?? 0)}</small></span>
           <span>${money(order.total)}</span>
-          <span>${order.payment || "Stripe"}<small>${order.paymentStatus || "Pending"}</small></span>
+          <span>${safeText(order.payment || "Stripe")}<small>${safeText(order.paymentStatus || "Pending")}</small></span>
         </div>
       `).join("")}
     </div>
@@ -254,8 +271,6 @@ function renderSettings() {
   const fields = settingsForm.elements;
   fields.storeName.value = settings.storeName || "Dearelle";
   fields.supportEmail.value = settings.supportEmail || "hello@dearelle.com";
-  fields.freeShipping.value = settings.freeShipping || 5999;
-  fields.discountPercent.value = settings.discountPercent || 20;
 }
 
 function renderAdmin() {
@@ -322,16 +337,32 @@ document.querySelector("[data-image-upload]")?.addEventListener("change", async 
   const files = [...(event.target.files || [])];
   if (!files.length) return;
 
-  const dataUrls = await Promise.all(files.map((file) => new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  })));
+  try {
+    const uploaded = [];
+    for (const file of files) {
+      if (!/^image\/(png|jpe?g|webp|gif)$/i.test(file.type)) throw new Error("Only image files are allowed.");
+      if (file.size > 2 * 1024 * 1024) throw new Error("Each product image must be smaller than 2MB.");
+      const data = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+      const payload = await adminApi("upload-image", {
+        method: "POST",
+        body: { file: { name: file.name, type: file.type, size: file.size, data } }
+      });
+      uploaded.push(payload.url);
+    }
 
-  const currentImages = splitLines(productForm.elements.images.value);
-  productForm.elements.images.value = [...currentImages, ...dataUrls].join("\n");
-  event.target.value = "";
+    const currentImages = splitLines(productForm.elements.images.value);
+    productForm.elements.images.value = [...currentImages, ...uploaded].join("\n");
+    showNotice("Product image uploaded. Save the product to keep it.", "success");
+  } catch (error) {
+    showNotice(error.message, "error");
+  } finally {
+    event.target.value = "";
+  }
 });
 
 productsTable?.addEventListener("click", async (event) => {

@@ -123,6 +123,37 @@ function stripeRequest(data) {
   });
 }
 
+function stripeLineItems(totals) {
+  const items = totals.lines.map((line) => {
+    const image = line.product.images?.[0] || "";
+    const absoluteImage = /^https?:\/\//i.test(image) ? image : "";
+    return {
+      quantity: line.quantity,
+      price_data: {
+        currency: "inr",
+        unit_amount: Math.round(Number(line.product.price || 0) * 100),
+        product_data: {
+          name: line.product.name,
+          images: absoluteImage ? [absoluteImage] : undefined
+        }
+      }
+    };
+  });
+
+  if (totals.shipping > 0) {
+    items.push({
+      quantity: 1,
+      price_data: {
+        currency: "inr",
+        unit_amount: Math.round(totals.shipping * 100),
+        product_data: { name: `Shipping - ${totals.shippingMethod.name}` }
+      }
+    });
+  }
+
+  return items;
+}
+
 module.exports = async function handler(request, response) {
   if (request.method !== "POST") {
     json(response, 405, { error: "Method not allowed" });
@@ -143,10 +174,7 @@ module.exports = async function handler(request, response) {
     const origin = `${protocol}://${host}`;
     const orderId = `DL${Date.now().toString().slice(-7)}`;
     const customer = payload.customer || {};
-    const description = totals.lines.map((line) => {
-      const optionText = [line.options.metal, line.options.length].filter(Boolean).join(" / ");
-      return `${line.quantity} x ${line.product.name}${optionText ? ` (${optionText})` : ""}`;
-    }).join("; ");
+    const productNames = totals.lines.map((line) => line.product.name).join(", ").slice(0, 450);
 
     const session = await stripeRequest({
       mode: "payment",
@@ -157,23 +185,16 @@ module.exports = async function handler(request, response) {
       phone_number_collection: { enabled: true },
       billing_address_collection: "auto",
       shipping_address_collection: { allowed_countries: ["IN"] },
-      line_items: [{
-        quantity: 1,
-        price_data: {
-          currency: "inr",
-          unit_amount: totals.total * 100,
-          product_data: {
-            name: "Dearelle order",
-            description
-          }
-        }
-      }],
+      line_items: stripeLineItems(totals),
       metadata: {
         order_id: orderId,
         subtotal: totals.subtotal,
         shipping: totals.shipping,
+        shipping_method_id: totals.shippingMethod.id,
         shipping_method: totals.shippingMethod.name,
-        discount: totals.discount
+        discount: totals.discount,
+        product_ids: totals.lines.map((line) => line.product.id).join(",").slice(0, 450),
+        product_names: productNames
       }
     });
 

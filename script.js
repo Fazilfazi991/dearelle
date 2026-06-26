@@ -126,6 +126,23 @@ function formatShippingPrice(value) {
   }).format(value);
 }
 
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function safeText(value) {
+  return escapeHtml(value);
+}
+
+function safeAttr(value) {
+  return escapeHtml(value);
+}
+
 function ratingMarkup(product) {
   const stars = "&#9733;".repeat(product.rating || 5);
   return `<div class="rating"><span class="stars" aria-hidden="true">${stars}</span> <span>(${product.reviews})</span></div>`;
@@ -250,20 +267,33 @@ function orderNumber() {
 }
 
 function orderConfirmationMarkup(order) {
+  const customer = order.customer || {};
   return `
       <div class="order-confirmation">
         <i data-lucide="circle-dot"></i>
         <p class="script">Order Placed</p>
-        <h2>Thank you, ${order.customer.firstName || "there"}.</h2>
-        <p>Your order <strong>${order.id}</strong> has been placed. A confirmation has been prepared for ${order.customer.email || "your email"}.</p>
+        <h2>Thank you, ${safeText(customer.firstName || "there")}.</h2>
+        <p>Your order <strong>${safeText(order.id)}</strong> has been placed. A confirmation has been prepared for ${safeText(customer.email || "your email")}.</p>
         <div class="order-confirmation__meta">
           <span>Total Paid</span><strong>${formatPrice(order.total)}</strong>
-          <span>Delivery</span><strong>${[order.customer.city, order.customer.state].filter(Boolean).join(", ") || "Address shared at checkout"}</strong>
-          <span>Shipping</span><strong>${order.shippingMethod?.name || "Shipping"} (${formatShippingPrice(order.shippingMethod?.price ?? order.shipping ?? 0)})</strong>
-          <span>Payment</span><strong>${order.payment}</strong>
+          <span>Delivery</span><strong>${safeText([customer.city, customer.state].filter(Boolean).join(", ") || "Address shared at checkout")}</strong>
+          <span>Shipping</span><strong>${safeText(order.shippingMethod?.name || "Shipping")} (${formatShippingPrice(order.shippingMethod?.price ?? order.shipping ?? 0)})</strong>
+          <span>Payment</span><strong>${safeText(order.payment)}</strong>
         </div>
         <a class="button" href="/#bestsellers">Continue Shopping</a>
       </div>
+  `;
+}
+
+function paymentProcessingMarkup(order) {
+  return `
+    <div class="order-confirmation">
+      <i data-lucide="circle-dot"></i>
+      <p class="script">Payment Received</p>
+      <h2>We are confirming your order.</h2>
+      <p>Stripe is finalizing payment confirmation${order?.id ? ` for <strong>${safeText(order.id)}</strong>` : ""}. Your paid order will appear after confirmation.</p>
+      <a class="button" href="/#bestsellers">Continue Shopping</a>
+    </div>
   `;
 }
 
@@ -316,18 +346,18 @@ function renderProductCards(container, productList, limit = productList.length) 
 
     return `
       <article class="product-card">
-        ${product.badge ? `<span class="badge">${product.badge}</span>` : ""}
-        <button class="wishlist" type="button" aria-label="Add ${product.name} to wishlist"><i data-lucide="heart"></i></button>
-        <a class="product-card__link" href="${productUrl(product)}" aria-label="View ${product.name}">
+        ${product.badge ? `<span class="badge">${safeText(product.badge)}</span>` : ""}
+        <button class="wishlist" type="button" aria-label="Add ${safeAttr(product.name)} to wishlist"><i data-lucide="heart"></i></button>
+        <a class="product-card__link" href="${safeAttr(productUrl(product))}" aria-label="View ${safeAttr(product.name)}">
           <span class="product-card__media">
-            <img class="product-card__image product-card__image--primary" src="${primaryImage}" alt="${product.name}" loading="lazy">
-            <img class="product-card__image product-card__image--hover" src="${hoverImage}" alt="" loading="lazy" aria-hidden="true">
+            <img class="product-card__image product-card__image--primary" src="${safeAttr(primaryImage)}" alt="${safeAttr(product.name)}" loading="lazy" width="640" height="640">
+            <img class="product-card__image product-card__image--hover" src="${safeAttr(hoverImage)}" alt="" loading="lazy" width="640" height="640" aria-hidden="true">
           </span>
-          <h3>${product.name}</h3>
+          <h3>${safeText(product.name)}</h3>
           ${priceMarkup(product, showCompare)}
           ${ratingMarkup(product)}
         </a>
-        <button class="product-card__add" type="button" data-card-add="${product.id}">Add to Cart</button>
+        <button class="product-card__add" type="button" data-card-add="${safeAttr(product.id)}">Add to Cart</button>
       </article>
     `;
   }).join("");
@@ -386,14 +416,14 @@ function renderCategoryPage() {
 
   document.title = `${title} | Dearelle`;
   if (heading) {
-    heading.innerHTML = `<p class="script">${kicker}</p><h1>${title}</h1>`;
+    heading.innerHTML = `<p class="script">${safeText(kicker)}</p><h1>${safeText(title)}</h1>`;
   }
 
   if (!products.length) {
     container.innerHTML = `
       <div class="empty-state category-empty">
         <i data-lucide="sparkles"></i>
-        <h2>${title} are coming soon.</h2>
+        <h2>${safeText(title)} are coming soon.</h2>
         <p>Explore our current favorites while we finish this edit.</p>
         <a class="button" href="category?category=best-sellers">Shop Best Sellers</a>
       </div>
@@ -413,7 +443,7 @@ function optionGroup(label, values) {
     <fieldset class="product-options" data-option-group="${key}">
       <legend>${label}</legend>
       <div>
-        ${values.map((value, index) => `<button class="${index === 0 ? "is-selected" : ""}" type="button" data-option-value="${value}">${value}</button>`).join("")}
+        ${values.map((value, index) => `<button class="${index === 0 ? "is-selected" : ""}" type="button" data-option-value="${safeAttr(value)}">${safeText(value)}</button>`).join("")}
       </div>
     </fieldset>
   `;
@@ -431,11 +461,11 @@ function renderProductPage() {
   detail.innerHTML = `
     <div class="product-gallery">
       <button class="gallery-expand" type="button" aria-label="View larger image"><i data-lucide="arrow-right"></i></button>
-      <img class="product-gallery__main" src="${product.images[0]}" alt="${product.name}" data-main-image>
-      <div class="product-gallery__thumbs" aria-label="${product.name} image gallery">
+      <img class="product-gallery__main" src="${safeAttr(product.images[0])}" alt="${safeAttr(product.name)}" data-main-image>
+      <div class="product-gallery__thumbs" aria-label="${safeAttr(product.name)} image gallery">
         ${product.images.map((image, index) => `
-          <button class="${index === 0 ? "is-active" : ""}" type="button" data-gallery-image="${image}" aria-label="Show image ${index + 1}">
-            <img src="${image}" alt="" loading="lazy">
+          <button class="${index === 0 ? "is-active" : ""}" type="button" data-gallery-image="${safeAttr(image)}" aria-label="Show image ${index + 1}">
+            <img src="${safeAttr(image)}" alt="" loading="lazy">
           </button>
         `).join("")}
       </div>
@@ -445,26 +475,26 @@ function renderProductPage() {
       <nav class="breadcrumbs" aria-label="Breadcrumb">
         <a href="/">Home</a>
         <span>/</span>
-        <a href="category?category=${slugify(product.category)}">${product.category}</a>
+        <a href="category?category=${safeAttr(slugify(product.category))}">${safeText(product.category)}</a>
         <span>/</span>
-        <span>${product.name}</span>
+        <span>${safeText(product.name)}</span>
       </nav>
-      <p class="script product-kicker">${product.collection}</p>
-      <h1>${product.name}</h1>
+      <p class="script product-kicker">${safeText(product.collection)}</p>
+      <h1>${safeText(product.name)}</h1>
       <div class="product-rating">${ratingMarkup(product)}</div>
       <p class="product-price">${formatPrice(product.price)}</p>
       <p class="installments">or 4 interest-free payments of ${formatPrice(product.price / 4)} with <strong>shop Pay</strong></p>
-      <p class="product-description">${product.shortDescription}</p>
+      <p class="product-description">${safeText(product.shortDescription)}</p>
       ${Object.entries(product.options).map(([label, values]) => optionGroup(label.replace(/^\w/, (letter) => letter.toUpperCase()), values)).join("")}
       <div class="quantity-control" aria-label="Quantity">
         <button type="button" data-qty-minus aria-label="Decrease quantity">-</button>
         <span data-qty>1</span>
         <button type="button" data-qty-plus aria-label="Increase quantity">+</button>
       </div>
-      <button class="button product-add" type="button" data-add-cart="${product.id}">Add to Cart <i data-lucide="shopping-bag"></i></button>
+      <button class="button product-add" type="button" data-add-cart="${safeAttr(product.id)}">Add to Cart <i data-lucide="shopping-bag"></i></button>
       <button class="product-wishlist" type="button"><i data-lucide="heart"></i> Add to Wishlist</button>
       <div class="product-perks" aria-label="Shopping benefits">
-        <span><i data-lucide="truck"></i><strong>Free Shipping</strong><small>On orders ₹5,999+</small></span>
+        <span><i data-lucide="truck"></i><strong>Shipping</strong><small>Options available at checkout</small></span>
         <span><i data-lucide="gift"></i><strong>Gift-Ready</strong><small>Beautifully wrapped</small></span>
         <span><i data-lucide="shield-check"></i><strong>Warranty</strong><small>Quality you can trust</small></span>
       </div>
@@ -545,18 +575,18 @@ function renderCartPage() {
     <div class="cart-items">
       ${totals.lines.map((line) => `
         <article class="cart-item">
-          <a href="${productUrl(line.product)}"><img src="${line.product.images[0]}" alt="${line.product.name}"></a>
+          <a href="${safeAttr(productUrl(line.product))}"><img src="${safeAttr(line.product.images[0])}" alt="${safeAttr(line.product.name)}" loading="lazy" width="160" height="160"></a>
           <div>
-            <a class="cart-item__title" href="${productUrl(line.product)}">${line.product.name}</a>
-            <p>${line.options.metal}${line.options.length ? ` / ${line.options.length}` : ""}</p>
+            <a class="cart-item__title" href="${safeAttr(productUrl(line.product))}">${safeText(line.product.name)}</a>
+            <p>${safeText(line.options.metal)}${line.options.length ? ` / ${safeText(line.options.length)}` : ""}</p>
             <strong>${formatPrice(line.product.price)}</strong>
-            <div class="quantity-control cart-quantity" aria-label="Quantity for ${line.product.name}">
-              <button type="button" data-cart-minus="${line.key}" aria-label="Decrease quantity">-</button>
+            <div class="quantity-control cart-quantity" aria-label="Quantity for ${safeAttr(line.product.name)}">
+              <button type="button" data-cart-minus="${safeAttr(line.key)}" aria-label="Decrease quantity">-</button>
               <span>${line.quantity}</span>
-              <button type="button" data-cart-plus="${line.key}" aria-label="Increase quantity">+</button>
+              <button type="button" data-cart-plus="${safeAttr(line.key)}" aria-label="Increase quantity">+</button>
             </div>
           </div>
-          <button class="cart-remove" type="button" data-cart-remove="${line.key}">Remove</button>
+          <button class="cart-remove" type="button" data-cart-remove="${safeAttr(line.key)}">Remove</button>
         </article>
       `).join("")}
     </div>
@@ -577,13 +607,9 @@ function renderCheckoutPage() {
   if (stripeStatus === "success") {
     const pendingOrder = JSON.parse(localStorage.getItem("dearellePendingStripeOrder") || "null");
     if (pendingOrder) {
-      const orders = JSON.parse(localStorage.getItem("dearelleOrders") || "[]");
-      orders.push(pendingOrder);
-      localStorage.setItem("dearelleOrders", JSON.stringify(orders));
-      localStorage.setItem("dearelleLatestOrder", JSON.stringify(pendingOrder));
       localStorage.removeItem("dearellePendingStripeOrder");
       saveCart([]);
-      container.innerHTML = orderConfirmationMarkup(pendingOrder);
+      container.innerHTML = paymentProcessingMarkup(pendingOrder);
       createLocalIcons();
       return;
     }
@@ -643,8 +669,8 @@ function renderCheckoutPage() {
         <div class="checkout-items">
           ${totals.lines.map((line) => `
             <article>
-              <img src="${line.product.images[0]}" alt="${line.product.name}">
-              <div><strong>${line.product.name}</strong><span>Qty ${line.quantity}</span></div>
+              <img src="${safeAttr(line.product.images[0])}" alt="${safeAttr(line.product.name)}" loading="lazy" width="96" height="96">
+              <div><strong>${safeText(line.product.name)}</strong><span>Qty ${line.quantity}</span></div>
               <p>${formatPrice(line.lineTotal)}</p>
             </article>
           `).join("")}
@@ -796,9 +822,9 @@ function renderSearchResults(query) {
     return;
   }
   container.innerHTML = results.map((product) => `
-    <a href="${productUrl(product)}">
-      <img src="${product.images[0]}" alt="">
-      <span><strong>${product.name}</strong><small>${product.category} · ${formatPrice(product.price)}</small></span>
+    <a href="${safeAttr(productUrl(product))}">
+      <img src="${safeAttr(product.images[0])}" alt="" loading="lazy" width="72" height="72">
+      <span><strong>${safeText(product.name)}</strong><small>${safeText(product.category)} � ${formatPrice(product.price)}</small></span>
     </a>
   `).join("");
 }
