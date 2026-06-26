@@ -33,6 +33,16 @@ function dedupeProducts(productList) {
   });
 }
 
+function appendCustomGiftProducts() {
+  try {
+    const giftProducts = JSON.parse(localStorage.getItem("dearelleCustomGiftProducts") || "[]");
+    if (Array.isArray(giftProducts) && giftProducts.length) {
+      window.products = dedupeProducts([...(window.products || []), ...giftProducts]);
+    }
+  } catch {
+    localStorage.removeItem("dearelleCustomGiftProducts");
+  }
+}
 async function loadManagedProducts() {
   try {
     const response = await fetch("/api/admin?action=storefront", { credentials: "same-origin" });
@@ -40,6 +50,7 @@ async function loadManagedProducts() {
       const payload = await response.json();
       if (Array.isArray(payload.products) && payload.products.length) {
         window.products = dedupeProducts(payload.products);
+        appendCustomGiftProducts();
         return;
       }
     }
@@ -54,7 +65,9 @@ async function loadManagedProducts() {
     }
   } catch {
     localStorage.removeItem("dearelleManagedProducts");
-  }
+  }
+
+  appendCustomGiftProducts();
 }
 
 const iconPaths = {

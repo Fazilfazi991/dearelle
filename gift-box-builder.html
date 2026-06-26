@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customize Gift Box | Dearelle</title>
+  <meta name="description" content="Customize a Dearelle gift box with jewellery, chocolates, beauty treats, personal notes, and delivery details.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Parisienne&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="gift-campaign-body">
+  <header class="gift-header gift-header--reference">
+    <nav class="gift-nav gift-nav--reference shell" aria-label="Gift box builder navigation">
+      <a class="brand gift-logo" href="/" aria-label="Dearelle home"><img src="/assets/dearelle-logo.png" alt="Dearelle"></a>
+      <div class="gift-nav__center"><a href="/send-gift-to-india">Gift Boxes</a><a href="/send-gift-to-india#reviews">Reviews</a><a href="/send-gift-to-india#faq">FAQ</a></div>
+      <div class="gift-nav__actions"><a class="icon-button" href="/account" aria-label="Account"><i data-lucide="user-round"></i></a><a class="icon-button cart" href="/cart" aria-label="Cart"><i data-lucide="shopping-bag"></i><span data-cart-count>0</span></a></div>
+    </nav>
+  </header>
+
+  <main class="gift-box-page shell" data-gift-box-page>
+    <section class="gift-box-detail-hero">
+      <div>
+        <a class="gift-back-link" href="/send-gift-to-india">Back to gift boxes</a>
+        <p class="script">Dearelle Gift Box</p>
+        <h1 data-box-name>Gift Box</h1>
+        <strong data-box-price>₹0</strong>
+        <p data-box-description></p>
+        <ul data-box-includes></ul>
+        <a class="button" href="#customize-box">Start Customizing</a>
+      </div>
+      <img data-box-image src="/assets/landing/romantic_gift_arrangement_in_soft_pastels.webp" alt="Dearelle gift box">
+    </section>
+
+    <section class="gift-box-builder gift-box-builder--page" id="customize-box" data-gift-box-builder>
+      <div class="gift-ref-title">
+        <p class="script">Customize</p>
+        <h2>Build your selected box</h2>
+        <p>Choose only the items allowed for this box. Your summary updates live.</p>
+      </div>
+      <ol class="gift-builder-progress" data-builder-progress></ol>
+      <div class="gift-box-builder__layout">
+        <form class="gift-box-builder__form" data-builder-form>
+          <section class="builder-step" data-category-step="jewellery"><div class="builder-step__head"><span>1</span><h3>Choose Jewellery</h3></div><p class="builder-step__help" data-step-help="jewellery"></p><div class="builder-options builder-options--three" data-builder-options="jewellery"></div></section>
+          <section class="builder-step" data-category-step="chocolate"><div class="builder-step__head"><span>2</span><h3>Choose Chocolate</h3></div><p class="builder-step__help" data-step-help="chocolate"></p><div class="builder-options builder-options--three" data-builder-options="chocolate"></div></section>
+          <section class="builder-step" data-category-step="cosmetic"><div class="builder-step__head"><span>3</span><h3>Choose Cosmetic</h3></div><p class="builder-step__help" data-step-help="cosmetic"></p><div class="builder-options builder-options--four" data-builder-options="cosmetic"></div></section>
+          <section class="builder-step"><div class="builder-step__head"><span data-personal-step>4</span><h3>Personalize</h3></div><div class="builder-personal-grid" data-personal-fields></div></section>
+          <section class="builder-step" data-addon-wrap><div class="builder-step__head"><span data-addon-step>5</span><h3>Add-ons</h3></div><p class="builder-step__help">Optional extras can be added to make the box more personal.</p><div class="builder-addon-list" data-builder-addons></div></section>
+        </form>
+        <aside class="gift-box-builder__summary" aria-live="polite">
+          <p class="script">Review Box</p>
+          <h3 data-summary-title>Live Summary</h3>
+          <div data-builder-summary></div>
+          <div class="builder-total"><span>Total</span><strong data-builder-total>₹0</strong></div>
+          <button class="button" type="button" data-gift-add-cart>Add to Cart</button>
+          <button class="button button--secondary" type="button" data-gift-checkout>Checkout</button>
+          <a class="button button--secondary" href="#" data-builder-whatsapp>Order on WhatsApp</a>
+          <small data-builder-status>Please review all selected details before ordering.</small>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="/products.js"></script>
+  <script src="/script.js"></script>
+  <script>
+    const boxPlans = {
+      "sweet-heart-box": {
+        id: "sweet-heart-box",
+        name: "Sweet Heart Box",
+        basePrice: 999,
+        description: "A sweet first gift with jewellery, chocolates, and a personal note.",
+        image: "/assets/landing/romantic_jewelry_gift_arrangement_in_pinks.webp",
+        includes: ["1 jewellery item", "1 chocolate item", "Personal note"],
+        categories: ["jewellery", "chocolate"],
+        personalization: { message: true, photoUpload: false, nameCard: false, occasionTag: false, preferredDeliveryDate: false, hidePrice: true },
+        optionalAddons: ["lip_tint_addon", "hand_cream_addon", "photo_card", "premium_ribbon", "extra_chocolate"]
+      },
+      "luxe-love-box": {
+        id: "luxe-love-box",
+        name: "Luxe Love Box",
+        basePrice: 1499,
+        description: "A thoughtful gift box with jewellery, chocolates, cosmetics, and a personal note.",
+        image: "/assets/landing/romantic_gift_arrangement_in_soft_pastels.webp",
+        includes: ["1 jewellery item", "1 chocolate item", "1 cosmetic item", "Personal note"],
+        categories: ["jewellery", "chocolate", "cosmetic"],
+        personalization: { message: true, photoUpload: false, nameCard: true, occasionTag: true, preferredDeliveryDate: true, hidePrice: true },
+        optionalAddons: ["photo_card"]
+      },
+      "ultimate-surprise-box": {
+        id: "ultimate-surprise-box",
+        name: "Ultimate Surprise Box",
+        basePrice: 2499,
+        description: "The full surprise with jewellery, chocolates, cosmetics, photo card, name card, and premium packaging.",
+        image: "/assets/landing/luxurious_blush_beauty_gift_set.webp",
+        includes: ["Jewellery", "Chocolates", "Cosmetics", "Photo card", "Name card", "Occasion tag", "Premium packaging"],
+        categories: ["jewellery", "chocolate", "cosmetic"],
+        personalization: { message: true, photoUpload: true, nameCard: true, occasionTag: true, preferredDeliveryDate: true, hidePrice: true },
+        optionalAddons: ["extra_printed_photo", "extra_chocolate", "premium_message_card"]
+      }
+    };
+    const categoryHelp = {
+      jewellery: "Choose one jewellery piece included in your box. Premium options may add a small upgrade cost.",
+      chocolate: "Choose one chocolate option. Included treats are covered by the box price.",
+      cosmetic: "Choose one beauty treat for this box. Premium options show only the upgrade amount."
+    };
+    const images = {
+      lotus: "/assets/products/product-3/04_kerala_closeup_necklace.webp",
+      heartPendant: "/assets/landing/romantic_jewelry_gift_arrangement_in_pinks.webp",
+      studEarrings: "/assets/products/earrings-diamond/04_flatlay_marble_product_shot.png",
+      luxeEarrings: "/assets/products/earrings-heart/03_macro_satin_product_shot.png",
+      bracelet: "/assets/products/bracelet-delicate-chain/04_product_flatlay_bracelet.png",
+      jewellerySet: "/assets/landing/romantic_gift_arrangement_in_soft_pastels.webp",
+      chocolate: "/assets/landing/step_03_add_chocolates.webp",
+      chocolatePremium: "/assets/landing/elegant_gift_collection_in_soft_hues.webp",
+      cosmetic: "/assets/landing/step_04_add_cosmetics.webp",
+      perfume: "/assets/landing/luxurious_blush_beauty_gift_set.webp"
+    };
+    const choicesByBox = {
+      "sweet-heart-box": {
+        jewellery: [
+          { id: "lotus-necklace", name: "Lotus Necklace", price: 0, stock: "In stock", actualValue: 599, image: images.lotus },
+          { id: "heart-pendant", name: "Heart Pendant", price: 99, stock: "In stock", actualValue: 499, image: images.heartPendant },
+          { id: "stud-earrings", name: "Stud Earrings", price: 99, stock: "In stock", actualValue: 399, image: images.studEarrings }
+        ],
+        chocolate: [
+          { id: "dairy-milk-silk", name: "Dairy Milk Silk", price: 0, stock: "In stock", actualValue: 99, image: images.chocolate },
+          { id: "ferrero-2pc", name: "Ferrero Rocher 2 pcs", price: 149, stock: "In stock", actualValue: 199, image: images.chocolate },
+          { id: "mini-assorted", name: "Mini Assorted Chocolates", price: 199, stock: "In stock", actualValue: 249, image: images.chocolatePremium }
+        ]
+      },
+      "luxe-love-box": {
+        jewellery: [
+          { id: "lotus-necklace", name: "Lotus Necklace", price: 0, stock: "In stock", actualValue: 599, image: images.lotus },
+          { id: "heart-pendant-set", name: "Heart Pendant Set", price: 149, stock: "In stock", actualValue: 699, image: images.heartPendant },
+          { id: "luxe-earrings", name: "Luxe Earrings", price: 99, stock: "In stock", actualValue: 599, image: images.luxeEarrings },
+          { id: "premium-bracelet", name: "Premium Bracelet", price: 199, stock: "In stock", actualValue: 799, image: images.bracelet }
+        ],
+        chocolate: [
+          { id: "dairy-milk-silk", name: "Dairy Milk Silk", price: 0, stock: "In stock", actualValue: 99, image: images.chocolate },
+          { id: "ferrero-4pc", name: "Ferrero Rocher 4 pcs", price: 199, stock: "In stock", actualValue: 299, image: images.chocolate },
+          { id: "premium-assorted", name: "Premium Assorted Chocolates", price: 249, stock: "In stock", actualValue: 349, image: images.chocolatePremium }
+        ],
+        cosmetic: [
+          { id: "lip-tint", name: "Lip Tint", price: 0, stock: "In stock", actualValue: 199, image: images.cosmetic },
+          { id: "hand-cream", name: "Hand Cream", price: 99, stock: "In stock", actualValue: 249, image: images.cosmetic },
+          { id: "mini-perfume", name: "Mini Perfume", price: 199, stock: "In stock", actualValue: 399, image: images.perfume },
+          { id: "glow-serum", name: "Glow Serum", price: 249, stock: "In stock", actualValue: 449, image: images.cosmetic }
+        ]
+      },
+      "ultimate-surprise-box": {
+        jewellery: [
+          { id: "lotus-necklace", name: "Lotus Necklace", price: 0, stock: "In stock", actualValue: 599, image: images.lotus },
+          { id: "heart-pendant-set", name: "Heart Pendant Set", price: 0, stock: "In stock", actualValue: 699, image: images.heartPendant },
+          { id: "luxe-earrings", name: "Luxe Earrings", price: 0, stock: "In stock", actualValue: 599, image: images.luxeEarrings },
+          { id: "premium-bracelet", name: "Premium Bracelet", price: 199, stock: "In stock", actualValue: 799, image: images.bracelet },
+          { id: "jewellery-set", name: "Jewellery Set", price: 399, stock: "In stock", actualValue: 1199, image: images.jewellerySet }
+        ],
+        chocolate: [
+          { id: "ferrero-4pc", name: "Ferrero Rocher 4 pcs", price: 0, stock: "In stock", actualValue: 299, image: images.chocolate },
+          { id: "dairy-ferrero-combo", name: "Dairy Milk Silk + Ferrero Combo", price: 0, stock: "In stock", actualValue: 349, image: images.chocolate },
+          { id: "premium-assorted", name: "Premium Assorted Chocolates", price: 0, stock: "In stock", actualValue: 349, image: images.chocolatePremium },
+          { id: "large-ferrero-box", name: "Large Ferrero Box", price: 299, stock: "In stock", actualValue: 599, image: images.chocolatePremium }
+        ],
+        cosmetic: [
+          { id: "lip-tint", name: "Lip Tint", price: 0, stock: "In stock", actualValue: 199, image: images.cosmetic },
+          { id: "hand-cream", name: "Hand Cream", price: 0, stock: "In stock", actualValue: 249, image: images.cosmetic },
+          { id: "mini-perfume", name: "Mini Perfume", price: 149, stock: "In stock", actualValue: 399, image: images.perfume },
+          { id: "glow-serum", name: "Glow Serum", price: 199, stock: "In stock", actualValue: 449, image: images.cosmetic }
+        ]
+      }
+    };
+    const addons = {
+      photo_card: { id: "photo_card", name: "Photo Card", price: 99 },
+      premium_ribbon: { id: "premium_ribbon", name: "Premium Ribbon Wrap", price: 49 },
+      extra_chocolate: { id: "extra_chocolate", name: "Extra Chocolate", price: 99 },
+      name_card: { id: "name_card", name: "Name Card", price: 49 },
+      extra_cosmetic: { id: "extra_cosmetic", name: "Extra Cosmetic", price: 199 },
+      premium_message_card: { id: "premium_message_card", name: "Premium Message Card", price: 79 },
+      lip_tint_addon: { id: "lip_tint_addon", name: "Add Lip Tint", price: 199 },
+      hand_cream_addon: { id: "hand_cream_addon", name: "Add Hand Cream", price: 249 },
+      extra_printed_photo: { id: "extra_printed_photo", name: "Extra Printed Photo", price: 49 }
+    };
+    const slug = location.pathname.split("/").filter(Boolean).pop();
+    const plan = boxPlans[slug] || boxPlans["luxe-love-box"];
+    const choices = choicesByBox[plan.id];
+    const state = { selected: {}, addons: new Set() };
+    plan.categories.forEach((category) => state.selected[category] = choices[category][0]);
+
+    function money(value) { return new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(value || 0); }
+    function formData() { return Object.fromEntries(new FormData(document.querySelector("[data-builder-form]")).entries()); }
+    function total() { return plan.basePrice + Object.values(state.selected).reduce((sum, item) => sum + item.price, 0) + [...state.addons].reduce((sum, id) => sum + addons[id].price, 0); }
+    function priceLabel(item) { return item.price ? "Upgrade +" + money(item.price) : "Included"; }
+    function optionButton(category, item) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "builder-option";
+      button.dataset.category = category;
+      button.dataset.optionId = item.id;
+      button.innerHTML = `<img src="${item.image}" alt="${item.name}" loading="lazy"><strong>${item.name}</strong><span>${item.stock}</span><small>${priceLabel(item)}</small><em class="builder-option__action">Choose this</em>`;
+      return button;
+    }
+    function renderPersonalFields() {
+      const fields = document.querySelector("[data-personal-fields]");
+      const p = plan.personalization;
+      fields.innerHTML = `
+        <label>Recipient name<input name="recipientName" autocomplete="name" placeholder="Her name"></label>
+        <label>Sender name<input name="senderName" placeholder="Your name"></label>
+        <label>Occasion<input name="occasion" placeholder="Birthday, Eid, anniversary"></label>
+        <label>Recipient phone<input name="recipientPhone" type="tel" placeholder="+91"></label>
+        <label class="builder-personal-grid__wide">Personal message<textarea name="message" rows="3" placeholder="Write the message for her card"></textarea></label>
+        <label class="builder-personal-grid__wide">India delivery address<textarea name="address" rows="3" placeholder="Full delivery address and city"></textarea></label>
+        ${p.preferredDeliveryDate ? '<label>Preferred delivery date<input name="preferredDate" type="date"></label>' : ""}
+        ${p.photoUpload ? '<label>Photo upload<input name="photoFile" type="file" accept="image/*"></label>' : ""}
+        ${p.nameCard ? '<label>Name card text<input name="nameCard" placeholder="Name for card"></label>' : ""}
+        ${p.occasionTag ? '<label>Occasion tag<input name="occasionTag" placeholder="For my wife, sister..."></label>' : ""}
+        <label class="builder-check"><input name="hidePrice" type="checkbox" checked> Hide price in package</label>`;
+    }
+    function render() {
+      document.title = `${plan.name} | Dearelle`;
+      document.querySelector("[data-box-name]").textContent = plan.name;
+      document.querySelector("[data-summary-title]").textContent = plan.name;
+      document.querySelector("[data-box-price]").textContent = money(plan.basePrice);
+      document.querySelector("[data-box-description]").textContent = plan.description;
+      document.querySelector("[data-box-image]").src = plan.image;
+      document.querySelector("[data-box-includes]").innerHTML = plan.includes.map((item) => `<li>${item}</li>`).join("");
+      document.querySelector("[data-builder-progress]").innerHTML = [...plan.categories, "personalize", "review"].map((step, index) => `<li><span>${index + 1}</span>${step.replace("chocolate", "chocolates")}</li>`).join("");
+      document.querySelectorAll("[data-category-step]").forEach((step) => step.hidden = !plan.categories.includes(step.dataset.categoryStep));
+      plan.categories.forEach((category) => {
+        document.querySelector(`[data-step-help="${category}"]`).textContent = categoryHelp[category];
+        document.querySelector(`[data-builder-options="${category}"]`).replaceChildren(...choices[category].map((item) => optionButton(category, item)));
+      });
+      renderPersonalFields();
+      document.querySelector("[data-builder-addons]").innerHTML = plan.optionalAddons.map((id) => `<label class="builder-addon"><input type="checkbox" value="${id}" data-addon>${addons[id].name}<strong>Add +${money(addons[id].price)}</strong></label>`).join("");
+      refresh();
+    }
+    function refresh() {
+      document.querySelectorAll(".builder-option").forEach((button) => {
+        button.classList.toggle("is-selected", state.selected[button.dataset.category]?.id === button.dataset.optionId);
+        const action = button.querySelector(".builder-option__action");
+        if (action) action.textContent = button.classList.contains("is-selected") ? "Selected" : "Choose this";
+      });
+      const data = formData();
+      const lines = [["Box", `${plan.name} (${money(plan.basePrice)})`], ...plan.categories.map((category) => [category, `${state.selected[category].name} - ${priceLabel(state.selected[category])}`]), ["Add-ons", [...state.addons].map((id) => `${addons[id].name} - Add +${money(addons[id].price)}`).join(", ") || "None"], ["Recipient", data.recipientName || "Not added"], ["Occasion", data.occasion || "Not added"], ["Message", data.message ? "Added" : "Not added"], ["Hide Price", data.hidePrice ? "Yes" : "No"]];
+      document.querySelector("[data-builder-summary]").innerHTML = lines.map(([label, value]) => `<div><span>${label}</span><strong>${value}</strong></div>`).join("");
+      document.querySelector("[data-builder-total]").textContent = money(total());
+      const message = ["Hi Dearelle, I want to order a customized gift box.", "", `Box: ${plan.name}`, ...plan.categories.map((category) => `${category}: ${state.selected[category].name}`), `Add-ons: ${[...state.addons].map((id) => addons[id].name).join(", ") || "None"}`, `Recipient Name: ${data.recipientName || ""}`, `Occasion: ${data.occasion || ""}`, `Message: ${data.message || ""}`, `Delivery Address/City: ${data.address || ""}`, `Preferred Date: ${data.preferredDate || ""}`, `Total: ${money(total())}`, "", "Please confirm availability and payment."].join("\n");
+      document.querySelector("[data-builder-whatsapp]").href = "https://wa.me/918086434964?text=" + encodeURIComponent(message);
+    }
+    function bundleProduct() {
+      const data = formData();
+      const id = `gift-box-${plan.id}-${Date.now()}`;
+      return { id, name: plan.name, price: total(), category: "Gift Boxes", material: "Custom bundle", rating: 5, reviews: 1, badge: "Gift Box", images: [plan.image], description: plan.description, options: { Details: [`Jewellery: ${state.selected.jewellery?.name || "None"} | Chocolate: ${state.selected.chocolate?.name || "None"} | Cosmetic: ${state.selected.cosmetic?.name || "None"} | Add-ons: ${[...state.addons].map((addon) => addons[addon].name).join(", ") || "None"} | Recipient: ${data.recipientName || "Not added"}`] }, giftBox: { plan, selected: state.selected, addons: [...state.addons], personalization: data, total: total() } };
+    }
+    function addBundleToCart(goCheckout) {
+      const product = bundleProduct();
+      const saved = JSON.parse(localStorage.getItem("dearelleCustomGiftProducts") || "[]").filter((item) => item.id !== product.id);
+      saved.push(product);
+      localStorage.setItem("dearelleCustomGiftProducts", JSON.stringify(saved.slice(-20)));
+      window.products = [...(window.products || []), product];
+      addToCart(product.id, 1, { Details: product.options.Details[0] });
+      document.querySelector("[data-builder-status]").textContent = goCheckout ? "Gift box added. Opening checkout..." : "Gift box added to cart.";
+      setTimeout(() => location.href = goCheckout ? "/checkout" : "/cart", 350);
+    }
+    render();
+    document.querySelector("[data-gift-box-builder]").addEventListener("click", (event) => {
+      const option = event.target.closest(".builder-option");
+      if (!option) return;
+      state.selected[option.dataset.category] = choices[option.dataset.category].find((item) => item.id === option.dataset.optionId);
+      refresh();
+    });
+    document.querySelector("[data-builder-form]").addEventListener("input", refresh);
+    document.querySelector("[data-builder-form]").addEventListener("change", (event) => {
+      if (event.target.matches("[data-addon]")) event.target.checked ? state.addons.add(event.target.value) : state.addons.delete(event.target.value);
+      refresh();
+    });
+    document.querySelector("[data-gift-add-cart]").addEventListener("click", () => addBundleToCart(false));
+    document.querySelector("[data-gift-checkout]").addEventListener("click", () => addBundleToCart(true));
+    lucide?.createIcons();
+  </script>
+</body>
+</html>

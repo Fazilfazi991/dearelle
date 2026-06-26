@@ -34,6 +34,10 @@ const cleanPageRoutes = {
   "/earrings": "category.html",
   "/cart": "cart.html",
   "/checkout": "checkout.html",
+  "/send-gift-to-india": "send-gift-to-india.html",
+  "/gift-boxes/sweet-heart-box": "gift-box-builder.html",
+  "/gift-boxes/luxe-love-box": "gift-box-builder.html",
+  "/gift-boxes/ultimate-surprise-box": "gift-box-builder.html",
   "/about-us": "page.html",
   "/our-craft": "page.html",
   "/sustainability": "page.html",
@@ -56,7 +60,9 @@ const legacyPageRedirects = {
   "/product.html": "/product",
   "/category.html": "/category",
   "/cart.html": "/cart",
-  "/checkout.html": "/checkout"
+  "/checkout.html": "/checkout",
+  "/send-gift-to-india.html": "/send-gift-to-india",
+  "/gift-box-builder.html": "/send-gift-to-india"
 };
 
 function json(response, statusCode, payload) {
