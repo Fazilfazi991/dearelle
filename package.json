@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "syntax-check": "node --check script.js && node --check admin.js && node --check account.js && node --check auth.js && node --check pages.js && node --check server.js && node --check api/admin.js && node --check api/customer.js && node --check api/create-checkout-session.js && node --check api/stripe-webhook.js && node --check lib/admin-core.js && node --check lib/customer-core.js",
+    "syntax-check": "node --check script.js && node --check skincare.js && node --check admin.js && node --check account.js && node --check auth.js && node --check pages.js && node --check server.js && node --check api/admin.js && node --check api/customer.js && node --check api/create-checkout-session.js && node --check api/stripe-webhook.js && node --check lib/admin-core.js && node --check lib/customer-core.js",
     "test": "npm run syntax-check",
     "lint": "npm run syntax-check"
   }

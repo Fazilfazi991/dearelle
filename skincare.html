@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#fff9f5">
+  <title>Skin Ritual | Dearelle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Parisienne&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="skincare-body">
+  <main class="skin-flow" data-skin-flow>
+    <header class="skin-header">
+      <a class="skin-menu" href="/" aria-label="Return to Dearelle">←</a>
+      <a class="skin-brand" href="/" aria-label="Dearelle home"><img src="assets/dearelle-logo.png" alt="Dearelle"></a>
+      <a class="skin-bag" href="/cart" aria-label="Open shopping bag">Bag <span data-skin-cart-count>0</span></a>
+    </header>
+
+    <section class="skin-screen skin-screen--intro" data-skin-screen="intro">
+      <span class="skin-eyebrow">A little ritual for you</span>
+      <h1>Know your skin<br>better.</h1>
+      <p class="skin-lede">A calm starting point for discovering the care that feels right for you.</p>
+
+      <div class="scan-stage" aria-label="Skin scan preview illustration">
+        <div class="scan-window">
+          <video class="scan-video" data-camera-video autoplay muted playsinline></video>
+          <img class="scan-portrait" src="assets/skincare/dearelle-skin-preview-portrait.png" alt="Woman with clean natural skin, ready for a skin preview">
+          <span class="scan-corner scan-corner--tl"></span><span class="scan-corner scan-corner--tr"></span><span class="scan-corner scan-corner--br"></span><span class="scan-corner scan-corner--bl"></span>
+          <span class="scan-line" aria-hidden="true"></span>
+          <p class="scan-guidance" data-scan-guidance>Centre your face in the frame</p>
+        </div>
+        <div class="scan-chip scan-chip--time"><b>15 sec</b><span>to get set</span></div>
+        <div class="scan-chip scan-chip--secure">♢ <span>Private preview</span></div>
+      </div>
+
+      <div class="skin-privacy"><span>♢</span><p><strong>Your privacy comes first.</strong><br>Camera access is only requested when you choose it. Nothing is captured or stored by this page.</p></div>
+      <div class="skin-benefits" aria-label="What you can explore"><span>Hydration</span><span>Texture</span><span>Comfort</span><span>Routine ideas</span></div>
+      <div class="skin-actions">
+        <button class="skin-button skin-button--primary" type="button" data-start-camera><span>⌁</span> Start skin preview <i>→</i></button>
+        <button class="skin-button skin-button--secondary" type="button" data-manual-start>Explore care manually <i>→</i></button>
+      </div>
+      <p class="skin-footnote">Cosmetic guidance only — this is not a medical assessment.</p>
+    </section>
+
+    <section class="skin-screen skin-screen--camera" data-skin-screen="camera" hidden>
+      <button class="skin-text-button" type="button" data-back-intro>← Back</button>
+      <div class="skin-camera-heading"><span class="skin-eyebrow">Your private preview</span><h1 data-camera-heading>Find your light.</h1><p data-camera-instructions>Remove glasses if you can, use even lighting, and keep a relaxed expression.</p></div>
+      <div class="camera-panel"><div class="camera-frame" data-camera-frame><video data-camera-stream autoplay muted playsinline aria-label="Live camera preview"></video><img data-captured-photo alt="Captured skin snapshot" hidden><span class="camera-guide-ring camera-guide-ring--one" aria-hidden="true"></span><span class="camera-guide-ring camera-guide-ring--two" aria-hidden="true"></span><span class="camera-oval" aria-hidden="true"></span><span class="camera-corner camera-corner--tl" aria-hidden="true"></span><span class="camera-corner camera-corner--tr" aria-hidden="true"></span><span class="camera-corner camera-corner--br" aria-hidden="true"></span><span class="camera-corner camera-corner--bl" aria-hidden="true"></span><span class="camera-sweep" aria-hidden="true"></span><span class="camera-ready-glow" aria-hidden="true"></span></div><p class="camera-status" data-camera-status role="status">Starting camera…</p></div>
+      <div class="camera-actions" data-camera-live-actions><button class="skin-button skin-button--primary" type="button" data-capture-snapshot disabled aria-disabled="true">Take skin snapshot <i>→</i></button><button class="skin-link" type="button" data-continue-manual>Skip skin scan</button><button class="skin-link skin-link--quiet" type="button" data-back-intro>Cancel camera</button></div>
+      <div class="camera-actions" data-camera-review-actions hidden><button class="skin-button skin-button--primary" type="button" data-use-photo>Use this photo <i>→</i></button><button class="skin-button skin-button--secondary" type="button" data-retake>Retake</button><button class="skin-link" type="button" data-continue-manual>Skip skin scan</button></div>
+      <div class="camera-actions" data-camera-error-actions hidden><button class="skin-button skin-button--primary" type="button" data-retry-camera>Try again <i>→</i></button><button class="skin-button skin-button--secondary" type="button" data-continue-manual>Continue without scan</button></div>
+    </section>
+
+    <section class="skin-screen skin-screen--analyzing" data-skin-screen="analyzing" hidden>
+      <div class="analysis-frame"><img data-analysis-photo alt="Your captured snapshot" hidden><span class="analysis-oval" aria-hidden="true"></span><span class="analysis-scan" aria-hidden="true"></span></div>
+      <span class="skin-eyebrow">Snapshot confirmed</span><h1>Analyzing your skin.</h1><p class="skin-lede" data-analysis-copy>Checking that your snapshot is ready.</p>
+      <div class="analysis-progress" aria-label="Analysis progress"><span data-analysis-progress></span></div>
+      <p class="skin-footnote">Your photo stays in this page’s temporary memory and is never uploaded or stored.</p>
+    </section>
+
+    <section class="skin-screen skin-screen--analysis-unavailable" data-skin-screen="analysis-unavailable" hidden>
+      <span class="skin-eyebrow">Almost there</span><h1>Your snapshot<br>is ready.</h1><p class="skin-lede">A live cosmetic-analysis service is not connected to Dearelle yet, so we can’t responsibly generate skin results from your photo.</p>
+      <aside class="skin-note"><span>✦</span><p><strong>Nothing was stored.</strong><br>Your temporary snapshot has now been discarded. You can still create a thoughtful ritual manually.</p></aside>
+      <div class="skin-actions"><button class="skin-button skin-button--primary" type="button" data-continue-manual>Build my ritual manually <i>→</i></button><button class="skin-button skin-button--secondary" type="button" data-restart-flow>Start again</button></div>
+    </section>
+
+    <section class="skin-screen skin-screen--manual" data-skin-screen="manual" hidden>
+      <button class="skin-text-button" type="button" data-back-intro>← Back</button>
+      <span class="skin-eyebrow">Build your ritual</span>
+      <h1>What would you like<br>to care for?</h1>
+      <p class="skin-lede">Choose any focus areas. You can update them anytime.</p>
+      <div class="skin-choice-grid" data-skin-choices>
+        <button type="button" data-focus="Hydration"><span>◌</span>Hydration <small>Feels dry or tight</small></button>
+        <button type="button" data-focus="Texture"><span>✦</span>Texture <small>Seeks a smoother feel</small></button>
+        <button type="button" data-focus="Comfort"><span>♡</span>Comfort <small>Gentle everyday care</small></button>
+        <button type="button" data-focus="Glow"><span>☼</span>Glow <small>Looking refreshed</small></button>
+      </div>
+      <div class="skin-actions skin-actions--manual"><button class="skin-button skin-button--primary" type="button" data-show-routine>See my care ritual <i>→</i></button></div>
+    </section>
+
+    <section class="skin-screen skin-screen--result" data-skin-screen="result" hidden>
+      <span class="skin-eyebrow">Your starting point</span>
+      <h1>A ritual made<br>for your moment.</h1>
+      <p class="skin-lede" data-routine-copy>A thoughtful place to begin, based on the areas you chose.</p>
+      <div class="routine-card"><div class="routine-card__header"><span>YOUR FOCUS</span><b data-focus-summary>Hydration · Comfort</b></div><div class="routine-steps"><article><span>01</span><div><b>Cleanse gently</b><p>Keep your first step soft and consistent.</p></div></article><article><span>02</span><div><b>Layer in comfort</b><p>Choose formulas that support the feel you want.</p></div></article><article><span>03</span><div><b>Protect daily</b><p>Make your routine easy to return to.</p></div></article></div></div>
+      <aside class="skin-note"><span>✦</span><p><strong>A note on recommendations</strong><br>Dearelle does not currently stock skincare products, so this is a gentle ritual guide rather than a product recommendation.</p></aside>
+      <div class="skin-actions"><a class="skin-button skin-button--primary" href="/category">Explore Dearelle collections <i>→</i></a><button class="skin-button skin-button--secondary" type="button" data-restart-flow>Start again</button></div>
+    </section>
+  </main>
+  <script src="skincare.js"></script>
+</body>
+</html>

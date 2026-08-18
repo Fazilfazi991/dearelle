@@ -34,6 +34,7 @@ const cleanPageRoutes = {
   "/earrings": "category.html",
   "/cart": "cart.html",
   "/checkout": "checkout.html",
+  "/skincare": "skincare.html",
   "/send-gift-to-india": "send-gift-to-india.html",
   "/gift-boxes/sweet-heart-box": "gift-box-builder.html",
   "/gift-boxes/luxe-love-box": "gift-box-builder.html",
