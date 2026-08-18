@@ -55,6 +55,7 @@
     showScreen('analysis-unavailable');
   }
   const escapeHtml = (value) => String(value ?? '').replace(/[&<>\"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[character]));
+  function recommendationCard(slot) { const match = slot.recommended; const product = match.product; const url = /^https:\/\//.test(product.officialProductUrl || '') ? product.officialProductUrl : '#'; const benefits = (product.skincare?.benefits || []).slice(0, 3); const badge = match.matchStrength === 'fallback' ? 'Closest Match' : 'Best Match'; const reason = match.matchStrength === 'fallback' ? 'A considered option from our current verified selection.' : `Chosen to support ${benefits.slice(0, 2).map((benefit) => benefit.replace(/_/g, ' ')).join(' and ')}.`; return `<article class="skin-recommendation-card skin-recommendation-card--${escapeHtml(slot.category)}"><div class="skin-product-placeholder" aria-hidden="true"><span class="skin-product-silhouette"></span><small>${escapeHtml(product.brand || 'Verified')}</small></div><div class="skin-recommendation-copy"><div class="skin-recommendation-meta"><span>${escapeHtml(slot.category)}</span><b class="skin-match-badge ${match.matchStrength === 'fallback' ? 'is-closest' : ''}">${badge}</b></div><p class="skin-product-brand">${escapeHtml(product.brand || '')}</p><h2>${escapeHtml(product.name)}</h2>${product.size ? `<p class="skin-product-size">${escapeHtml(product.size)}</p>` : ''}<p class="skin-recommendation-reason">${escapeHtml(reason)}</p><div class="skin-benefit-chips">${benefits.map((benefit) => `<span>${escapeHtml(benefit.replace(/_/g, ' '))}</span>`).join('')}</div><a class="skin-product-cta" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">View Product ↗<span class="sr-only"> (opens official site in a new tab)</span></a></div></article>`; }
   function renderReport(report) {
     document.querySelector('[data-report-summary]').textContent = report.summary;
     const labels = { hydrationAppearance: 'Hydration appearance', oilBalanceAppearance: 'Oil balance appearance', sensitivityAppearance: 'Sensitivity appearance', textureAppearance: 'Texture appearance', glowAppearance: 'Glow appearance', poreAppearance: 'Pore appearance' };
@@ -66,21 +67,14 @@
     const recommendationList = document.querySelector('[data-skin-recommendation-list]');
     const slots = report.recommendation?.routine?.filter((slot) => slot.recommended?.product?.commerceMode === 'external') || [];
     if (slots.length) {
-      recommendationList.innerHTML = slots.map((slot) => {
-        const match = slot.recommended;
-        const product = match.product;
-        const officialUrl = /^https:\/\//i.test(product.officialProductUrl || '') ? product.officialProductUrl : '#';
-        const benefits = (product.skincare?.benefits || []).slice(0, 2).map((benefit) => benefit.replace(/_/g, ' ')).join(' · ');
-        const recommendationLabel = match.matchStrength === 'fallback' ? 'Closest match from our current selection' : 'Recommended for you';
-        return `<article class="skin-recommendation-card"><div class="skin-product-placeholder" aria-hidden="true"><span>${escapeHtml(product.brand || 'Verified')}</span><b>${escapeHtml(slot.category)}</b></div><div><small>External product · ${escapeHtml(slot.category)}</small><strong class="skin-recommendation-strength">${escapeHtml(recommendationLabel)}</strong><h2>${escapeHtml(product.brand || '')} ${escapeHtml(product.name)}</h2>${product.size ? `<p>${escapeHtml(product.size)}</p>` : ''}<p>${escapeHtml(match.reasons.join(' · '))}</p><p class="skin-recommendation-benefits">${escapeHtml(benefits)}</p><a href="${escapeHtml(officialUrl)}" target="_blank" rel="noopener noreferrer">View Product <span class="sr-only">(opens official site in a new tab)</span> →</a></div></article>`;
-      }).join('');
+      recommendationList.innerHTML = slots.map(recommendationCard).join('');
       recommendationSection.hidden = false;
     } else { recommendationSection.hidden = true; recommendationList.innerHTML = ''; }
   }
   function renderManualRecommendations(recommendation) {
     const needs = document.querySelector('[data-manual-recommendation-needs]'); const list = document.querySelector('[data-manual-recommendation-list]');
     needs.innerHTML = recommendation.needs.map((need) => `<span>${escapeHtml(need.replace(/_/g, ' '))}</span>`).join('') || '<span>Gentle everyday care</span>';
-    list.innerHTML = recommendation.routine.filter((slot) => slot.recommended?.product?.commerceMode === 'external').map((slot) => { const match = slot.recommended; const product = match.product; const url = /^https:\/\//.test(product.officialProductUrl || '') ? product.officialProductUrl : '#'; const benefits = (product.skincare?.benefits || []).slice(0, 2).join(' · ').replace(/_/g, ' '); return `<article class="skin-recommendation-card"><div class="skin-product-placeholder" aria-hidden="true"><span>${escapeHtml(product.brand)}</span><b>${escapeHtml(slot.category)}</b></div><div><small>External recommendation · ${escapeHtml(slot.category)}</small><strong class="skin-recommendation-strength">${match.matchStrength === 'fallback' ? 'Closest match from our current selection' : 'Recommended for you'}</strong><h2>${escapeHtml(product.brand)} ${escapeHtml(product.name)}</h2>${product.size ? `<p>${escapeHtml(product.size)}</p>` : ''}<p>${escapeHtml(match.reasons.join(' · '))}</p><p class="skin-recommendation-benefits">${escapeHtml(benefits)}</p><a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">View Product <span class="sr-only">(opens official site in a new tab)</span> →</a></div></article>`; }).join('') || '<p class="skin-lede">We’re still looking for the right match for this step.</p>';
+    list.innerHTML = recommendation.routine.filter((slot) => slot.recommended?.product?.commerceMode === 'external').map(recommendationCard).join('') || '<p class="skin-lede">We’re still looking for the right match for this step.</p>';
   }
   async function usePhoto() {
     if (!capturedFrame) return;
