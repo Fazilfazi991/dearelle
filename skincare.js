@@ -13,6 +13,7 @@
   const reviewActions = document.querySelector('[data-camera-review-actions]');
   const errorActions = document.querySelector('[data-camera-error-actions]');
   const selections = new Set(['Hydration', 'Comfort']);
+  let manualSkinType = '';
   let stream; let capturedFrame = ''; let analysisTimer;
   const showScreen = (name) => { screens.forEach((screen) => { screen.hidden = screen.dataset.skinScreen !== name; }); flow.dataset.activeScreen = name; window.scrollTo({ top: 0, behavior: 'smooth' }); };
   const setActions = (state) => { liveActions.hidden = state !== 'live'; reviewActions.hidden = state !== 'review'; errorActions.hidden = state !== 'error'; };
@@ -39,23 +40,63 @@
   }
   function captureSnapshot() {
     if (!stream || !streamVideo.videoWidth || !streamVideo.videoHeight) return;
-    const canvas = document.createElement('canvas'); canvas.width = streamVideo.videoWidth; canvas.height = streamVideo.videoHeight;
+    const longestSide = 640; const scale = Math.min(1, longestSide / Math.max(streamVideo.videoWidth, streamVideo.videoHeight));
+    const canvas = document.createElement('canvas'); canvas.width = Math.round(streamVideo.videoWidth * scale); canvas.height = Math.round(streamVideo.videoHeight * scale);
     const context = canvas.getContext('2d'); context.translate(canvas.width, 0); context.scale(-1, 1); context.drawImage(streamVideo, 0, 0, canvas.width, canvas.height);
-    capturedFrame = canvas.toDataURL('image/jpeg', 0.9); capturedPhoto.src = capturedFrame; capturedPhoto.hidden = false; stopCamera();
+    capturedFrame = canvas.toDataURL('image/jpeg', 0.78); capturedPhoto.src = capturedFrame; capturedPhoto.hidden = false; stopCamera();
     cameraHeading.textContent = 'Looking good.'; cameraInstructions.textContent = 'Review your snapshot before continuing.';
     cameraStatus.textContent = 'Preview paused. This temporary image has not been uploaded.'; setActions('review');
   }
-  function usePhoto() {
-    if (!capturedFrame) return; analysisPhoto.src = capturedFrame; analysisPhoto.hidden = false; showScreen('analyzing');
-    const progress = document.querySelector('[data-analysis-progress]'); progress.style.width = '0%'; requestAnimationFrame(() => { progress.style.width = '100%'; });
-    analysisTimer = window.setTimeout(() => { clearSnapshot(); showScreen('analysis-unavailable'); }, 1800);
+  function setAnalysisError(code) {
+    const heading = document.querySelector('[data-analysis-error-heading]'); const copy = document.querySelector('[data-analysis-error-copy]');
+    if (code === 'QUALITY_REJECTED') { heading.textContent = 'We need a clearer photo.'; copy.textContent = 'Use even lighting, keep your face centred, and try again for a useful preview.'; }
+    else if (code === 'RATE_LIMITED') { heading.textContent = 'Please try again shortly.'; copy.textContent = 'To protect this preview, we limit how often it can be run. You can still build your routine manually.'; }
+    else { heading.textContent = "We couldn't complete your skin preview."; copy.textContent = 'Your photo has been discarded. You can try again or build your routine manually.'; }
+    showScreen('analysis-unavailable');
   }
-  function renderSelections() { document.querySelectorAll('[data-focus]').forEach((choice) => { const active = selections.has(choice.dataset.focus); choice.classList.toggle('is-selected', active); choice.setAttribute('aria-pressed', String(active)); }); }
-  function showRoutine() { const values = [...selections]; document.querySelector('[data-focus-summary]').textContent = values.length ? values.join(' · ') : 'A simple everyday ritual'; document.querySelector('[data-routine-copy]').textContent = values.length ? `A thoughtful place to begin around ${values.map((value) => value.toLowerCase()).join(', ')}.` : 'A thoughtful, everyday place to begin.'; showScreen('result'); }
+  const escapeHtml = (value) => String(value ?? '').replace(/[&<>\"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[character]));
+  function renderReport(report) {
+    document.querySelector('[data-report-summary]').textContent = report.summary;
+    const labels = { hydrationAppearance: 'Hydration appearance', oilBalanceAppearance: 'Oil balance appearance', sensitivityAppearance: 'Sensitivity appearance', textureAppearance: 'Texture appearance', glowAppearance: 'Glow appearance', poreAppearance: 'Pore appearance' };
+    const metrics = document.querySelector('[data-report-metrics]');
+    metrics.innerHTML = Object.entries(report.metrics).map(([key, metric]) => `<article><span>${escapeHtml(labels[key])}</span><b>${escapeHtml(metric.label)}</b><p>${escapeHtml(metric.explanation)}</p></article>`).join('');
+    const needs = document.querySelector('[data-report-needs]');
+    needs.innerHTML = report.needs.map((need) => `<span>${escapeHtml(need.replace(/_/g, ' '))}</span>`).join('') || '<span>Gentle everyday care</span>';
+  }
+  async function usePhoto() {
+    if (!capturedFrame) return;
+    const imageForRequest = capturedFrame; const button = document.querySelector('[data-use-photo]'); button.disabled = true;
+    analysisPhoto.src = imageForRequest; analysisPhoto.hidden = false; showScreen('analyzing');
+    const progress = document.querySelector('[data-analysis-progress]'); progress.style.width = '5%'; requestAnimationFrame(() => { progress.style.width = '82%'; });
+    try {
+      const controller = new AbortController(); const timeout = window.setTimeout(() => controller.abort(), 22000);
+      const response = await fetch('/api/skin-analysis', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ image: imageForRequest }), signal: controller.signal });
+      window.clearTimeout(timeout); const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(payload.error || 'ANALYSIS_FAILED');
+      progress.style.width = '100%'; await new Promise((resolve) => window.setTimeout(resolve, 280));
+      if (!payload.imageQuality?.usable) setAnalysisError('QUALITY_REJECTED'); else { renderReport(payload); showScreen('report'); }
+    } catch (error) { setAnalysisError(error.name === 'AbortError' ? 'TIMEOUT' : error.message); }
+    finally { clearSnapshot(); button.disabled = false; }
+  }
+  function renderSelections() { document.querySelectorAll('[data-focus]').forEach((choice) => { const active = selections.has(choice.dataset.focus); choice.classList.toggle('is-selected', active); choice.setAttribute('aria-pressed', String(active)); }); document.querySelectorAll('[data-skin-type]').forEach((choice) => { const active = choice.dataset.skinType === manualSkinType; choice.classList.toggle('is-selected', active); choice.setAttribute('aria-pressed', String(active)); }); }
+  async function showRoutine() {
+    const values = [...selections];
+    const needMap = { Hydration: 'light_hydration', Texture: 'texture_support', Comfort: 'barrier_support', Glow: 'brightening_support' };
+    const profile = { skinType: manualSkinType || undefined, needs: values.map((value) => needMap[value]).filter(Boolean), primaryNeeds: values.map((value) => needMap[value]).filter(Boolean), source: 'manual' };
+    document.querySelector('[data-focus-summary]').textContent = values.length ? values.join(' · ') : 'A simple everyday ritual';
+    document.querySelector('[data-routine-copy]').textContent = 'Preparing your gentle routine…'; showScreen('result');
+    try {
+      const response = await fetch('/api/skincare-recommendations', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ profile }) });
+      const recommendation = await response.json();
+      if (!response.ok) throw new Error('RECOMMENDATION_FAILED');
+      document.querySelector('[data-routine-copy]').textContent = recommendation.productsAvailable ? 'Your routine is based on your selections and current Dearelle skincare availability.' : 'Your routine focus is ready. Product recommendations will appear when Dearelle skincare products are available.';
+    } catch { document.querySelector('[data-routine-copy]').textContent = 'A thoughtful, everyday place to begin.'; }
+  }
   document.querySelector('[data-start-camera]').addEventListener('click', startCamera);
   document.querySelector('[data-manual-start]').addEventListener('click', () => showScreen('manual'));
   document.querySelector('[data-capture-snapshot]').addEventListener('click', captureSnapshot);
   document.querySelector('[data-use-photo]').addEventListener('click', usePhoto);
+  document.querySelector('[data-retry-analysis]').addEventListener('click', startCamera);
   document.querySelector('[data-retake]').addEventListener('click', startCamera);
   document.querySelector('[data-retry-camera]').addEventListener('click', startCamera);
   document.querySelectorAll('[data-continue-manual]').forEach((button) => button.addEventListener('click', () => { stopCamera(); clearSnapshot(); showScreen('manual'); }));
@@ -63,6 +104,7 @@
   document.querySelector('[data-show-routine]').addEventListener('click', showRoutine);
   document.querySelectorAll('[data-restart-flow]').forEach((button) => button.addEventListener('click', returnToIntro));
   document.querySelectorAll('[data-focus]').forEach((choice) => choice.addEventListener('click', () => { const focus = choice.dataset.focus; selections.has(focus) ? selections.delete(focus) : selections.add(focus); renderSelections(); navigator.vibrate?.(10); }));
+  document.querySelectorAll('[data-skin-type]').forEach((choice) => choice.addEventListener('click', () => { manualSkinType = manualSkinType === choice.dataset.skinType ? '' : choice.dataset.skinType; renderSelections(); }));
   window.addEventListener('pagehide', () => { window.clearTimeout(analysisTimer); stopCamera(); clearSnapshot(); });
   renderSelections();
 })();

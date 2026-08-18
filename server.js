@@ -6,8 +6,19 @@ const path = require("path");
 const vm = require("vm");
 const { handleAdminRequest, loadStore, saveStore, updateStripeOrder } = require("./lib/admin-core");
 const { handleCustomerRequest } = require("./lib/customer-core");
+const { allowRequest, analyzeSkinImage, publicError } = require("./lib/skin-analysis");
+const { profileFromAnalysis, normalizeSkinProfile, mergeProfileWithUserInput, recommendProductsForSkinProfile } = require("./lib/skincare-recommendations");
 
 const root = __dirname;
+function loadLocalEnv() {
+  const envPath = path.join(root, ".env");
+  if (!fs.existsSync(envPath)) return;
+  fs.readFileSync(envPath, "utf8").split(/\r?\n/).forEach((line) => {
+    const match = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)\s*$/);
+    if (match && !process.env[match[1]]) process.env[match[1]] = match[2].replace(/^['"]|['"]$/g, "");
+  });
+}
+loadLocalEnv();
 const port = Number(process.env.PORT || 4173);
 const stripeApiVersion = "2025-05-28.basil";
 const shippingMethods = [
@@ -71,13 +82,13 @@ function json(response, statusCode, payload) {
   response.end(JSON.stringify(payload));
 }
 
-function readBody(request) {
+function readBody(request, maxBytes = 1024 * 1024) {
   return new Promise((resolve, reject) => {
     let body = "";
 
     request.on("data", (chunk) => {
       body += chunk;
-      if (body.length > 1024 * 1024) {
+      if (body.length > maxBytes) {
         reject(new Error("Request body too large"));
         request.destroy();
       }
@@ -85,6 +96,33 @@ function readBody(request) {
     request.on("end", () => resolve(body));
     request.on("error", reject);
   });
+}
+
+async function handleSkinAnalysis(request, response) {
+  const ip = String(request.headers["x-forwarded-for"] || "").split(",")[0].trim() || request.socket.remoteAddress || "unknown";
+  if (!allowRequest(ip)) { json(response, 429, { error: "RATE_LIMITED" }); return; }
+  try {
+    const payload = JSON.parse(await readBody(request, 950 * 1024) || "{}");
+    const result = await analyzeSkinImage(payload.image);
+    const store = await loadStore();
+    result.recommendation = recommendProductsForSkinProfile(profileFromAnalysis(result), store.products);
+    json(response, 200, result);
+  } catch (error) {
+    const code = publicError(error);
+    const status = ["INVALID_IMAGE", "IMAGE_TOO_LARGE"].includes(code) ? 400 : code === "OPENAI_NOT_CONFIGURED" ? 503 : code === "RATE_LIMITED" ? 429 : 502;
+    json(response, status, { error: code });
+  }
+}
+
+async function handleSkincareRecommendations(request, response) {
+  try {
+    const payload = JSON.parse(await readBody(request, 64 * 1024) || "{}");
+    const store = await loadStore();
+    const profile = payload.scanProfile ? mergeProfileWithUserInput(payload.scanProfile, payload.userProfile) : normalizeSkinProfile(payload.profile || payload);
+    json(response, 200, recommendProductsForSkinProfile(profile, store.products));
+  } catch {
+    json(response, 500, { error: "RECOMMENDATION_FAILED" });
+  }
 }
 
 function verifyStripeWebhook(rawBody, signatureHeader) {
@@ -359,6 +397,16 @@ http.createServer((request, response) => {
 
   if (request.method === "POST" && route === "/api/create-checkout-session") {
     createCheckoutSession(request, response);
+    return;
+  }
+
+  if (request.method === "POST" && route === "/api/skin-analysis") {
+    handleSkinAnalysis(request, response);
+    return;
+  }
+
+  if (request.method === "POST" && route === "/api/skincare-recommendations") {
+    handleSkincareRecommendations(request, response);
     return;
   }
 

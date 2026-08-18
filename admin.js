@@ -119,9 +119,11 @@ function productFromForm(form) {
   const data = Object.fromEntries(new FormData(form).entries());
   const fallbackId = slugify(data.name);
 
-  return {
+  const vertical = data.vertical === "skincare" ? "skincare" : "jewelry";
+  const product = {
     id: data.id || fallbackId,
     name: data.name.trim(),
+    vertical,
     category: data.category.trim(),
     collection: data.collection.trim(),
     price: Number(data.price) || 0,
@@ -141,12 +143,30 @@ function productFromForm(form) {
     },
     images: splitLines(data.images)
   };
+  if (vertical === "skincare") {
+    product.skincare = {
+      category: data.skincareCategory,
+      skinTypes: splitOptions(data.skinTypes),
+      concerns: splitOptions(data.concerns),
+      benefits: splitOptions(data.benefits),
+      routineTime: splitOptions(data.routineTime),
+      routineOrder: 0,
+      activeIngredients: splitOptions(data.activeIngredients),
+      avoidFor: splitOptions(data.avoidFor),
+      conflictsWith: splitOptions(data.conflictsWith),
+      priority: Math.min(5, Math.max(0, Number(data.skincarePriority) || 0)),
+      active: data.status === "Active",
+      inStock: Number(data.stock) > 0
+    };
+  }
+  return product;
 }
 
 function fillProductForm(product) {
   const fields = productForm.elements;
   fields.id.value = product.id || "";
   fields.name.value = product.name || "";
+  fields.vertical.value = product.vertical || "jewelry";
   fields.category.value = product.category || "";
   fields.collection.value = product.collection || "";
   fields.price.value = product.price || "";
@@ -163,6 +183,15 @@ function fillProductForm(product) {
   fields.images.value = (product.images || []).join("\n");
   fields.metal.value = (product.options?.metal || []).join(", ");
   fields.length.value = (product.options?.length || []).join(", ");
+  fields.skincareCategory.value = product.skincare?.category || "";
+  fields.skincarePriority.value = product.skincare?.priority ?? 0;
+  fields.skinTypes.value = (product.skincare?.skinTypes || []).join(", ");
+  fields.concerns.value = (product.skincare?.concerns || []).join(", ");
+  fields.benefits.value = (product.skincare?.benefits || []).join(", ");
+  fields.routineTime.value = (product.skincare?.routineTime || []).join(", ");
+  fields.activeIngredients.value = (product.skincare?.activeIngredients || []).join(", ");
+  fields.avoidFor.value = (product.skincare?.avoidFor || []).join(", ");
+  fields.conflictsWith.value = (product.skincare?.conflictsWith || []).join(", ");
   fields.name.focus();
 }
 

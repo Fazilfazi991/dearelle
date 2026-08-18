@@ -1,0 +1,32 @@
+{
+  "products": [
+    {
+      "id": "replace-with-unique-id",
+      "name": "replace-with-real-product-name",
+      "slug": "replace-with-real-product-slug",
+      "vertical": "skincare",
+      "category": "Skincare",
+      "collection": "replace-with-real-collection",
+      "price": 0,
+      "compareAtPrice": 0,
+      "stock": 0,
+      "status": "Draft",
+      "images": [],
+      "shortDescription": "",
+      "skincare": {
+        "category": "cleanser",
+        "skinTypes": ["balanced"],
+        "concerns": ["dehydration"],
+        "benefits": ["gentle_cleansing"],
+        "routineTime": ["am", "pm"],
+        "routineOrder": 1,
+        "activeIngredients": [],
+        "avoidFor": [],
+        "conflictsWith": [],
+        "priority": 0,
+        "active": true,
+        "inStock": false
+      }
+    }
+  ]
+}

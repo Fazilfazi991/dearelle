@@ -3,8 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "syntax-check": "node --check script.js && node --check skincare.js && node --check admin.js && node --check account.js && node --check auth.js && node --check pages.js && node --check server.js && node --check api/admin.js && node --check api/customer.js && node --check api/create-checkout-session.js && node --check api/stripe-webhook.js && node --check lib/admin-core.js && node --check lib/customer-core.js",
-    "test": "npm run syntax-check",
+    "syntax-check": "node --check script.js && node --check skincare.js && node --check admin.js && node --check account.js && node --check auth.js && node --check pages.js && node --check server.js && node --check api/admin.js && node --check api/customer.js && node --check api/create-checkout-session.js && node --check api/skin-analysis.js && node --check api/skincare-recommendations.js && node --check api/stripe-webhook.js && node --check lib/admin-core.js && node --check lib/customer-core.js && node --check lib/skin-analysis.js && node --check lib/skincare-recommendations.js",
+    "test": "npm run syntax-check && node --test test/skincare-recommendations.test.js",
     "lint": "npm run syntax-check"
+  },
+  "dependencies": {
+    "openai": "^7.5.0"
   }
 }

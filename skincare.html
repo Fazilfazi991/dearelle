@@ -35,7 +35,7 @@
         <div class="scan-chip scan-chip--secure">♢ <span>Private preview</span></div>
       </div>
 
-      <div class="skin-privacy"><span>♢</span><p><strong>Your privacy comes first.</strong><br>Camera access is only requested when you choose it. Nothing is captured or stored by this page.</p></div>
+      <div class="skin-privacy"><span>♢</span><p><strong>Your privacy comes first.</strong><br>Camera access is only requested when you choose it. A confirmed photo is securely processed for this preview and is not stored by Dearelle.</p></div>
       <div class="skin-benefits" aria-label="What you can explore"><span>Hydration</span><span>Texture</span><span>Comfort</span><span>Routine ideas</span></div>
       <div class="skin-actions">
         <button class="skin-button skin-button--primary" type="button" data-start-camera><span>⌁</span> Start skin preview <i>→</i></button>
@@ -57,13 +57,21 @@
       <div class="analysis-frame"><img data-analysis-photo alt="Your captured snapshot" hidden><span class="analysis-oval" aria-hidden="true"></span><span class="analysis-scan" aria-hidden="true"></span></div>
       <span class="skin-eyebrow">Snapshot confirmed</span><h1>Analyzing your skin.</h1><p class="skin-lede" data-analysis-copy>Checking that your snapshot is ready.</p>
       <div class="analysis-progress" aria-label="Analysis progress"><span data-analysis-progress></span></div>
-      <p class="skin-footnote">Your photo stays in this page’s temporary memory and is never uploaded or stored.</p>
+      <p class="skin-footnote">Your photo is securely processed for this analysis and is not stored by Dearelle.</p>
     </section>
 
     <section class="skin-screen skin-screen--analysis-unavailable" data-skin-screen="analysis-unavailable" hidden>
-      <span class="skin-eyebrow">Almost there</span><h1>Your snapshot<br>is ready.</h1><p class="skin-lede">A live cosmetic-analysis service is not connected to Dearelle yet, so we can’t responsibly generate skin results from your photo.</p>
-      <aside class="skin-note"><span>✦</span><p><strong>Nothing was stored.</strong><br>Your temporary snapshot has now been discarded. You can still create a thoughtful ritual manually.</p></aside>
-      <div class="skin-actions"><button class="skin-button skin-button--primary" type="button" data-continue-manual>Build my ritual manually <i>→</i></button><button class="skin-button skin-button--secondary" type="button" data-restart-flow>Start again</button></div>
+      <span class="skin-eyebrow">Let’s try that again</span><h1 data-analysis-error-heading>We couldn't complete<br>your skin preview.</h1><p class="skin-lede" data-analysis-error-copy>Your photo has been discarded. You can try again or build your routine manually.</p>
+      <div class="skin-actions"><button class="skin-button skin-button--primary" type="button" data-retry-analysis>Try again <i>→</i></button><button class="skin-button skin-button--secondary" type="button" data-continue-manual>Build manually</button></div>
+    </section>
+
+    <section class="skin-screen skin-screen--report" data-skin-screen="report" hidden>
+      <span class="skin-eyebrow">Your Skin Snapshot</span><h1>Your gentle<br>starting point.</h1><p class="skin-lede" data-report-summary></p>
+      <div class="skin-report-quality">✦ Results are visual cosmetic guidance based on one photo and can be affected by lighting and camera quality.</div>
+      <div class="skin-report-metrics" data-report-metrics></div>
+      <div class="skin-report-needs"><span>YOUR ROUTINE FOCUS</span><div data-report-needs></div></div>
+      <aside class="skin-note"><span>✦</span><p><strong>Product recommendations are coming.</strong><br>Dearelle does not currently stock skincare products, so we can’t responsibly build a skincare bundle yet.</p></aside>
+      <div class="skin-actions"><button class="skin-button skin-button--primary" type="button" data-continue-manual>Build a ritual manually <i>→</i></button><button class="skin-button skin-button--secondary" type="button" data-restart-flow>Start again</button></div>
     </section>
 
     <section class="skin-screen skin-screen--manual" data-skin-screen="manual" hidden>
@@ -71,6 +79,10 @@
       <span class="skin-eyebrow">Build your ritual</span>
       <h1>What would you like<br>to care for?</h1>
       <p class="skin-lede">Choose any focus areas. You can update them anytime.</p>
+      <p class="skin-eyebrow skin-eyebrow--question">How does your skin usually feel?</p>
+      <div class="skin-choice-grid skin-choice-grid--types" data-skin-types>
+        <button type="button" data-skin-type="dry">Dry / tight</button><button type="button" data-skin-type="oily">Oily</button><button type="button" data-skin-type="combination">Combination</button><button type="button" data-skin-type="balanced">Balanced</button><button type="button" data-skin-type="sensitive">Sensitive</button>
+      </div>
       <div class="skin-choice-grid" data-skin-choices>
         <button type="button" data-focus="Hydration"><span>◌</span>Hydration <small>Feels dry or tight</small></button>
         <button type="button" data-focus="Texture"><span>✦</span>Texture <small>Seeks a smoother feel</small></button>

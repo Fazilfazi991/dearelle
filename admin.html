@@ -52,6 +52,7 @@
           <input type="hidden" name="id">
           <div class="form-grid">
             <label>Product Name<input name="name" required placeholder="Lotus Pendant Necklace"></label>
+            <label>Store Vertical<select name="vertical"><option value="jewelry">Jewelry</option><option value="skincare">Skincare</option></select></label>
             <label>Category<input name="category" required placeholder="Necklaces"></label>
             <label>Collection<input name="collection" required placeholder="Signature Collection"></label>
             <label>Price (INR)<input name="price" type="number" min="1" step="1" required placeholder="2499"></label>
@@ -74,6 +75,21 @@
             <label>Metal Options<input name="metal" placeholder="14k Gold, Rose Gold, Silver"></label>
             <label>Length Options<input name="length" placeholder="16&quot;, 18&quot;, 20&quot;"></label>
           </div>
+
+          <fieldset class="admin-skincare-fields">
+            <legend>Skincare recommendation metadata <small>Required before a skincare product can be recommended.</small></legend>
+            <div class="form-grid">
+              <label>Routine Category<select name="skincareCategory"><option value="">Select for skincare</option><option>cleanser</option><option>toner</option><option>serum</option><option>treatment</option><option>moisturizer</option><option>sunscreen</option><option>face_oil</option><option>mask</option><option>add_on</option></select></label>
+              <label>Recommendation Priority<input name="skincarePriority" type="number" min="0" max="5" step="1" value="0"></label>
+              <label>Skin Types (comma-separated)<input name="skinTypes" placeholder="dry, combination, sensitive"></label>
+              <label>Cosmetic Concerns (comma-separated)<input name="concerns" placeholder="dehydration, visible_texture"></label>
+              <label>Benefits (comma-separated)<input name="benefits" placeholder="light_hydration, barrier_support"></label>
+              <label>Routine Time (comma-separated)<input name="routineTime" placeholder="am, pm"></label>
+              <label>Active Ingredients (comma-separated)<input name="activeIngredients" placeholder=""></label>
+              <label>Avoid For (comma-separated)<input name="avoidFor" placeholder="high_sensitivity"></label>
+              <label>Conflicts With (comma-separated)<input name="conflictsWith" placeholder=""></label>
+            </div>
+          </fieldset>
 
           <div class="admin-form__actions">
             <button class="button" type="submit">Save Product</button>
