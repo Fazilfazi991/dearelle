@@ -12,7 +12,7 @@
   const liveActions = document.querySelector('[data-camera-live-actions]');
   const reviewActions = document.querySelector('[data-camera-review-actions]');
   const errorActions = document.querySelector('[data-camera-error-actions]');
-  const selections = new Set(['Hydration', 'Comfort']);
+  const selections = new Set();
   let manualSkinType = '';
   let stream; let capturedFrame = ''; let analysisTimer;
   const showScreen = (name) => { screens.forEach((screen) => { screen.hidden = screen.dataset.skinScreen !== name; }); flow.dataset.activeScreen = name; window.scrollTo({ top: 0, behavior: 'smooth' }); };
@@ -92,11 +92,11 @@
     } catch (error) { setAnalysisError(error.name === 'AbortError' ? 'TIMEOUT' : error.message); }
     finally { clearSnapshot(); button.disabled = false; }
   }
-  function renderSelections() { document.querySelectorAll('[data-focus]').forEach((choice) => { const active = selections.has(choice.dataset.focus); choice.classList.toggle('is-selected', active); choice.setAttribute('aria-pressed', String(active)); }); document.querySelectorAll('[data-skin-type]').forEach((choice) => { const active = choice.dataset.skinType === manualSkinType; choice.classList.toggle('is-selected', active); choice.setAttribute('aria-pressed', String(active)); }); }
+  function renderSelections() { document.querySelectorAll('[data-focus]').forEach((choice) => { const active = selections.has(choice.dataset.focus); choice.classList.toggle('is-selected', active); choice.setAttribute('aria-pressed', String(active)); }); document.querySelectorAll('[data-skin-type]').forEach((choice) => { const active = choice.dataset.skinType === manualSkinType; choice.classList.toggle('is-selected', active); choice.setAttribute('aria-pressed', String(active)); }); const count = document.querySelector('[data-selection-count]'); if (count) count.textContent = `${selections.size} of 3 selected`; const next = document.querySelector('[data-continue-focus]'); if (next) next.disabled = !manualSkinType; }
   async function showRoutine() {
     const values = [...selections];
-    const needMap = { Hydration: 'light_hydration', Texture: 'texture_support', Comfort: 'barrier_support', Glow: 'brightening_support' };
-    const profile = { skinType: manualSkinType || undefined, needs: values.map((value) => needMap[value]).filter(Boolean), primaryNeeds: values.map((value) => needMap[value]).filter(Boolean), source: 'manual' };
+    const needMap = { Hydration: 'light_hydration', Texture: 'texture_support', Comfort: 'soothing', Glow: 'brightening_support', 'Oil Balance': 'oil_balance', 'Visible Pores': 'oil_balance', 'Uneven-looking Tone': 'brightening_support', 'Barrier Support': 'barrier_support' };
+    const profile = { skinType: manualSkinType === 'not-sure' ? undefined : manualSkinType || undefined, needs: values.map((value) => needMap[value]).filter(Boolean), primaryNeeds: values.map((value) => needMap[value]).filter(Boolean), source: 'manual' };
     document.querySelector('[data-focus-summary]').textContent = values.length ? values.join(' · ') : 'A simple everyday ritual';
     document.querySelector('[data-routine-copy]').textContent = 'Preparing your gentle routine…'; showScreen('result');
     try {
@@ -107,17 +107,19 @@
     } catch { document.querySelector('[data-routine-copy]').textContent = 'A thoughtful, everyday place to begin.'; }
   }
   document.querySelector('[data-start-camera]').addEventListener('click', startCamera);
-  document.querySelector('[data-manual-start]').addEventListener('click', () => showScreen('manual'));
+  document.querySelector('[data-manual-start]').addEventListener('click', () => showScreen('manual-type'));
   document.querySelector('[data-capture-snapshot]').addEventListener('click', captureSnapshot);
   document.querySelector('[data-use-photo]').addEventListener('click', usePhoto);
   document.querySelector('[data-retry-analysis]').addEventListener('click', startCamera);
   document.querySelector('[data-retake]').addEventListener('click', startCamera);
   document.querySelector('[data-retry-camera]').addEventListener('click', startCamera);
-  document.querySelectorAll('[data-continue-manual]').forEach((button) => button.addEventListener('click', () => { stopCamera(); clearSnapshot(); showScreen('manual'); }));
+  document.querySelectorAll('[data-continue-manual]').forEach((button) => button.addEventListener('click', () => { stopCamera(); clearSnapshot(); showScreen('manual-type'); }));
+  document.querySelector('[data-continue-focus]').addEventListener('click', () => showScreen('manual-focus'));
+  document.querySelector('[data-back-type]').addEventListener('click', () => showScreen('manual-type'));
   document.querySelectorAll('[data-back-intro]').forEach((button) => button.addEventListener('click', returnToIntro));
   document.querySelector('[data-show-routine]').addEventListener('click', showRoutine);
   document.querySelectorAll('[data-restart-flow]').forEach((button) => button.addEventListener('click', returnToIntro));
-  document.querySelectorAll('[data-focus]').forEach((choice) => choice.addEventListener('click', () => { const focus = choice.dataset.focus; selections.has(focus) ? selections.delete(focus) : selections.add(focus); renderSelections(); navigator.vibrate?.(10); }));
+  document.querySelectorAll('[data-focus]').forEach((choice) => choice.addEventListener('click', () => { const focus = choice.dataset.focus; if (selections.has(focus)) selections.delete(focus); else if (selections.size < 3) selections.add(focus); renderSelections(); navigator.vibrate?.(10); }));
   document.querySelectorAll('[data-skin-type]').forEach((choice) => choice.addEventListener('click', () => { manualSkinType = manualSkinType === choice.dataset.skinType ? '' : choice.dataset.skinType; renderSelections(); }));
   window.addEventListener('pagehide', () => { window.clearTimeout(analysisTimer); stopCamera(); clearSnapshot(); });
   renderSelections();
