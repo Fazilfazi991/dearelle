@@ -82,6 +82,9 @@
 @media (max-width: 390px) { .skin-screen--manual { padding: 22px 18px 26px; }.skin-screen--manual h1 { font-size: 42px; }.skin-choice-grid--types, .skin-choice-grid--focus { gap: 8px; margin: 16px auto; }.skin-choice-grid--types img, .skin-choice-grid--focus img { height: 90px; }.skin-choice-grid--types b, .skin-choice-grid--focus b { margin: 8px 9px 2px; font-size: 16px; }.skin-choice-grid--types small, .skin-choice-grid--focus small { margin: 0 9px; font-size: 9px; } }
 
 /* Final gift campaign mobile override layer */
+.skin-product-packshot { position:absolute; inset:12px; width:calc(100% - 24px); height:calc(100% - 42px); object-fit:contain; mix-blend-mode:multiply; }
+
+/* Final gift campaign mobile override layer */
 html,
 body.gift-campaign-body {
   max-width: 100%;
