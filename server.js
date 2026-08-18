@@ -4,7 +4,7 @@ const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
 const vm = require("vm");
-const { handleAdminRequest, loadStore, saveStore, updateStripeOrder } = require("./lib/admin-core");
+const { handleAdminRequest, loadStore, saveStore, updateStripeOrder, isPurchasableProduct } = require("./lib/admin-core");
 const { handleCustomerRequest } = require("./lib/customer-core");
 const { allowRequest, analyzeSkinImage, publicError } = require("./lib/skin-analysis");
 const { profileFromAnalysis, normalizeSkinProfile, mergeProfileWithUserInput, recommendProductsForSkinProfile } = require("./lib/skincare-recommendations");
@@ -172,7 +172,7 @@ async function orderTotals(cart, shippingMethodInput) {
   const products = await loadProducts();
   const shippingMethod = normalizeShippingMethod(shippingMethodInput);
   const lines = (Array.isArray(cart) ? cart : []).map((item) => {
-    const product = products.find((entry) => entry.id === item.productId);
+    const product = products.find((entry) => entry.id === item.productId && isPurchasableProduct(entry));
     const quantity = Math.max(1, Math.min(10, Number(item.quantity) || 1));
     return product ? { product, quantity, options: item.options || {} } : null;
   }).filter(Boolean);

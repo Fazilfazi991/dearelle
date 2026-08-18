@@ -62,6 +62,20 @@
     metrics.innerHTML = Object.entries(report.metrics).map(([key, metric]) => `<article><span>${escapeHtml(labels[key])}</span><b>${escapeHtml(metric.label)}</b><p>${escapeHtml(metric.explanation)}</p></article>`).join('');
     const needs = document.querySelector('[data-report-needs]');
     needs.innerHTML = report.needs.map((need) => `<span>${escapeHtml(need.replace(/_/g, ' '))}</span>`).join('') || '<span>Gentle everyday care</span>';
+    const recommendationSection = document.querySelector('[data-skin-recommendations]');
+    const recommendationList = document.querySelector('[data-skin-recommendation-list]');
+    const slots = report.recommendation?.routine?.filter((slot) => slot.recommended?.product?.commerceMode === 'external') || [];
+    if (slots.length) {
+      recommendationList.innerHTML = slots.map((slot) => {
+        const match = slot.recommended;
+        const product = match.product;
+        const officialUrl = /^https:\/\//i.test(product.officialProductUrl || '') ? product.officialProductUrl : '#';
+        const benefits = (product.skincare?.benefits || []).slice(0, 2).map((benefit) => benefit.replace(/_/g, ' ')).join(' · ');
+        const recommendationLabel = match.matchStrength === 'fallback' ? 'Closest match from our current selection' : 'Recommended for you';
+        return `<article class="skin-recommendation-card"><div class="skin-product-placeholder" aria-hidden="true"><span>${escapeHtml(product.brand || 'Verified')}</span><b>${escapeHtml(slot.category)}</b></div><div><small>External product · ${escapeHtml(slot.category)}</small><strong class="skin-recommendation-strength">${escapeHtml(recommendationLabel)}</strong><h2>${escapeHtml(product.brand || '')} ${escapeHtml(product.name)}</h2>${product.size ? `<p>${escapeHtml(product.size)}</p>` : ''}<p>${escapeHtml(match.reasons.join(' · '))}</p><p class="skin-recommendation-benefits">${escapeHtml(benefits)}</p><a href="${escapeHtml(officialUrl)}" target="_blank" rel="noopener noreferrer">View Product <span class="sr-only">(opens official site in a new tab)</span> →</a></div></article>`;
+      }).join('');
+      recommendationSection.hidden = false;
+    } else { recommendationSection.hidden = true; recommendationList.innerHTML = ''; }
   }
   async function usePhoto() {
     if (!capturedFrame) return;

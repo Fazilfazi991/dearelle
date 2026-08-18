@@ -2,6 +2,7 @@
   "products": [
     {
       "id": "replace-with-unique-id",
+      "brand": "replace-with-real-brand",
       "name": "replace-with-real-product-name",
       "slug": "replace-with-real-product-slug",
       "vertical": "skincare",
@@ -12,6 +13,13 @@
       "stock": 0,
       "status": "Draft",
       "images": [],
+      "imageStatus": "placeholder_only",
+      "commerceMode": "external",
+      "commerceEligible": false,
+      "officialProductUrl": "https://replace-with-official-product-page",
+      "verificationSourceUrl": "https://replace-with-verification-source",
+      "verifiedAt": "YYYY-MM-DD",
+      "verificationStatus": "needs_review",
       "shortDescription": "",
       "skincare": {
         "category": "cleanser",

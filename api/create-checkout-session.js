@@ -2,7 +2,7 @@ const fs = require("fs");
 const https = require("https");
 const path = require("path");
 const vm = require("vm");
-const { loadStore, saveStore } = require("../lib/admin-core");
+const { loadStore, saveStore, isPurchasableProduct } = require("../lib/admin-core");
 
 const stripeApiVersion = "2025-05-28.basil";
 const shippingMethods = [
@@ -43,7 +43,7 @@ async function orderTotals(cart, shippingMethodInput) {
   const products = await loadProducts();
   const shippingMethod = normalizeShippingMethod(shippingMethodInput);
   const lines = (Array.isArray(cart) ? cart : []).map((item) => {
-    const product = products.find((entry) => entry.id === item.productId);
+    const product = products.find((entry) => entry.id === item.productId && isPurchasableProduct(entry));
     const quantity = Math.max(1, Math.min(10, Number(item.quantity) || 1));
     return product ? { product, quantity, options: item.options || {} } : null;
   }).filter(Boolean);

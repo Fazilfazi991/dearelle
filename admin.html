@@ -52,7 +52,9 @@
           <input type="hidden" name="id">
           <div class="form-grid">
             <label>Product Name<input name="name" required placeholder="Lotus Pendant Necklace"></label>
+            <label>Brand<input name="brand" placeholder="Brand name"></label>
             <label>Store Vertical<select name="vertical"><option value="jewelry">Jewelry</option><option value="skincare">Skincare</option></select></label>
+            <label>Commerce Mode<select name="commerceMode"><option value="internal">Internal / purchasable</option><option value="external">External recommendation</option></select></label>
             <label>Category<input name="category" required placeholder="Necklaces"></label>
             <label>Collection<input name="collection" required placeholder="Signature Collection"></label>
             <label>Price (INR)<input name="price" type="number" min="1" step="1" required placeholder="2499"></label>
@@ -69,6 +71,12 @@
           <label>Shipping Copy<textarea name="shipping" rows="2"></textarea></label>
           <label>Gift Copy<textarea name="gift" rows="2"></textarea></label>
           <label>Image URLs / Paths<textarea name="images" rows="5" placeholder="assets/products/product-1/01_model_front_portrait.webp"></textarea></label>
+          <div class="form-grid">
+            <label>Size / Pack<input name="size" placeholder="50 ml"></label>
+            <label>Image Status<select name="imageStatus"><option value="licensed">Licensed / approved</option><option value="placeholder_only">Placeholder only</option><option value="supplier_asset_pending">Supplier asset pending</option></select></label>
+            <label>Official Product URL<input name="officialProductUrl" type="url" placeholder="https://"></label>
+            <label>Verification Status<select name="verificationStatus"><option value="needs_review">Needs review</option><option value="verified">Verified</option></select></label>
+          </div>
           <label>Upload Product Images<input type="file" accept="image/*" multiple data-image-upload></label>
 
           <div class="form-grid">
@@ -88,6 +96,7 @@
               <label>Active Ingredients (comma-separated)<input name="activeIngredients" placeholder=""></label>
               <label>Avoid For (comma-separated)<input name="avoidFor" placeholder="high_sensitivity"></label>
               <label>Conflicts With (comma-separated)<input name="conflictsWith" placeholder=""></label>
+              <label>Verified At<input name="verifiedAt" type="date"></label>
             </div>
           </fieldset>
 

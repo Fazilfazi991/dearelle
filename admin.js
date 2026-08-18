@@ -123,7 +123,10 @@ function productFromForm(form) {
   const product = {
     id: data.id || fallbackId,
     name: data.name.trim(),
+    brand: data.brand.trim(),
     vertical,
+    commerceMode: data.commerceMode === "external" ? "external" : "internal",
+    commerceEligible: data.commerceMode !== "external",
     category: data.category.trim(),
     collection: data.collection.trim(),
     price: Number(data.price) || 0,
@@ -137,6 +140,11 @@ function productFromForm(form) {
     care: data.care.trim(),
     shipping: data.shipping.trim(),
     gift: data.gift.trim(),
+    size: data.size.trim(),
+    imageStatus: data.imageStatus || "licensed",
+    officialProductUrl: data.officialProductUrl.trim(),
+    verificationStatus: data.verificationStatus || "needs_review",
+    verifiedAt: data.verifiedAt || "",
     options: {
       metal: splitOptions(data.metal),
       length: splitOptions(data.length)
@@ -166,7 +174,9 @@ function fillProductForm(product) {
   const fields = productForm.elements;
   fields.id.value = product.id || "";
   fields.name.value = product.name || "";
+  fields.brand.value = product.brand || "";
   fields.vertical.value = product.vertical || "jewelry";
+  fields.commerceMode.value = product.commerceMode || "internal";
   fields.category.value = product.category || "";
   fields.collection.value = product.collection || "";
   fields.price.value = product.price || "";
@@ -180,6 +190,10 @@ function fillProductForm(product) {
   fields.care.value = product.care || "";
   fields.shipping.value = product.shipping || "";
   fields.gift.value = product.gift || "";
+  fields.size.value = product.size || "";
+  fields.imageStatus.value = product.imageStatus || "licensed";
+  fields.officialProductUrl.value = product.officialProductUrl || "";
+  fields.verificationStatus.value = product.verificationStatus || "needs_review";
   fields.images.value = (product.images || []).join("\n");
   fields.metal.value = (product.options?.metal || []).join(", ");
   fields.length.value = (product.options?.length || []).join(", ");
@@ -192,6 +206,7 @@ function fillProductForm(product) {
   fields.activeIngredients.value = (product.skincare?.activeIngredients || []).join(", ");
   fields.avoidFor.value = (product.skincare?.avoidFor || []).join(", ");
   fields.conflictsWith.value = (product.skincare?.conflictsWith || []).join(", ");
+  fields.verifiedAt.value = product.verifiedAt || "";
   fields.name.focus();
 }
 
