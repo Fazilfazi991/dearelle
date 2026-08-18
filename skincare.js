@@ -1,6 +1,7 @@
 (() => {
   const flow = document.querySelector('[data-skin-flow]');
   if (!flow) return;
+  const productPackshots = { 'ext-simple-refreshing-facial-wash-150ml':'simple-refreshing-face-wash-150ml.webp', 'ext-dot-key-barrier-repair-face-wash-175ml':'dot-key-barrier-face-wash-175ml.webp', 'ext-ordinary-hyaluronic-acid-2-b5':'the-ordinary-hyaluronic-acid-2-b5-30ml.webp', 'ext-minimalist-hyaluronic-pga-2':'minimalist-hyaluronic-pga-2-30ml.webp', 'ext-minimalist-niacinamide-10-matmarine':'minimalist-niacinamide-10-30ml.webp', 'ext-plum-niacinamide-rice-water-50ml':'plum-niacinamide-rice-water-serum-50ml.webp', 'ext-ordinary-niacinamide-zinc':'the-ordinary-niacinamide-10-zinc-1-30ml.webp', 'ext-minimalist-vitamin-c-10':'minimalist-vitamin-c-10-30ml.webp', 'ext-cetaphil-moisturising-cream':'cetaphil-moisturising-cream-250g.webp', 'ext-minimalist-vitamin-b5-10-moisturizer-50g':'minimalist-vitamin-b5-10-moisturizer-50g.webp', 'ext-cetaphil-spf-50-sunscreen':'cetaphil-sun-spf50-light-gel-50ml.webp', 'ext-la-shield-fisico-spf-50-50g':'la-shield-fisico-spf50-50g.webp', 'ext-neutrogena-ultra-sheer-spf-50':'neutrogena-ultra-sheer-spf50-80g.webp', 'ext-ordinary-glycolic-acid-7':'the-ordinary-glycolic-acid-7-toner-100ml.webp' };
   const screens = [...document.querySelectorAll('[data-skin-screen]')];
   const streamVideo = document.querySelector('[data-camera-stream]');
   const capturedPhoto = document.querySelector('[data-captured-photo]');
