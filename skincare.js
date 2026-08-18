@@ -14,7 +14,7 @@
   const errorActions = document.querySelector('[data-camera-error-actions]');
   const selections = new Set();
   let manualSkinType = '';
-  let stream; let capturedFrame = ''; let analysisTimer;
+  let stream; let capturedFrame = ''; let analysisTimer; let manualRecommendation; let manualProfile;
   const showScreen = (name) => { screens.forEach((screen) => { screen.hidden = screen.dataset.skinScreen !== name; }); flow.dataset.activeScreen = name; window.scrollTo({ top: 0, behavior: 'smooth' }); };
   const setActions = (state) => { liveActions.hidden = state !== 'live'; reviewActions.hidden = state !== 'review'; errorActions.hidden = state !== 'error'; };
   const clearSnapshot = () => { capturedFrame = ''; [capturedPhoto, analysisPhoto].forEach((image) => { image.src = ''; image.hidden = true; }); };
@@ -77,6 +77,11 @@
       recommendationSection.hidden = false;
     } else { recommendationSection.hidden = true; recommendationList.innerHTML = ''; }
   }
+  function renderManualRecommendations(recommendation) {
+    const needs = document.querySelector('[data-manual-recommendation-needs]'); const list = document.querySelector('[data-manual-recommendation-list]');
+    needs.innerHTML = recommendation.needs.map((need) => `<span>${escapeHtml(need.replace(/_/g, ' '))}</span>`).join('') || '<span>Gentle everyday care</span>';
+    list.innerHTML = recommendation.routine.filter((slot) => slot.recommended?.product?.commerceMode === 'external').map((slot) => { const match = slot.recommended; const product = match.product; const url = /^https:\/\//.test(product.officialProductUrl || '') ? product.officialProductUrl : '#'; const benefits = (product.skincare?.benefits || []).slice(0, 2).join(' · ').replace(/_/g, ' '); return `<article class="skin-recommendation-card"><div class="skin-product-placeholder" aria-hidden="true"><span>${escapeHtml(product.brand)}</span><b>${escapeHtml(slot.category)}</b></div><div><small>External recommendation · ${escapeHtml(slot.category)}</small><strong class="skin-recommendation-strength">${match.matchStrength === 'fallback' ? 'Closest match from our current selection' : 'Recommended for you'}</strong><h2>${escapeHtml(product.brand)} ${escapeHtml(product.name)}</h2>${product.size ? `<p>${escapeHtml(product.size)}</p>` : ''}<p>${escapeHtml(match.reasons.join(' · '))}</p><p class="skin-recommendation-benefits">${escapeHtml(benefits)}</p><a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">View Product <span class="sr-only">(opens official site in a new tab)</span> →</a></div></article>`; }).join('') || '<p class="skin-lede">We’re still looking for the right match for this step.</p>';
+  }
   async function usePhoto() {
     if (!capturedFrame) return;
     const imageForRequest = capturedFrame; const button = document.querySelector('[data-use-photo]'); button.disabled = true;
@@ -96,14 +101,14 @@
   async function showRoutine() {
     const values = [...selections];
     const needMap = { Hydration: 'light_hydration', Texture: 'texture_support', Comfort: 'soothing', Glow: 'brightening_support', 'Oil Balance': 'oil_balance', 'Visible Pores': 'oil_balance', 'Uneven-looking Tone': 'brightening_support', 'Barrier Support': 'barrier_support' };
-    const profile = { skinType: manualSkinType === 'not-sure' ? undefined : manualSkinType || undefined, needs: values.map((value) => needMap[value]).filter(Boolean), primaryNeeds: values.map((value) => needMap[value]).filter(Boolean), source: 'manual' };
+    const profile = { skinType: manualSkinType === 'not-sure' ? undefined : manualSkinType || undefined, needs: values.map((value) => needMap[value]).filter(Boolean), primaryNeeds: values.map((value) => needMap[value]).filter(Boolean), source: 'manual' }; manualProfile = profile;
     document.querySelector('[data-focus-summary]').textContent = values.length ? values.join(' · ') : 'A simple everyday ritual';
     document.querySelector('[data-routine-copy]').textContent = 'Preparing your gentle routine…'; showScreen('result');
     try {
       const response = await fetch('/api/skincare-recommendations', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ profile }) });
       const recommendation = await response.json();
       if (!response.ok) throw new Error('RECOMMENDATION_FAILED');
-      document.querySelector('[data-routine-copy]').textContent = recommendation.productsAvailable ? 'Your routine is based on your selections and current Dearelle skincare availability.' : 'Your routine focus is ready. Product recommendations will appear when Dearelle skincare products are available.';
+      manualRecommendation = recommendation; renderManualRecommendations(recommendation); document.querySelector('[data-routine-copy]').textContent = recommendation.productsAvailable ? 'Based on what you told us and verified skincare products currently available in India.' : 'Your routine focus is ready.';
     } catch { document.querySelector('[data-routine-copy]').textContent = 'A thoughtful, everyday place to begin.'; }
   }
   document.querySelector('[data-start-camera]').addEventListener('click', startCamera);
@@ -116,9 +121,12 @@
   document.querySelectorAll('[data-continue-manual]').forEach((button) => button.addEventListener('click', () => { stopCamera(); clearSnapshot(); showScreen('manual-type'); }));
   document.querySelector('[data-continue-focus]').addEventListener('click', () => showScreen('manual-focus'));
   document.querySelector('[data-back-type]').addEventListener('click', () => showScreen('manual-type'));
+  document.querySelector('[data-open-recommendations]').addEventListener('click', () => { if (manualRecommendation) showScreen('recommendations'); });
+  document.querySelector('[data-back-result]').addEventListener('click', () => showScreen('result'));
+  document.querySelectorAll('[data-adjust-answers]').forEach((button) => button.addEventListener('click', () => showScreen('manual-focus')));
   document.querySelectorAll('[data-back-intro]').forEach((button) => button.addEventListener('click', returnToIntro));
   document.querySelector('[data-show-routine]').addEventListener('click', showRoutine);
-  document.querySelectorAll('[data-restart-flow]').forEach((button) => button.addEventListener('click', returnToIntro));
+  document.querySelectorAll('[data-restart-flow]').forEach((button) => button.addEventListener('click', () => { selections.clear(); manualSkinType = ''; manualProfile = undefined; manualRecommendation = undefined; renderSelections(); returnToIntro(); }));
   document.querySelectorAll('[data-focus]').forEach((choice) => choice.addEventListener('click', () => { const focus = choice.dataset.focus; if (selections.has(focus)) selections.delete(focus); else if (selections.size < 3) selections.add(focus); renderSelections(); navigator.vibrate?.(10); }));
   document.querySelectorAll('[data-skin-type]').forEach((choice) => choice.addEventListener('click', () => { manualSkinType = manualSkinType === choice.dataset.skinType ? '' : choice.dataset.skinType; renderSelections(); }));
   window.addEventListener('pagehide', () => { window.clearTimeout(analysisTimer); stopCamera(); clearSnapshot(); });
